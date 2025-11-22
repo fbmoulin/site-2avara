@@ -1,0 +1,42 @@
+{
+  "name": "2vara-backend",
+  "version": "1.0.0",
+  "description": "Backend API para 2ª Vara Cível de Cariacica",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "migrate": "node -r dotenv/config migrations/run.js"
+  },
+  "keywords": ["api", "tribunal", "justiça"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.4",
+    "adminjs": "^7.8.13",
+    "@adminjs/express": "^6.1.0",
+    "@adminjs/prisma": "^5.0.2",
+    "@prisma/client": "^6.2.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "cors": "^2.8.5",
+    "helmet": "^8.0.0",
+    "dotenv": "^16.4.7",
+    "zod": "^3.24.1",
+    "bcrypt": "^5.1.1",
+    "connect-pg-simple": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
+    "@types/cors": "^2.8.17",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2",
+    "tsx": "^4.19.2",
+    "prisma": "^6.2.0"
+  }
+}

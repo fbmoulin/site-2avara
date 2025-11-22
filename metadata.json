@@ -1,0 +1,7 @@
+{
+  "name": "2ª Vara Cível de Cariacica",
+  "description": "Portal oficial da 2ª Vara Cível de Cariacica com atendimento virtual e serviços digitais.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

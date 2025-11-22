@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2ª Vara Cível de Cariacica</title>
+    <meta name="description" content="Portal oficial da 2ª Vara Cível de Cariacica com atendimento virtual e serviços digitais." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'legal-blue': '#0f172a',
+              'legal-gold': '#b49b66',
+              'legal-gold-hover': '#9a8452',
+              'light-bg': '#f8fafc',
+            },
+            fontFamily: {
+              serif: ['Merriweather', 'serif'],
+              sans: ['Open Sans', 'sans-serif'],
+            },
+            animation: {
+              'marquee': 'marquee 55s linear infinite',
+              'fade-in-up': 'fadeInUp 0.5s ease-out',
+            },
+            keyframes: {
+              marquee: {
+                '0%': { transform: 'translateX(100%)' },
+                '100%': { transform: 'translateX(-100%)' },
+              },
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              }
+            }
+          }
+        },
+        variants: {
+          extend: {
+            animation: ['motion-reduce'],
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        font-family: 'Open Sans', sans-serif;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Merriweather', serif;
+      }
+
+      /* Global Focus Style for Keyboard Navigation */
+      :focus-visible {
+        outline: 3px solid #b49b66;
+        outline-offset: 2px;
+      }
+      
+      /* Font Size Accessibility Classes */
+      html.font-lg { font-size: 112.5%; } /* 18px base */
+      html.font-xl { font-size: 125%; }   /* 20px base */
+
+      /* --- DARK MODE STYLES --- */
+      body.dark-mode {
+        background-color: #0f172a; /* Slate 900 */
+        color: #e2e8f0; /* Slate 200 */
+      }
+      
+      body.dark-mode header {
+        background-color: #1e293b; /* Slate 800 */
+        border-bottom: 1px solid #334155;
+      }
+
+      /* Adjust generic backgrounds for Dark Mode */
+      body.dark-mode section.bg-white,
+      body.dark-mode section.bg-light-bg,
+      body.dark-mode .bg-white,
+      body.dark-mode .bg-light-bg,
+      body.dark-mode .bg-gray-50,
+      body.dark-mode .bg-gray-100 {
+        background-color: #1e293b; /* Slate 800 */
+        color: #e2e8f0;
+        border-color: #334155;
+      }
+      
+      /* Specific text overrides for readability on dark */
+      body.dark-mode .text-legal-blue {
+        color: #bfdbfe !important; /* Blue 200 */
+      }
+      body.dark-mode .text-gray-500, 
+      body.dark-mode .text-gray-600,
+      body.dark-mode .text-gray-700,
+      body.dark-mode .text-gray-800 {
+        color: #cbd5e1; /* Slate 300 */
+      }
+      
+      /* Inputs and Forms in Dark Mode */
+      body.dark-mode input,
+      body.dark-mode textarea,
+      body.dark-mode select {
+        background-color: #334155;
+        border-color: #475569;
+        color: #ffffff;
+      }
+      body.dark-mode input::placeholder,
+      body.dark-mode textarea::placeholder {
+        color: #94a3b8;
+      }
+
+      /* Footer adjustments */
+      body.dark-mode footer {
+        background-color: #020617; /* Slate 950 */
+        border-top-color: #1e293b;
+      }
+      
+      /* Chatbot specific dark mode */
+      body.dark-mode .bg-legal-blue {
+        /* Keep header blue but slightly adjusted if needed, or keep as is */
+      }
+
+      /* --- HIGH CONTRAST MODE (Overrides Dark Mode) --- */
+      body.high-contrast {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+      }
+      
+      body.high-contrast header, 
+      body.high-contrast footer,
+      body.high-contrast section,
+      body.high-contrast article,
+      body.high-contrast div:not(.high-contrast-ignore),
+      body.high-contrast input,
+      body.high-contrast select,
+      body.high-contrast textarea,
+      body.high-contrast button {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        border-color: #ffffff !important;
+        box-shadow: none !important;
+      }
+
+      body.high-contrast a {
+        color: #ffff00 !important;
+        text-decoration: underline !important;
+      }
+      
+      body.high-contrast button,
+      body.high-contrast .button-like {
+        color: #ffff00 !important;
+        border: 2px solid #ffff00 !important;
+        background-color: #000000 !important;
+        font-weight: bold !important;
+      }
+
+      body.high-contrast span.text-legal-gold,
+      body.high-contrast .text-legal-gold {
+        color: #ffff00 !important;
+      }
+      
+      body.high-contrast .bg-legal-gold,
+      body.high-contrast .bg-legal-blue {
+        background-color: #000000 !important;
+        border: 1px solid #ffffff !important;
+        color: #ffff00 !important;
+      }
+
+      body.high-contrast img {
+        filter: grayscale(100%) contrast(120%);
+        border: 2px solid #ffffff;
+      }
+
+      body.high-contrast ::placeholder {
+        color: #a0a0a0 !important;
+        opacity: 1;
+      }
+      
+      /* Ensure focus is extremely visible in high contrast */
+      body.high-contrast :focus-visible {
+        outline: 4px solid #00ff00 !important;
+        outline-offset: 4px !important;
+        background-color: #333333 !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .animate-marquee {
+          animation: none;
+          transform: none;
+          display: flex;
+          overflow-x: auto;
+        }
+        * {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

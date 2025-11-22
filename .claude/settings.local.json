@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nul)",
+      "Bash(cat:*)",
+      "Bash(npm install)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(exit 0)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 5 echo:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit - 2ª Vara Cível de Cariacica website\n\nFull-stack application with React frontend and Express backend.\n\nFeatures:\n- Frontend: React 19 + Vite + TypeScript\n- Backend: Express + Prisma + SQLite\n- AI Chatbot: Google Gemini integration\n- Forms: Contact, Appointments, Demands\n- Security: Helmet, CORS, Rate Limiting\n- Validation: Zod schemas\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(del backendnul 2)",
+      "Bash(dir:*)",
+      "Bash(.gitignore)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
