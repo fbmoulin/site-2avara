@@ -59,12 +59,15 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
   };
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isLoading) return;
+
+    // Limit message length to prevent abuse
+    const messageText = inputValue.trim().slice(0, 2000);
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
-      text: inputValue,
+      text: messageText,
       timestamp: new Date()
     };
 
@@ -83,7 +86,15 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
       };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
-      console.error(error);
+      console.error('Erro no chatbot:', error);
+      // Show error message to user instead of failing silently
+      const errorMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'model',
+        text: 'Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
     }

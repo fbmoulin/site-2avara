@@ -2,6 +2,7 @@ import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 
 let chatSession: Chat | null = null;
 let genAI: GoogleGenAI | null = null;
+let isCreatingSession = false;
 
 // Initialize the API client
 const initializeGemini = () => {
@@ -66,14 +67,27 @@ export const getChatResponse = async (userMessage: string): Promise<ChatResponse
   }
 
   try {
+    // Prevent race condition when creating session
+    if (!chatSession && !isCreatingSession) {
+      isCreatingSession = true;
+      try {
+        chatSession = genAI.chats.create({
+          model: 'gemini-2.5-flash',
+          config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
+            tools: [{ googleMaps: {} }],
+          },
+        });
+      } finally {
+        isCreatingSession = false;
+      }
+    }
+
+    // Wait if session is being created
     if (!chatSession) {
-      chatSession = genAI.chats.create({
-        model: 'gemini-2.5-flash',
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-          tools: [{ googleMaps: {} }],
-        },
-      });
+      return {
+        text: "O sistema está inicializando. Por favor, envie sua mensagem novamente."
+      };
     }
 
     const result: GenerateContentResponse = await chatSession.sendMessage({
@@ -86,6 +100,8 @@ export const getChatResponse = async (userMessage: string): Promise<ChatResponse
     };
   } catch (error) {
     console.error("Erro ao comunicar com Gemini:", error);
+    // Reset session on error to allow retry
+    chatSession = null;
     return {
       text: "Ocorreu um erro temporário no serviço de atendimento. Por favor, tente novamente em instantes."
     };
