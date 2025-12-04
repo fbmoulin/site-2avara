@@ -4,10 +4,10 @@
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│    Frontend     │────▶│     Backend     │────▶│   PostgreSQL    │
-│  (React/Vite)   │     │   (Express)     │     │   (Database)    │
+│    Frontend     │────▶│     Backend     │────▶│    Supabase     │
+│  (React/Vite)   │     │   (Express)     │     │  (PostgreSQL)   │
 │                 │     │                 │     │                 │
-│  Vercel/Netlify │     │ Render/Railway  │     │ Render/Railway  │
+│  Vercel/Netlify │     │ Render/Railway  │     │   supabase.com  │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
          │                      │
          │                      │
@@ -18,104 +18,118 @@
 
 ## Passo a Passo
 
-### 1. Preparar Database PostgreSQL
+### 1. Configurar Supabase
+
+1. Criar conta em https://supabase.com
+2. Criar novo projeto
+3. Aguardar provisionamento (~2 min)
+4. Ir em **Project Settings** > **Database**
+5. Copiar as connection strings:
+
+   **Transaction Mode (para aplicacao):**
+   ```
+   postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true
+   ```
+
+   **Session Mode (para migrations):**
+   ```
+   postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
+   ```
+
+### 2. Preparar Schema para Producao
+
+```bash
+# Copiar schema do Supabase
+cp backend/prisma/schema.postgresql.prisma backend/prisma/schema.prisma
+```
+
+### 3. Configurar Variaveis de Ambiente
+
+**Backend (.env):**
+```env
+# Supabase Database
+DATABASE_URL="postgresql://postgres.[REF]:[PASS]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[REF]:[PASS]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
+
+# Server
+NODE_ENV=production
+PORT=3001
+FRONTEND_URL=https://seu-frontend.vercel.app
+ALLOWED_ORIGINS=https://seu-frontend.vercel.app
+
+# Security (gerar valores seguros!)
+SESSION_SECRET=<openssl rand -base64 32>
+
+# Email (opcional)
+SENDGRID_API_KEY=<sua-chave>
+EMAIL_FROM=noreply@seu-dominio.com
+EMAIL_TO=admin@seu-dominio.com
+```
+
+### 4. Executar Migrations
+
+```bash
+cd backend
+
+# Gerar Prisma Client
+npm run db:generate
+
+# Aplicar migrations no Supabase
+npm run db:migrate
+```
+
+### 5. Deploy do Backend
 
 #### Render.com (Recomendado)
-1. Criar conta em https://render.com
-2. New → PostgreSQL
-3. Anotar a `External Database URL`
-
-#### Railway
-1. Criar conta em https://railway.app
-2. New Project → Provision PostgreSQL
-3. Copiar `DATABASE_URL` das variáveis
-
-### 2. Deploy do Backend
-
-#### Render.com
 1. New → Web Service
 2. Conectar repositório GitHub
 3. Configurar:
    - **Root Directory**: `backend`
    - **Build Command**: `npm install && npm run build`
    - **Start Command**: `npm run db:migrate && npm start`
+4. Adicionar variaveis de ambiente (do passo 3)
 
-4. Variáveis de ambiente:
-   ```
-   DATABASE_URL=<postgresql-url-do-passo-1>
-   NODE_ENV=production
-   PORT=3001
-   FRONTEND_URL=https://seu-frontend.vercel.app
-   ALLOWED_ORIGINS=https://seu-frontend.vercel.app
-   SESSION_SECRET=<gerar-com-openssl-rand-base64-32>
-   SENDGRID_API_KEY=<opcional>
-   EMAIL_FROM=noreply@seu-dominio.com
-   EMAIL_TO=admin@seu-dominio.com
-   ```
+#### Vercel (Serverless)
+1. Importar repositório
+2. Framework: Other
+3. Root Directory: `backend`
+4. Build Command: `npm install && npm run build`
+5. Adicionar variaveis de ambiente
 
-#### Railway
-1. New Project → Deploy from GitHub
-2. Selecionar pasta `backend`
-3. Adicionar variáveis de ambiente (mesmas acima)
+### 6. Deploy do Frontend
 
-### 3. Deploy do Frontend
-
-#### Vercel (Recomendado)
-1. Importar repositório em https://vercel.com
-2. Configurar:
-   - **Framework Preset**: Vite
-   - **Root Directory**: `.` (raiz)
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-
-3. Variáveis de ambiente:
+#### Vercel
+1. Importar repositório
+2. Framework: Vite
+3. Root Directory: `.` (raiz)
+4. Variaveis de ambiente:
    ```
    GEMINI_API_KEY=<sua-chave-api>
    VITE_API_URL=https://seu-backend.onrender.com/api
    ```
 
-#### Netlify
-1. Importar repositório em https://netlify.com
-2. Build settings:
-   - **Build command**: `npm run build`
-   - **Publish directory**: `dist`
-3. Adicionar variáveis de ambiente
+### 7. Verificar Deploy
 
-### 4. Configurar Serviços Externos
+1. Acessar URL do backend: `https://seu-backend.onrender.com/health`
+2. Acessar frontend e testar formularios
+3. Verificar dados no Supabase Dashboard > Table Editor
 
-#### Google Gemini API (Chatbot)
-1. Acessar https://makersuite.google.com/app/apikey
-2. Criar API Key
-3. Adicionar como `GEMINI_API_KEY` no frontend
+---
 
-#### SendGrid (Email - Opcional)
-1. Criar conta em https://sendgrid.com
-2. Settings → API Keys → Create API Key
-3. Adicionar como `SENDGRID_API_KEY` no backend
+## Supabase - Recursos Adicionais
 
-### 5. Migrar Database para Producao
+### Visualizar Dados
+- Supabase Dashboard > Table Editor
+- Ver tabelas: `contact_messages`, `appointments`, `demands`
 
-Se usando PostgreSQL, antes do primeiro deploy:
+### Backup Automatico
+- Supabase Pro: backups diarios automaticos
+- Free tier: exportar manualmente via pg_dump
 
-```bash
-# Copiar schema de producao
-cp backend/prisma/schema.postgresql.prisma backend/prisma/schema.prisma
+### Row Level Security (Opcional)
+O Supabase suporta RLS para seguranca adicional. Para este projeto, a API backend ja gerencia a seguranca.
 
-# Ou editar manualmente e mudar provider para "postgresql"
-```
-
-O deploy automaticamente executara `npm run db:migrate`.
-
-## Checklist Pre-Deploy
-
-- [ ] PostgreSQL configurado e acessivel
-- [ ] `DATABASE_URL` com SSL (`?sslmode=require`)
-- [ ] `SESSION_SECRET` com 32+ caracteres aleatorios
-- [ ] `ALLOWED_ORIGINS` com URL exata do frontend
-- [ ] `FRONTEND_URL` configurado no backend
-- [ ] `VITE_API_URL` apontando para backend
-- [ ] `GEMINI_API_KEY` configurado (ou chatbot em modo demo)
-- [ ] HTTPS habilitado em ambos servicos
+---
 
 ## Comandos Uteis
 
@@ -137,32 +151,48 @@ npm run db:migrate   # Aplicar migrations
 npm run db:push      # Push schema (dev only)
 ```
 
+---
+
 ## Troubleshooting
 
+### Erro: "prepared statement already exists"
+- Causa: Connection pooling com Prisma
+- Solucao: Usar `?pgbouncer=true` na DATABASE_URL
+
+### Erro: "Connection refused"
+- Verificar se as URLs estao corretas
+- Confirmar que a senha nao tem caracteres especiais sem encoding
+
 ### Erro de CORS
-- Verificar se `ALLOWED_ORIGINS` inclui a URL exata do frontend
-- URLs devem incluir protocolo (`https://`)
+- Verificar `ALLOWED_ORIGINS` com URL exata (com https://)
+- Nao incluir barra final na URL
 
-### Database Connection Failed
-- Verificar se `DATABASE_URL` inclui `?sslmode=require`
-- Confirmar que IP do servidor esta liberado no firewall
+### Migrations falham
+- Usar `DIRECT_URL` (porta 5432) para migrations
+- `DATABASE_URL` (porta 6543) para aplicacao
 
-### Chatbot Nao Funciona
-- Verificar `GEMINI_API_KEY` no frontend
-- Checar console do navegador para erros de API
+---
 
-### Emails Nao Enviados
-- Verificar `SENDGRID_API_KEY`
-- Confirmar que email de origem esta verificado no SendGrid
-
-## Custos Estimados
+## Custos
 
 | Servico | Plano Gratuito | Notas |
 |---------|----------------|-------|
-| Vercel | Sim | Frontend hosting |
-| Render | Sim* | Backend + DB (spin down apos 15min) |
-| Railway | $5 credito/mes | Backend + DB |
-| SendGrid | 100 emails/dia | Email service |
-| Gemini | Gratuito | Com limites de quota |
+| **Supabase** | 500MB DB, 1GB storage | Ideal para comecar |
+| **Vercel** | Ilimitado para frontend | Hobby plan |
+| **Render** | 750h/mes | Backend (spin down apos 15min) |
+| **SendGrid** | 100 emails/dia | Opcional |
+| **Gemini** | Gratuito | Com limites de quota |
 
-*Render free tier tem spin down - considere plano pago para producao.
+---
+
+## Checklist Pre-Deploy
+
+- [ ] Supabase projeto criado
+- [ ] `DATABASE_URL` com `?pgbouncer=true`
+- [ ] `DIRECT_URL` com porta 5432
+- [ ] Schema copiado: `schema.postgresql.prisma` → `schema.prisma`
+- [ ] Migrations executadas com sucesso
+- [ ] `SESSION_SECRET` com 32+ caracteres
+- [ ] `ALLOWED_ORIGINS` configurado
+- [ ] Frontend `VITE_API_URL` apontando para backend
+- [ ] HTTPS em todos os servicos

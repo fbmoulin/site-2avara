@@ -1,14 +1,14 @@
-// Prisma Schema para 2a Vara Civel - PostgreSQL (Production)
-// Use this schema for production deployment
-// Copy to schema.prisma before deploying to production
+// Prisma Schema para 2a Vara Civel - Supabase/PostgreSQL (Production)
+// Copy this file to schema.prisma before deploying to production
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")  // Required for Supabase connection pooling
 }
 
 model ContactMessage {
@@ -24,6 +24,8 @@ model ContactMessage {
   answeredBy  String?   @map("answered_by")
   notes       String?
 
+  @@index([status])
+  @@index([createdAt])
   @@map("contact_messages")
 }
 
@@ -44,6 +46,9 @@ model Appointment {
   confirmedBy     String?   @map("confirmed_by")
   notes           String?
 
+  @@index([status])
+  @@index([createdAt])
+  @@index([processNumber])
   @@map("appointments")
 }
 
@@ -59,5 +64,9 @@ model Demand {
   resolvedBy      String?   @map("resolved_by")
   resolutionNotes String?   @map("resolution_notes")
 
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([processNumber])
   @@map("demands")
 }
