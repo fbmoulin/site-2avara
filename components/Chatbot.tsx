@@ -194,7 +194,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
                   }`}
                 >
                   <span className="sr-only">{msg.role === 'user' ? 'Você disse:' : 'Assistente disse:'}</span>
-                  <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br />') }} />
+                  <div className="whitespace-pre-wrap break-words">{msg.text}</div>
                   
                   {/* Render Map Links if available */}
                   {msg.role === 'model' && msg.groundingMetadata && renderGroundingInfo(msg.groundingMetadata)}

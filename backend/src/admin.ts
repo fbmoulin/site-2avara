@@ -111,6 +111,7 @@ export const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24, // 24 horas
     },
     name: 'adminjs.sid',

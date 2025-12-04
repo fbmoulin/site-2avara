@@ -1,5 +1,17 @@
 import { sendEmail } from '../config/email.js';
 
+// Escape HTML entities to prevent XSS in email templates
+function escapeHtml(text: string): string {
+  const htmlEntities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return text.replace(/[&<>"']/g, (char) => htmlEntities[char]);
+}
+
 export class EmailService {
   private secretaryEmail: string;
 
@@ -33,13 +45,13 @@ Enviado via Portal da 2ª Vara Cível de Cariacica
     const html = `
       <h2>Nova Mensagem de Contato</h2>
       <table>
-        <tr><td><strong>Nome:</strong></td><td>${contact.name}</td></tr>
-        <tr><td><strong>Telefone:</strong></td><td>${contact.phone}</td></tr>
-        <tr><td><strong>Email:</strong></td><td>${contact.email}</td></tr>
-        <tr><td><strong>Assunto:</strong></td><td>${contact.subject}</td></tr>
+        <tr><td><strong>Nome:</strong></td><td>${escapeHtml(contact.name)}</td></tr>
+        <tr><td><strong>Telefone:</strong></td><td>${escapeHtml(contact.phone)}</td></tr>
+        <tr><td><strong>Email:</strong></td><td>${escapeHtml(contact.email)}</td></tr>
+        <tr><td><strong>Assunto:</strong></td><td>${escapeHtml(contact.subject)}</td></tr>
       </table>
       <h3>Mensagem:</h3>
-      <p>${contact.message.replace(/\n/g, '<br>')}</p>
+      <p>${escapeHtml(contact.message).replace(/\n/g, '<br>')}</p>
       <hr>
       <small>Enviado via Portal da 2ª Vara Cível de Cariacica</small>
     `;
@@ -83,14 +95,14 @@ Acesse o painel administrativo para confirmar o agendamento.
     const html = `
       <h2>Novo Agendamento Solicitado</h2>
       <table>
-        <tr><td><strong>Tipo:</strong></td><td>${typeLabel}</td></tr>
-        <tr><td><strong>Com quem:</strong></td><td>${withWhomLabel}</td></tr>
-        <tr><td><strong>Nome:</strong></td><td>${appointment.name}</td></tr>
-        ${appointment.oabNumber ? `<tr><td><strong>OAB:</strong></td><td>${appointment.oabNumber}</td></tr>` : ''}
-        <tr><td><strong>Processo:</strong></td><td>${appointment.processNumber}</td></tr>
+        <tr><td><strong>Tipo:</strong></td><td>${escapeHtml(typeLabel)}</td></tr>
+        <tr><td><strong>Com quem:</strong></td><td>${escapeHtml(withWhomLabel)}</td></tr>
+        <tr><td><strong>Nome:</strong></td><td>${escapeHtml(appointment.name)}</td></tr>
+        ${appointment.oabNumber ? `<tr><td><strong>OAB:</strong></td><td>${escapeHtml(appointment.oabNumber)}</td></tr>` : ''}
+        <tr><td><strong>Processo:</strong></td><td>${escapeHtml(appointment.processNumber)}</td></tr>
       </table>
       <h3>Motivo:</h3>
-      <p>${appointment.reason.replace(/\n/g, '<br>')}</p>
+      <p>${escapeHtml(appointment.reason).replace(/\n/g, '<br>')}</p>
       <hr>
       <small>Acesse o painel administrativo para confirmar o agendamento.</small>
     `;
@@ -136,12 +148,12 @@ Acesse o painel administrativo para analisar a demanda.
     const html = `
       <h2>${priorityEmoji} Nova Demanda Registrada</h2>
       <table>
-        <tr><td><strong>Tipo:</strong></td><td>${typeLabel}</td></tr>
-        <tr><td><strong>Processo:</strong></td><td>${demand.processNumber}</td></tr>
-        <tr><td><strong>Prioridade:</strong></td><td>${demand.priority}</td></tr>
+        <tr><td><strong>Tipo:</strong></td><td>${escapeHtml(typeLabel)}</td></tr>
+        <tr><td><strong>Processo:</strong></td><td>${escapeHtml(demand.processNumber)}</td></tr>
+        <tr><td><strong>Prioridade:</strong></td><td>${escapeHtml(demand.priority)}</td></tr>
       </table>
       <h3>Descrição:</h3>
-      <p>${demand.description.replace(/\n/g, '<br>')}</p>
+      <p>${escapeHtml(demand.description).replace(/\n/g, '<br>')}</p>
       <hr>
       <small>Acesse o painel administrativo para analisar a demanda.</small>
     `;

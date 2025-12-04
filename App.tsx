@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Icons } from './components/Icons';
 import { Chatbot } from './components/Chatbot';
-import { 
-  SERVICES, 
-  FAQS, 
-  LATEST_NEWS, 
-  JUDGE_INFO, 
-  CONTACT_INFO 
+import { apiClient } from './api/client';
+import {
+  SERVICES,
+  FAQS,
+  LATEST_NEWS,
+  JUDGE_INFO,
+  CONTACT_INFO
 } from './constants';
 import { NavigationSection } from './types';
 
@@ -28,6 +29,33 @@ const App: React.FC = () => {
   const [highContrast, setHighContrast] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    subject: 'Dúvida Processual',
+    message: ''
+  });
+  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [contactError, setContactError] = useState('');
+
+  // Handle contact form submission
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactStatus('loading');
+    setContactError('');
+
+    try {
+      await apiClient.sendContact(contactForm);
+      setContactStatus('success');
+      setContactForm({ name: '', phone: '', email: '', subject: 'Dúvida Processual', message: '' });
+    } catch (error) {
+      setContactStatus('error');
+      setContactError(error instanceof Error ? error.message : 'Erro ao enviar mensagem');
+    }
+  };
 
   // Handle scroll spy to update active nav link
   useEffect(() => {
@@ -555,51 +583,76 @@ const App: React.FC = () => {
               {/* Contact Form */}
               <div className="bg-white rounded-lg p-8 text-gray-800 shadow-2xl h-fit">
                 <h3 className="text-2xl font-serif font-bold text-legal-blue mb-6">Envie sua Mensagem</h3>
-                <form className="space-y-4" action="#" method="POST">
+
+                {contactStatus === 'success' && (
+                  <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded" role="alert">
+                    Mensagem enviada com sucesso! Entraremos em contato em breve.
+                  </div>
+                )}
+
+                {contactStatus === 'error' && (
+                  <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded" role="alert">
+                    {contactError || 'Erro ao enviar mensagem. Tente novamente.'}
+                  </div>
+                )}
+
+                <form className="space-y-4" onSubmit={handleContactSubmit}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="name" className="block text-sm font-semibold mb-1">Nome Completo <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
+                      <input
                         id="name"
                         name="name"
-                        type="text" 
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
+                        type="text"
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
                         required
                         aria-required="true"
                         autoComplete="name"
+                        disabled={contactStatus === 'loading'}
                       />
                     </div>
                     <div>
                       <label htmlFor="phone" className="block text-sm font-semibold mb-1">Telefone <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
+                      <input
                         id="phone"
                         name="phone"
-                        type="tel" 
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
+                        type="tel"
+                        value={contactForm.phone}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
                         required
                         aria-required="true"
                         autoComplete="tel"
+                        disabled={contactStatus === 'loading'}
                       />
                     </div>
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-semibold mb-1">E-mail <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <input 
-                      id="email" 
+                    <input
+                      id="email"
                       name="email"
-                      type="email" 
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
+                      type="email"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
                       required
                       aria-required="true"
                       autoComplete="email"
+                      disabled={contactStatus === 'loading'}
                     />
                   </div>
                   <div>
                     <label htmlFor="subject" className="block text-sm font-semibold mb-1">Assunto</label>
-                    <select 
-                      id="subject" 
+                    <select
+                      id="subject"
                       name="subject"
+                      value={contactForm.subject}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, subject: e.target.value }))}
                       className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
+                      disabled={contactStatus === 'loading'}
                     >
                       <option>Dúvida Processual</option>
                       <option>Agendamento</option>
@@ -608,20 +661,24 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-semibold mb-1">Mensagem <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <textarea 
-                      id="message" 
+                    <textarea
+                      id="message"
                       name="message"
-                      rows={4} 
+                      rows={4}
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
                       className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
                       required
                       aria-required="true"
+                      disabled={contactStatus === 'loading'}
                     ></textarea>
                   </div>
-                  <button 
-                    type="submit" 
-                    className="w-full bg-legal-blue hover:bg-slate-800 text-white font-bold py-3 rounded transition-colors uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-legal-blue"
+                  <button
+                    type="submit"
+                    disabled={contactStatus === 'loading'}
+                    className="w-full bg-legal-blue hover:bg-slate-800 text-white font-bold py-3 rounded transition-colors uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-legal-blue disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Enviar Mensagem
+                    {contactStatus === 'loading' ? 'Enviando...' : 'Enviar Mensagem'}
                   </button>
                 </form>
               </div>
