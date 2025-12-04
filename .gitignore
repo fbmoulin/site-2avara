@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -49,9 +48,8 @@ coverage/
 *.temp
 .cache/
 
-# Prisma
-backend/prisma/migrations/*
-!backend/prisma/migrations/.gitkeep
+# Prisma - migrations should be committed for deployment
+# backend/prisma/migrations/*
 
 # AdminJS
 .adminjs/
