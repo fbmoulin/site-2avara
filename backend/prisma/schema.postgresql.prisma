@@ -1,0 +1,63 @@
+// Prisma Schema para 2a Vara Civel - PostgreSQL (Production)
+// Use this schema for production deployment
+// Copy to schema.prisma before deploying to production
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ContactMessage {
+  id          String   @id @default(uuid())
+  name        String
+  phone       String
+  email       String
+  subject     String
+  message     String
+  status      String   @default("pending") // pending, answered, archived
+  createdAt   DateTime @default(now()) @map("created_at")
+  answeredAt  DateTime? @map("answered_at")
+  answeredBy  String?   @map("answered_by")
+  notes       String?
+
+  @@map("contact_messages")
+}
+
+model Appointment {
+  id              String    @id @default(uuid())
+  type            String    // presencial, virtual
+  withWhom        String    @map("with_whom") // assessoria, juiz
+  name            String
+  oabNumber       String?   @map("oab_number")
+  processNumber   String    @map("process_number")
+  reason          String
+  status          String    @default("pre_reserved") // pre_reserved, confirmed, completed, cancelled
+  preferredDate   DateTime? @map("preferred_date")
+  confirmedDate   DateTime? @map("confirmed_date")
+  zoomLink        String?   @map("zoom_link")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  confirmedAt     DateTime? @map("confirmed_at")
+  confirmedBy     String?   @map("confirmed_by")
+  notes           String?
+
+  @@map("appointments")
+}
+
+model Demand {
+  id              String    @id @default(uuid())
+  processNumber   String    @map("process_number")
+  demandType      String    @map("demand_type") // reclamacao, celeridade, peticao_urgente
+  description     String
+  status          String    @default("pending") // pending, in_analysis, resolved, archived
+  priority        String    @default("normal") // low, normal, high, urgent
+  createdAt       DateTime  @default(now()) @map("created_at")
+  resolvedAt      DateTime? @map("resolved_at")
+  resolvedBy      String?   @map("resolved_by")
+  resolutionNotes String?   @map("resolution_notes")
+
+  @@map("demands")
+}
