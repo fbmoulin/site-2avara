@@ -106,14 +106,14 @@ app.use((req, res) => {
   });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
+// Iniciar servidor - bind to localhost only (internal) to avoid port conflicts in production
+const HOST = process.env.NODE_ENV === 'production' ? '127.0.0.1' : '0.0.0.0';
+app.listen(PORT, HOST, () => {
   console.log(`
 ╔════════════════════════════════════════════════════════╗
 ║  🏛️  2ª Vara Cível de Cariacica - API Backend         ║
 ╠════════════════════════════════════════════════════════╣
-║  Servidor rodando em: http://localhost:${PORT}           ║
-║  Painel Admin: http://localhost:${PORT}/admin             ║
+║  Servidor rodando em: http://${HOST}:${PORT}              ║
 ║  Environment: ${process.env.NODE_ENV || 'development'}                       ║
 ╚════════════════════════════════════════════════════════╝
   `);

@@ -27,6 +27,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 - ✅ **Hero CTA**: botão "Fale Conosco" abre chatbot diretamente
 - ✅ **Verificação de segurança**: API keys, CORS, rate limiting, headers validados
 - ✅ **Deploy configurado**: Reserved VM pronto para publicação
+- ✅ **PostgreSQL**: Migrado de SQLite para PostgreSQL Replit
 
 ---
 
@@ -49,7 +50,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 | **Porta** | 3001 (interno) |
 | **Localização** | `backend/` |
 | **Entry Point** | `backend/src/server.ts` |
-| **Banco de Dados** | SQLite (dev) via Prisma |
+| **Banco de Dados** | PostgreSQL via Prisma |
 | **API Base** | `/api` |
 
 ### Funcionalidades Principais
@@ -74,7 +75,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 ### Ambiente de Desenvolvimento
 | Variável | Valor | Descrição |
 |----------|-------|-----------|
-| `DATABASE_URL` | `file:./prisma/dev.db` | Banco SQLite (relativo ao backend/) |
+| `DATABASE_URL` | (secret) | URL do PostgreSQL Replit |
 | `BACKEND_PORT` | `3001` | Porta do backend |
 | `NODE_ENV` | `development` | Ambiente |
 | `VITE_API_URL` | `/api` | URL da API (proxy) |

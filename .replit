@@ -9,7 +9,6 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.development]
-DATABASE_URL = "file:./backend/prisma/dev.db"
 PORT = "3001"
 NODE_ENV = "development"
 FRONTEND_URL = "https://17912c83-1ad1-4650-bcbb-56bb2afcbb4f-00-1ix7jut4d6n32.riker.replit.dev"
@@ -78,10 +77,14 @@ localPort = 37757
 externalPort = 3000
 
 [[ports]]
+localPort = 38973
+externalPort = 4200
+
+[[ports]]
 localPort = 42961
 externalPort = 5000
 
 [deployment]
 deploymentTarget = "vm"
-run = ["bash", "-c", "cd backend && npm start & sleep 2 && npm start"]
+run = ["bash", "-c", "NODE_ENV=production cd backend && npm start & sleep 3 && NODE_ENV=production npm start"]
 build = ["npm", "run", "build"]
