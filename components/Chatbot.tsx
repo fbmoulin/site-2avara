@@ -13,12 +13,14 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
     {
       id: '0',
       role: 'model',
-      text: 'Olá. Sou o assistente virtual da 2ª Vara Cível. Estou disponível para auxiliar Advogados e Partes no registro de demandas, agendamento de atendimento ou localização do Fórum. Como posso ajudar?',
+      text: 'Olá! Sou o assistente virtual da 2ª Vara Cível de Cariacica. Posso ajudar com agendamentos, informações processuais e localização do Fórum. Como posso ajudar?',
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -31,10 +33,24 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  // Focus management and Escape key
+  useEffect(() => {
+    if (!welcomeDismissed && !isOpen) {
+      const timer = setTimeout(() => {
+        setShowWelcome(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [welcomeDismissed, isOpen]);
+
   useEffect(() => {
     if (isOpen) {
-      // Move focus to input when opened
+      setShowWelcome(false);
+      setWelcomeDismissed(true);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
       
       const handleEsc = (e: KeyboardEvent) => {
@@ -45,10 +61,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
       window.addEventListener('keydown', handleEsc);
       return () => window.removeEventListener('keydown', handleEsc);
     } else {
-      // Return focus to trigger when closed
       if (triggerRef.current) {
-        // Only focus if it was open previously to avoid focus stealing on load
-        // But since this effect runs on isOpen change, it's fine.
         triggerRef.current.focus();
       }
     }
@@ -56,6 +69,11 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
 
   const handleClose = () => {
     onToggle(false);
+  };
+
+  const handleDismissWelcome = () => {
+    setShowWelcome(false);
+    setWelcomeDismissed(true);
   };
 
   const handleSend = async () => {
@@ -93,7 +111,6 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
     if (e.key === 'Enter') handleSend();
   };
 
-  // Render Grounding Information (Google Maps)
   const renderGroundingInfo = (metadata: any) => {
     if (!metadata || !metadata.groundingChunks) return null;
 
@@ -101,12 +118,10 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
       <div className="mt-3 flex flex-col gap-3 w-full">
         {metadata.groundingChunks.map((chunk: any, index: number) => {
           if (chunk.maps) {
-            // Construct a simple embed URL using the title/query
             const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(chunk.maps.title || 'Tribunal de Justiça')}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 
             return (
               <div key={index} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all hover:shadow-md w-full">
-                {/* Map Iframe Area */}
                 <div className="relative w-full h-48 bg-gray-100">
                    <iframe 
                      title={`Mapa de: ${chunk.maps.title}`}
@@ -118,7 +133,6 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
                    />
                 </div>
                 
-                {/* Info Area */}
                 <div className="p-3">
                   <a 
                     href={chunk.maps.uri} 
@@ -131,7 +145,6 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
                     <Icons.ExternalLink size={12} className="mt-0.5 opacity-50" />
                   </a>
                   
-                  {/* Reviews / Address Snippets */}
                   {chunk.maps.placeAnswerSources?.map((source: any, sIdx: number) => (
                     <div key={sIdx} className="mt-2 text-xs text-gray-500 pl-6 border-l-2 border-gray-100">
                       {source.reviewSnippets?.map((snippet: any, snipIdx: number) => (
@@ -163,8 +176,14 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
           {/* Header */}
           <div className="bg-legal-blue text-white p-4 flex justify-between items-center shrink-0">
             <div className="flex items-center gap-2">
-              <Icons.Bot size={20} className="text-legal-gold" aria-hidden="true" />
-              <h3 className="font-semibold text-sm">Atendimento Virtual</h3>
+              <div className="relative">
+                <Icons.Bot size={20} className="text-legal-gold" aria-hidden="true" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-legal-blue" aria-hidden="true"></span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm">Atendimento Virtual</h3>
+                <span className="text-xs text-green-300">Online agora</span>
+              </div>
             </div>
             <button 
               onClick={handleClose}
@@ -196,7 +215,6 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
                   <span className="sr-only">{msg.role === 'user' ? 'Você disse:' : 'Assistente disse:'}</span>
                   <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br />') }} />
                   
-                  {/* Render Map Links if available */}
                   {msg.role === 'model' && msg.groundingMetadata && renderGroundingInfo(msg.groundingMetadata)}
                 </div>
               </div>
@@ -221,7 +239,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Digite sua dúvida..."
+              placeholder="Digite sua mensagem..."
               className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-legal-gold focus:ring-1 focus:ring-legal-gold"
               aria-label="Digite sua mensagem"
             />
@@ -237,16 +255,84 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
         </div>
       )}
 
-      {/* Toggle Button */}
+      {/* Welcome Tooltip */}
+      {showWelcome && !isOpen && (
+        <div className="mb-3 animate-fade-in-up">
+          <div className="relative bg-white rounded-lg shadow-xl border border-gray-200 p-4 max-w-[280px]">
+            <button
+              onClick={handleDismissWelcome}
+              className="absolute -top-2 -right-2 w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label="Fechar mensagem"
+            >
+              <Icons.X size={14} />
+            </button>
+            <div className="flex items-start gap-3">
+              <div className="shrink-0 w-10 h-10 bg-legal-gold/10 rounded-full flex items-center justify-center">
+                <Icons.MessageSquare size={20} className="text-legal-gold" />
+              </div>
+              <div>
+                <p className="font-semibold text-legal-blue text-sm mb-1">Precisa de ajuda?</p>
+                <p className="text-gray-600 text-xs leading-relaxed">
+                  Nosso assistente virtual pode ajudar com agendamentos, informações e localização.
+                </p>
+              </div>
+            </div>
+            <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white border-r border-b border-gray-200 transform rotate-45"></div>
+          </div>
+        </div>
+      )}
+
+      {/* Toggle Button - Enhanced */}
       <button
         ref={triggerRef}
         onClick={() => onToggle(!isOpen)}
-        className="bg-legal-gold hover:bg-legal-gold-hover text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-legal-gold/50"
+        className={`
+          group relative flex items-center gap-3 
+          bg-legal-gold hover:bg-legal-gold-hover text-white 
+          shadow-xl hover:shadow-2xl
+          transition-all duration-300 ease-out
+          focus:outline-none focus:ring-4 focus:ring-legal-gold/50
+          ${isOpen 
+            ? 'w-14 h-14 rounded-full justify-center' 
+            : 'h-14 rounded-full pl-4 pr-5 md:pr-6'
+          }
+        `}
         aria-label={isOpen ? "Fechar atendimento virtual" : "Abrir atendimento virtual"}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
+        style={{
+          boxShadow: isOpen 
+            ? '0 10px 40px -10px rgba(196, 154, 60, 0.5)' 
+            : '0 10px 40px -10px rgba(196, 154, 60, 0.5), 0 0 0 0 rgba(196, 154, 60, 0.4)'
+        }}
       >
-        {isOpen ? <Icons.X size={28} aria-hidden="true" /> : <Icons.MessageSquare size={28} aria-hidden="true" />}
+        {/* Pulse animation ring */}
+        {!isOpen && (
+          <span className="absolute inset-0 rounded-full animate-ping-slow bg-legal-gold/30" aria-hidden="true"></span>
+        )}
+        
+        {/* Online indicator */}
+        {!isOpen && (
+          <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm" aria-hidden="true">
+            <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75"></span>
+          </span>
+        )}
+        
+        {/* Icon */}
+        <span className="relative z-10">
+          {isOpen 
+            ? <Icons.X size={26} aria-hidden="true" /> 
+            : <Icons.MessageSquare size={24} aria-hidden="true" />
+          }
+        </span>
+        
+        {/* Label - visible when closed */}
+        {!isOpen && (
+          <span className="relative z-10 font-semibold text-sm whitespace-nowrap">
+            <span className="hidden md:inline">Atendimento Virtual</span>
+            <span className="md:hidden">Fale Conosco</span>
+          </span>
+        )}
       </button>
     </div>
   );

@@ -267,9 +267,10 @@ const App: React.FC = () => {
                 Nossos Serviços
               </button>
               <button 
-                onClick={() => scrollToSection(NavigationSection.CONTACT)}
-                className="px-8 py-3 bg-transparent border border-white text-white hover:bg-white hover:text-legal-blue font-bold rounded-sm transition-colors focus:outline-none focus:ring-2 focus:ring-legal-gold"
+                onClick={() => setIsChatOpen(true)}
+                className="px-8 py-3 bg-transparent border-2 border-legal-gold text-legal-gold hover:bg-legal-gold hover:text-white font-bold rounded-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-legal-gold flex items-center gap-2 mx-auto sm:mx-0"
               >
+                <Icons.MessageSquare size={20} />
                 Fale Conosco
               </button>
             </div>
