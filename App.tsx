@@ -35,6 +35,15 @@ const App: React.FC = () => {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedService, setExpandedService] = useState<string | null>(null);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [contactMessage, setContactMessage] = useState('');
 
   useEffect(() => {
     fetchNews(10).then(setNewsItems);
@@ -85,6 +94,36 @@ const App: React.FC = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       element.focus({ preventScroll: true });
+    }
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactStatus('loading');
+    setContactMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setContactStatus('success');
+        setContactMessage(data.message || 'Mensagem enviada com sucesso!');
+        setContactForm({ name: '', phone: '', email: '', subject: '', message: '' });
+      } else {
+        setContactStatus('error');
+        setContactMessage(data.message || 'Erro ao enviar mensagem. Tente novamente.');
+      }
+    } catch (error) {
+      setContactStatus('error');
+      setContactMessage('Erro de conexão. Verifique sua internet e tente novamente.');
     }
   };
 
@@ -856,7 +895,22 @@ const App: React.FC = () => {
               {/* Contact Form */}
               <div className="bg-white rounded-lg p-8 text-gray-800 shadow-2xl h-fit">
                 <h3 className="text-2xl font-serif font-bold text-legal-blue mb-6">Envie sua Mensagem</h3>
-                <form className="space-y-4" action="#" method="POST">
+                
+                {contactStatus === 'success' && (
+                  <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 flex items-center gap-2">
+                    <Icons.CheckCircle size={20} className="text-green-600" />
+                    {contactMessage}
+                  </div>
+                )}
+                
+                {contactStatus === 'error' && (
+                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 flex items-center gap-2">
+                    <Icons.AlertCircle size={20} className="text-red-600" />
+                    {contactMessage}
+                  </div>
+                )}
+
+                <form className="space-y-4" onSubmit={handleContactSubmit}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="contact-name" className="block text-sm font-semibold mb-1">Nome Completo <span className="text-red-600" aria-hidden="true">*</span></label>
@@ -864,10 +918,13 @@ const App: React.FC = () => {
                         id="contact-name"
                         name="name"
                         type="text" 
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
                         className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
                         required
                         aria-required="true"
                         autoComplete="name"
+                        disabled={contactStatus === 'loading'}
                       />
                     </div>
                     <div>
@@ -876,10 +933,13 @@ const App: React.FC = () => {
                         id="contact-phone"
                         name="phone"
                         type="tel" 
+                        value={contactForm.phone}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
                         className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
                         required
                         aria-required="true"
                         autoComplete="tel"
+                        disabled={contactStatus === 'loading'}
                       />
                     </div>
                   </div>
@@ -889,10 +949,13 @@ const App: React.FC = () => {
                       id="contact-email"
                       name="email"
                       type="email" 
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
                       className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
                       required
                       aria-required="true"
                       autoComplete="email"
+                      disabled={contactStatus === 'loading'}
                     />
                   </div>
                   <div>
@@ -900,9 +963,12 @@ const App: React.FC = () => {
                     <select 
                       id="contact-subject"
                       name="subject"
+                      value={contactForm.subject}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, subject: e.target.value }))}
                       className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
                       required
                       aria-required="true"
+                      disabled={contactStatus === 'loading'}
                     >
                       <option value="">Selecione...</option>
                       <option value="informacao">Informação Processual</option>
@@ -918,16 +984,28 @@ const App: React.FC = () => {
                       id="contact-message"
                       name="message"
                       rows={4} 
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
                       className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors resize-none"
                       required
                       aria-required="true"
+                      disabled={contactStatus === 'loading'}
                     ></textarea>
                   </div>
                   <button 
                     type="submit" 
-                    className="w-full bg-legal-blue hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded transition-colors flex items-center justify-center gap-2"
+                    disabled={contactStatus === 'loading'}
+                    className="w-full bg-legal-blue hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Icons.Send size={18} /> Enviar Mensagem
+                    {contactStatus === 'loading' ? (
+                      <>
+                        <Icons.Loader2 size={18} className="animate-spin" /> Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Icons.Send size={18} /> Enviar Mensagem
+                      </>
+                    )}
                   </button>
                 </form>
               </div>

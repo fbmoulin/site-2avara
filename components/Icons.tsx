@@ -40,7 +40,8 @@ import {
   Volume2,
   Lock,
   LogIn,
-  LogOut
+  LogOut,
+  Loader2
 } from 'lucide-react';
 
 const VLibrasIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
@@ -107,6 +108,7 @@ export const Icons = {
   Lock,
   LogIn,
   LogOut,
+  Loader2,
   VLibras: VLibrasIcon,
   Apple: AppleIcon,
   PlayStore: PlayStoreIcon
