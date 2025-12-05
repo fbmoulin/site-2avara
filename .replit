@@ -16,6 +16,10 @@ ALLOWED_ORIGINS = "https://17912c83-1ad1-4650-bcbb-56bb2afcbb4f-00-1ix7jut4d6n32
 VITE_API_URL = "/api"
 BACKEND_PORT = "3001"
 
+[userenv.shared]
+EMAIL_FROM = "2acivelcariacica@gmail.com"
+EMAIL_TO = "2acivelcariacica@gmail.com"
+
 [workflows]
 runButton = "Project"
 
