@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Icons } from './components/Icons';
 import { Chatbot } from './components/Chatbot';
+import { PrivacyPolicy, TermsOfUse } from './components/LegalDocuments';
 import { 
   SERVICES, 
   FAQS, 
@@ -30,6 +31,8 @@ const App: React.FC = () => {
   const [highContrast, setHighContrast] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   // Handle scroll spy to update active nav link
   useEffect(() => {
@@ -645,8 +648,18 @@ const App: React.FC = () => {
               <span className="font-serif text-sm">© 2025 - 2ª Vara Cível de Cariacica. Todos os direitos reservados.</span>
             </div>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline">Política de Privacidade</a>
-              <a href="#" className="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline">Termos de Uso</a>
+              <button 
+                onClick={() => setIsPrivacyOpen(true)}
+                className="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >
+                Política de Privacidade
+              </button>
+              <button 
+                onClick={() => setIsTermsOpen(true)}
+                className="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >
+                Termos de Uso
+              </button>
               <button 
                 onClick={() => {
                   const bar = document.getElementById('accessibility-bar');
@@ -664,6 +677,10 @@ const App: React.FC = () => {
 
       {/* AI Chatbot Widget */}
       <Chatbot isOpen={isChatOpen} onToggle={setIsChatOpen} />
+
+      {/* Legal Documents Modals */}
+      <PrivacyPolicy isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
+      <TermsOfUse isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </div>
   );
 };
