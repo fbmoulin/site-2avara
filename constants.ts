@@ -66,7 +66,7 @@ export const FAQS: FaqItem[] = [
     id: '4',
     category: 'Contato',
     question: 'Como entro em contato com a Assessoria do Gabinete ou com o Juiz?',
-    answer: 'O atendimento com o magistrado deve ser agendado previamente através do Balcão Virtual ou solicitação por e-mail, conforme disponibilidade.'
+    answer: 'O atendimento com a Assessoria do Gabinete da 2ª Vara Cível ou com o Juiz Titular, pode ser previamente agendado por meio de um dos canais disponíveis nessa página: preenchendo um formulário, enviando um e-mail ou por meio do Chat.'
   }
 ];
 
