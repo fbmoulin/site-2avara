@@ -67,6 +67,12 @@ export const FAQS: FaqItem[] = [
     category: 'Contato',
     question: 'Como entro em contato com a Assessoria do Gabinete ou com o Juiz?',
     answer: 'O atendimento com a Assessoria do Gabinete da 2ª Vara Cível ou com o Juiz Titular, pode ser previamente agendado por meio de um dos canais disponíveis nessa página: preenchendo um formulário, enviando um e-mail ou por meio do Chat.'
+  },
+  {
+    id: '5',
+    category: 'Solicitações',
+    question: 'Como faço para registrar uma solicitação ou reclamação?',
+    answer: 'Use um dos canais disponíveis nessa página para registrar sua solicitação ou reclamação e nossa equipe lhe dará uma resposta para a sua questão o mais breve possível.'
   }
 ];
 
