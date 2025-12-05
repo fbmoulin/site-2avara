@@ -16,6 +16,9 @@ export const SERVICES: ServiceItem[] = [
     links: [
       { label: 'App Store (iOS)', url: 'https://apps.apple.com/br/app/zoom-one-platform-to-connect/id546505307', icon: 'apple' },
       { label: 'Google Play (Android)', url: 'https://play.google.com/store/apps/details?id=us.zoom.videomeetings', icon: 'playstore' }
+    ],
+    tutorial: [
+      "Ao entrar na sala, clique em 'Ligar via Internet' ou 'Juntar-se ao áudio' para ouvir e falar."
     ]
   },
   {

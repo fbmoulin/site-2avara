@@ -376,24 +376,10 @@ const App: React.FC = () => {
                     </div>
                     <h3 className="text-xl font-serif font-bold text-legal-blue mb-3">{service.title}</h3>
                     <p className="text-gray-600 mb-6 flex-grow">{service.description}</p>
-                    
-                    {/* Tutorial Section if exists */}
-                    {service.tutorial ? (
-                      <div className="mb-6 bg-blue-50 p-4 rounded border border-blue-100">
-                         <p className="text-xs font-bold text-legal-blue uppercase mb-2 flex items-center gap-1">
-                            <Icons.Video size={14} /> Como habilitar o áudio:
-                         </p>
-                         <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
-                           {service.tutorial.map((step, idx) => (
-                             <li key={idx} className="leading-tight">{step}</li>
-                           ))}
-                         </ul>
-                      </div>
-                    ) : null}
 
                     {/* Actions: Multiple Links or Single URL */}
                     {service.links ? (
-                      <div className="mt-auto flex flex-col gap-2 w-full">
+                      <div className="flex flex-col gap-2 w-full">
                         {service.links.map((link, i) => (
                            <a 
                              key={i}
@@ -431,6 +417,20 @@ const App: React.FC = () => {
                         <Icons.Send size={16} className="ml-2" aria-hidden="true" />
                       </a>
                     )}
+                    
+                    {/* Tutorial Section if exists - appears below links */}
+                    {service.tutorial ? (
+                      <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-100">
+                         <p className="text-xs font-bold text-legal-blue uppercase mb-2 flex items-center gap-1">
+                            <Icons.Video size={14} /> Como habilitar o áudio:
+                         </p>
+                         <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
+                           {service.tutorial.map((step, idx) => (
+                             <li key={idx} className="leading-tight">{step}</li>
+                           ))}
+                         </ul>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })}
