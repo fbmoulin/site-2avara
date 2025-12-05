@@ -4,10 +4,26 @@ import { Request, Response, NextFunction } from 'express';
 // Schema para validação de contato
 export const contactSchema = z.object({
   name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres').max(255),
-  phone: z.string().min(10, 'Telefone inválido').max(20),
+  phone: z.string().min(10, 'Telefone inválido (inclua o DDD)').max(20),
   email: z.string().email('Email inválido'),
+  userType: z.enum(['parte', 'advogado'], {
+    errorMap: () => ({ message: 'Informe se é parte ou advogado' }),
+  }),
+  cpf: z.string().optional(),
+  oab: z.string().optional(),
   subject: z.string().min(3).max(100),
   message: z.string().min(10, 'Mensagem deve ter no mínimo 10 caracteres').max(5000),
+}).refine((data) => {
+  if (data.userType === 'parte') {
+    return data.cpf && data.cpf.length >= 11;
+  }
+  if (data.userType === 'advogado') {
+    return data.oab && data.oab.length >= 4;
+  }
+  return true;
+}, {
+  message: 'CPF ou OAB é obrigatório conforme o tipo selecionado',
+  path: ['cpf'],
 });
 
 // Schema para validação de agendamento

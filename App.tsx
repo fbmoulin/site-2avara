@@ -39,6 +39,9 @@ const App: React.FC = () => {
     name: '',
     phone: '',
     email: '',
+    userType: '' as '' | 'parte' | 'advogado',
+    cpf: '',
+    oab: '',
     subject: '',
     message: ''
   });
@@ -116,7 +119,7 @@ const App: React.FC = () => {
       if (response.ok && data.success) {
         setContactStatus('success');
         setContactMessage(data.message || 'Mensagem enviada com sucesso!');
-        setContactForm({ name: '', phone: '', email: '', subject: '', message: '' });
+        setContactForm({ name: '', phone: '', email: '', userType: '', cpf: '', oab: '', subject: '', message: '' });
       } else {
         setContactStatus('error');
         setContactMessage(data.message || 'Erro ao enviar mensagem. Tente novamente.');
@@ -928,11 +931,12 @@ const App: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="contact-phone" className="block text-sm font-semibold mb-1">Telefone <span className="text-red-600" aria-hidden="true">*</span></label>
+                      <label htmlFor="contact-phone" className="block text-sm font-semibold mb-1">Telefone (com DDD) <span className="text-red-600" aria-hidden="true">*</span></label>
                       <input 
                         id="contact-phone"
                         name="phone"
                         type="tel" 
+                        placeholder="(27) 99999-9999"
                         value={contactForm.phone}
                         onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
                         className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
@@ -943,21 +947,74 @@ const App: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div>
-                    <label htmlFor="contact-email" className="block text-sm font-semibold mb-1">E-mail <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <input 
-                      id="contact-email"
-                      name="email"
-                      type="email" 
-                      value={contactForm.email}
-                      onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                      required
-                      aria-required="true"
-                      autoComplete="email"
-                      disabled={contactStatus === 'loading'}
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="contact-email" className="block text-sm font-semibold mb-1">E-mail <span className="text-red-600" aria-hidden="true">*</span></label>
+                      <input 
+                        id="contact-email"
+                        name="email"
+                        type="email" 
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
+                        required
+                        aria-required="true"
+                        autoComplete="email"
+                        disabled={contactStatus === 'loading'}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="contact-usertype" className="block text-sm font-semibold mb-1">Você é <span className="text-red-600" aria-hidden="true">*</span></label>
+                      <select 
+                        id="contact-usertype"
+                        name="userType"
+                        value={contactForm.userType}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, userType: e.target.value as 'parte' | 'advogado', cpf: '', oab: '' }))}
+                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
+                        required
+                        aria-required="true"
+                        disabled={contactStatus === 'loading'}
+                      >
+                        <option value="">Selecione...</option>
+                        <option value="parte">Parte (cidadão)</option>
+                        <option value="advogado">Advogado(a)</option>
+                      </select>
+                    </div>
                   </div>
+                  {contactForm.userType === 'parte' && (
+                    <div>
+                      <label htmlFor="contact-cpf" className="block text-sm font-semibold mb-1">CPF <span className="text-red-600" aria-hidden="true">*</span></label>
+                      <input 
+                        id="contact-cpf"
+                        name="cpf"
+                        type="text" 
+                        placeholder="000.000.000-00"
+                        value={contactForm.cpf}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, cpf: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
+                        required
+                        aria-required="true"
+                        disabled={contactStatus === 'loading'}
+                      />
+                    </div>
+                  )}
+                  {contactForm.userType === 'advogado' && (
+                    <div>
+                      <label htmlFor="contact-oab" className="block text-sm font-semibold mb-1">Número da OAB <span className="text-red-600" aria-hidden="true">*</span></label>
+                      <input 
+                        id="contact-oab"
+                        name="oab"
+                        type="text" 
+                        placeholder="ES 12345"
+                        value={contactForm.oab}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, oab: e.target.value }))}
+                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
+                        required
+                        aria-required="true"
+                        disabled={contactStatus === 'loading'}
+                      />
+                    </div>
+                  )}
                   <div>
                     <label htmlFor="contact-subject" className="block text-sm font-semibold mb-1">Assunto <span className="text-red-600" aria-hidden="true">*</span></label>
                     <select 

@@ -12,13 +12,22 @@ export class EmailService {
     name: string;
     phone: string;
     email: string;
+    userType: 'parte' | 'advogado';
+    cpf?: string;
+    oab?: string;
     subject: string;
     message: string;
   }): Promise<boolean> {
+    const userTypeLabel = contact.userType === 'parte' ? 'Parte' : 'Advogado(a)';
+    const identifierLabel = contact.userType === 'parte' ? 'CPF' : 'OAB';
+    const identifierValue = contact.userType === 'parte' ? contact.cpf : contact.oab;
+
     const text = `
 Nova mensagem de contato recebida:
 
 Nome: ${contact.name}
+Tipo: ${userTypeLabel}
+${identifierLabel}: ${identifierValue || 'Não informado'}
 Telefone: ${contact.phone}
 Email: ${contact.email}
 Assunto: ${contact.subject}
@@ -34,6 +43,8 @@ Enviado via Portal da 2ª Vara Cível de Cariacica
       <h2>Nova Mensagem de Contato</h2>
       <table>
         <tr><td><strong>Nome:</strong></td><td>${contact.name}</td></tr>
+        <tr><td><strong>Tipo:</strong></td><td>${userTypeLabel}</td></tr>
+        <tr><td><strong>${identifierLabel}:</strong></td><td>${identifierValue || 'Não informado'}</td></tr>
         <tr><td><strong>Telefone:</strong></td><td>${contact.phone}</td></tr>
         <tr><td><strong>Email:</strong></td><td>${contact.email}</td></tr>
         <tr><td><strong>Assunto:</strong></td><td>${contact.subject}</td></tr>
@@ -46,7 +57,7 @@ Enviado via Portal da 2ª Vara Cível de Cariacica
 
     return sendEmail({
       to: this.secretaryEmail,
-      subject: `Novo Contato: ${contact.subject}`,
+      subject: `Novo Contato (${userTypeLabel}): ${contact.subject}`,
       text,
       html,
     });

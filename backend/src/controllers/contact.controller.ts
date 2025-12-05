@@ -7,7 +7,7 @@ const emailService = new EmailService();
 export class ContactController {
   async create(req: Request, res: Response) {
     try {
-      const { name, phone, email, subject, message } = req.body;
+      const { name, phone, email, userType, cpf, oab, subject, message } = req.body;
 
       // Salvar no banco de dados
       const contact = await prisma.contactMessage.create({
@@ -21,11 +21,14 @@ export class ContactController {
         },
       });
 
-      // Enviar email para a secretaria
+      // Enviar email para a secretaria com dados extras
       const emailSent = await emailService.sendNewContactNotification({
         name,
         phone,
         email,
+        userType,
+        cpf,
+        oab,
         subject,
         message,
       });
