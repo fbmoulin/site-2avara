@@ -203,6 +203,30 @@
           animation: none !important;
         }
       }
+
+      /* VLibras Widget Styles - Accessibility Tool for LIBRAS */
+      [vw].enabled {
+        position: fixed;
+        z-index: 9999;
+      }
+      
+      /* Ensure VLibras is not affected by high contrast mode */
+      body.high-contrast [vw].high-contrast-ignore,
+      body.high-contrast [vw].high-contrast-ignore *,
+      body.high-contrast [vw].high-contrast-ignore button,
+      body.high-contrast [vw].high-contrast-ignore div {
+        background-color: unset !important;
+        color: unset !important;
+        border-color: unset !important;
+        filter: none !important;
+      }
+      
+      /* Ensure VLibras is not affected by dark mode */
+      body.dark-mode [vw].high-contrast-ignore,
+      body.dark-mode [vw].high-contrast-ignore * {
+        background-color: unset !important;
+        color: unset !important;
+      }
     </style>
   <script type="importmap">
 {

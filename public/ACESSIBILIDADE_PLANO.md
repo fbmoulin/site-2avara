@@ -136,18 +136,26 @@ O objetivo é garantir que todos os cidadãos, independentemente de suas limita�
 - **Código:** `<html lang="pt-br">`
 - **Benefício:** Leitores de tela pronunciam corretamente o conteúdo
 
+### 11. VLibras Widget
+- **Status:** ✅ Implementado
+- **Versão:** 6.0.0
+- **Data de Implementação:** 05/12/2024
+- **Descrição:** Tradução automática de textos para Língua Brasileira de Sinais (LIBRAS) via avatar 3D animado
+- **Implementação:** Widget oficial do governo brasileiro (https://vlibras.gov.br/app/vlibras-plugin.js)
+- **Localização:** Botão flutuante no canto inferior direito da página
+- **Benefício:** Permite que pessoas surdas acessem o conteúdo do portal através da tradução para LIBRAS
+- **Conformidade:** Atende à Resolução CNJ nº 401/2021 (obrigatório para sites do Poder Judiciário)
+- **Documentação:** https://vlibras.gov.br/doc/widget
+- **Características:**
+  - Carregamento dinâmico (não afeta performance inicial)
+  - Compatível com modo alto contraste e modo noturno
+  - Z-index alto para garantir visibilidade sobre outros elementos
+
 ---
 
 ## Ferramentas Pendentes
 
-### 1. VLibras Widget
-- **Status:** 🔄 Pendente
-- **Prioridade:** ALTA (Obrigatório CNJ)
-- **Descrição:** Tradução automática de textos para Língua Brasileira de Sinais (LIBRAS)
-- **Implementação:** Widget oficial do governo brasileiro
-- **Documentação:** https://vlibras.gov.br/doc/widget
-
-### 2. Leitor de Texto por Voz (Text-to-Speech)
+### 1. Leitor de Texto por Voz (Text-to-Speech)
 - **Status:** 🔄 Pendente
 - **Prioridade:** ALTA
 - **Descrição:** Leitura em voz alta do conteúdo da página
@@ -227,7 +235,7 @@ O objetivo é garantir que todos os cidadãos, independentemente de suas limita�
 | Requisito | Status |
 |-----------|--------|
 | Leitor de texto por voz | 🔄 Pendente |
-| Tradução para LIBRAS | 🔄 Pendente (VLibras) |
+| Tradução para LIBRAS | ✅ Implementado (VLibras 6.0.0) |
 | Alto contraste | ✅ |
 | Fonte ajustável | ✅ |
 | Compatibilidade com leitores de tela | ✅ |
@@ -262,6 +270,17 @@ O objetivo é garantir que todos os cidadãos, independentemente de suas limita�
 2. Pressione **Shift + Tab** para voltar
 3. Pressione **Enter** para ativar botões e links
 4. Use os atalhos **Alt + 1**, **Alt + 2**, **Alt + 3** para navegação rápida
+
+### Como Usar o VLibras (Tradução para LIBRAS)
+
+1. Localize o **botão azul do VLibras** no canto inferior direito da tela (pode levar alguns segundos para carregar)
+2. Clique no botão para abrir o tradutor
+3. **Para traduzir texto específico:** Selecione o texto desejado na página e ele será traduzido automaticamente
+4. **Para traduzir a página toda:** Use as opções disponíveis no menu do widget
+5. O avatar 3D irá apresentar a tradução em LIBRAS
+6. Clique no botão novamente para fechar o tradutor
+
+**Nota:** O VLibras é uma ferramenta oficial do governo brasileiro e pode demorar alguns segundos para carregar completamente, pois utiliza um avatar 3D animado.
 
 ---
 

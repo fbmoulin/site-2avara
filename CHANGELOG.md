@@ -5,6 +5,16 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.6.0] - 2024-12-05
+
+### Adicionado
+- **VLibras Widget** (v6.0.0) - Tradução de conteúdo para Língua Brasileira de Sinais (LIBRAS)
+  - Avatar 3D animado para tradução visual
+  - Carregamento dinâmico para melhor performance
+  - Compatível com alto contraste e modo noturno
+  - Atende Resolução CNJ nº 401/2021 (obrigatório para sites do Poder Judiciário)
+- **Documentação atualizada** com guia de uso do VLibras
+
 ## [2.5.0] - 2024-12-05
 
 ### Adicionado
