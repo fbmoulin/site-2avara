@@ -36,7 +36,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: '4',
     title: 'Solicitações e Agendamento',
-    description: 'Escolha o melhor canal para fazer a sua solicitação, registrar sua reclamação ou fazer o seu agendamento de atendimento de forma presencial ou virtual:',
+    description: 'Você pode registrar sua demanda ou fazer uma solicitação por meio de um dos canais disponíveis nesta página. Nossa equipe analisará sua solicitação e entrará em contato o mais breve possível.',
     icon: 'calendar',
     links: [
       { label: 'Preencher Formulário', url: '#contact', icon: 'file-text' },
