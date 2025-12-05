@@ -2,21 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Icons } from './components/Icons';
 import { Chatbot } from './components/Chatbot';
 import { PrivacyPolicy, TermsOfUse } from './components/LegalDocuments';
-import { AdminArticles } from './components/AdminArticles';
 import { 
   SERVICES, 
   FAQS, 
-  LATEST_NEWS, 
   JUDGE_INFO, 
   CONTACT_INFO 
 } from './constants';
 import { NavigationSection } from './types';
 import { fetchNews, NewsItem } from './services/newsService';
-import { fetchArticles, Article } from './services/articleService';
 import forumImage from '@assets/forum_1764897995940.jpg';
 import zoomTutorialImage from '@assets/stock_images/zoom_video_conferenc_61e7f082.jpg';
 
-// Helper component for Section Headers
 const SectionHeader: React.FC<{ title: string; subtitle?: string; light?: boolean }> = ({ title, subtitle, light }) => (
   <div className="text-center mb-12">
     <h2 className={`text-3xl font-serif font-bold mb-3 ${light ? 'text-white' : 'text-legal-blue'}`}>
@@ -30,22 +26,20 @@ const SectionHeader: React.FC<{ title: string; subtitle?: string; light?: boolea
 const App: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>(NavigationSection.HOME);
-  const [fontSize, setFontSize] = useState(0); // 0=normal, 1=lg, 2=xl
+  const [fontSize, setFontSize] = useState(0);
   const [highContrast, setHighContrast] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [expandedService, setExpandedService] = useState<string | null>(null);
 
   useEffect(() => {
     fetchNews(10).then(setNewsItems);
-    fetchArticles().then(setArticles);
   }, []);
 
-  // Handle scroll spy to update active nav link
   useEffect(() => {
     const handleScroll = () => {
       const sections = Object.values(NavigationSection);
@@ -64,24 +58,20 @@ const App: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Accessibility & Theme Effect
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
 
-    // Font Size
     html.classList.remove('font-lg', 'font-xl');
     if (fontSize === 1) html.classList.add('font-lg');
     if (fontSize === 2) html.classList.add('font-xl');
 
-    // High Contrast
     if (highContrast) {
       body.classList.add('high-contrast');
     } else {
       body.classList.remove('high-contrast');
     }
 
-    // Dark Mode
     if (isDarkMode) {
       body.classList.add('dark-mode');
     } else {
@@ -94,7 +84,6 @@ const App: React.FC = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      // Move focus to the section for accessibility
       element.focus({ preventScroll: true });
     }
   };
@@ -113,9 +102,23 @@ const App: React.FC = () => {
     </button>
   );
 
+  const getIcon = (name: string, size: number = 32) => {
+    switch(name) {
+      case 'search': return <Icons.Search size={size} aria-hidden="true" />;
+      case 'video': return <Icons.Video size={size} aria-hidden="true" />;
+      case 'calendar': return <Icons.Calendar size={size} aria-hidden="true" />;
+      case 'download': return <Icons.Download size={size} aria-hidden="true" />;
+      case 'file-text': return <Icons.FileText size={16} aria-hidden="true" />;
+      case 'mail': return <Icons.Mail size={16} aria-hidden="true" />;
+      case 'message-square': return <Icons.MessageSquare size={16} aria-hidden="true" />;
+      case 'apple': return <Icons.Apple size={18} aria-hidden="true" />;
+      case 'playstore': return <Icons.PlayStore size={18} aria-hidden="true" />;
+      default: return <Icons.FileText size={size} aria-hidden="true" />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col transition-colors duration-300">
-      {/* Acessibilidade: Skip Link */}
       <a 
         href="#main-content" 
         className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:bg-legal-gold focus:text-white focus:px-4 focus:py-2 focus:rounded shadow-lg"
@@ -123,7 +126,6 @@ const App: React.FC = () => {
         Pular para o conteúdo principal
       </a>
 
-      {/* BARRA DE ACESSIBILIDADE (Top Bar) */}
       <div id="accessibility-bar" className="bg-[#0a101e] text-gray-300 text-xs py-2 border-b border-gray-800 relative z-50" role="toolbar" aria-label="Ferramentas de Acessibilidade">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex gap-4">
@@ -132,73 +134,68 @@ const App: React.FC = () => {
             <a href="#footer" className="hover:text-legal-gold transition-colors" accessKey="3">Ir para o rodapé [3]</a>
           </div>
           <div className="flex items-center gap-4">
-             <div className="flex items-center gap-2 bg-gray-800/50 px-2 py-1 rounded high-contrast-ignore">
-                <Icons.Accessibility size={14} className="text-legal-gold" aria-hidden="true" />
-                <span className="font-bold uppercase tracking-wider text-[10px]">Acessibilidade</span>
-             </div>
-             <div className="flex gap-1 items-center border-l border-gray-700 pl-4">
-               <button 
-                  onClick={() => setFontSize(0)} 
-                  className={`p-1 hover:text-white ${fontSize === 0 ? 'text-legal-gold' : ''}`}
-                  title="Tamanho da fonte padrão"
-                  aria-label="Tamanho da fonte padrão"
-               >
-                 A
-               </button>
-               <button 
-                  onClick={() => setFontSize(prev => prev < 2 ? prev + 1 : 2)} 
-                  className={`p-1 hover:text-white ${fontSize > 0 ? 'text-legal-gold' : ''}`}
-                  title="Aumentar tamanho da fonte"
-                  aria-label="Aumentar fonte"
-               >
-                 <span className="text-sm font-bold">A+</span>
-               </button>
-               <button 
-                  onClick={() => setFontSize(prev => prev > 0 ? prev - 1 : 0)} 
-                  className={`p-1 hover:text-white ${fontSize > 0 ? 'text-legal-gold' : ''}`}
-                  title="Diminuir tamanho da fonte"
-                  aria-label="Diminuir fonte"
-               >
-                 <span className="text-xs">A-</span>
-               </button>
-             </div>
-             
-             {/* Contrast and Theme Toggles */}
-             <div className="flex gap-4 border-l border-gray-700 pl-4">
-               <button 
+            <div className="flex items-center gap-2 bg-gray-800/50 px-2 py-1 rounded high-contrast-ignore">
+              <Icons.Accessibility size={14} className="text-legal-gold" aria-hidden="true" />
+              <span className="font-bold uppercase tracking-wider text-[10px]">Acessibilidade</span>
+            </div>
+            <div className="flex gap-1 items-center border-l border-gray-700 pl-4">
+              <button 
+                onClick={() => setFontSize(0)} 
+                className={`p-1 hover:text-white ${fontSize === 0 ? 'text-legal-gold' : ''}`}
+                title="Tamanho da fonte padrão"
+                aria-label="Tamanho da fonte padrão"
+              >
+                A
+              </button>
+              <button 
+                onClick={() => setFontSize(prev => prev < 2 ? prev + 1 : 2)} 
+                className={`p-1 hover:text-white ${fontSize > 0 ? 'text-legal-gold' : ''}`}
+                title="Aumentar tamanho da fonte"
+                aria-label="Aumentar fonte"
+              >
+                <span className="text-sm font-bold">A+</span>
+              </button>
+              <button 
+                onClick={() => setFontSize(prev => prev > 0 ? prev - 1 : 0)} 
+                className={`p-1 hover:text-white ${fontSize > 0 ? 'text-legal-gold' : ''}`}
+                title="Diminuir tamanho da fonte"
+                aria-label="Diminuir fonte"
+              >
+                <span className="text-xs">A-</span>
+              </button>
+            </div>
+            
+            <div className="flex gap-4 border-l border-gray-700 pl-4">
+              <button 
                 onClick={() => setHighContrast(!highContrast)}
                 className={`flex items-center gap-1 hover:text-white ${highContrast ? 'text-yellow-400 font-bold' : ''}`}
                 title={highContrast ? "Desativar Alto Contraste" : "Ativar Alto Contraste"}
-               >
-                 <Icons.Eye size={14} aria-hidden="true" />
-                 <span className="hidden sm:inline">Alto Contraste</span>
-               </button>
+              >
+                <Icons.Eye size={14} aria-hidden="true" />
+                <span className="hidden sm:inline">Alto Contraste</span>
+              </button>
 
-               <button 
+              <button 
                 onClick={() => setIsDarkMode(!isDarkMode)}
                 className={`flex items-center gap-1 hover:text-white ${isDarkMode ? 'text-legal-gold' : ''}`}
                 title={isDarkMode ? "Ativar Modo Claro" : "Ativar Modo Noturno"}
-               >
-                 {isDarkMode ? <Icons.Sun size={14} aria-hidden="true" /> : <Icons.Moon size={14} aria-hidden="true" />}
-                 <span className="hidden sm:inline">Modo Noturno</span>
-               </button>
-             </div>
+              >
+                {isDarkMode ? <Icons.Sun size={14} aria-hidden="true" /> : <Icons.Moon size={14} aria-hidden="true" />}
+                <span className="hidden sm:inline">Modo Noturno</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Header */}
       <header id="menu" className="sticky w-full top-0 z-40 bg-legal-blue shadow-md transition-all duration-300">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex justify-between items-center h-20">
-            {/* Logo Area */}
-            <div 
-              className="flex items-center gap-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-legal-gold rounded-sm p-1" 
-              onClick={() => scrollToSection(NavigationSection.HOME)}
-              role="button"
-              tabIndex={0}
+            <a 
+              href="#home"
+              onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}
+              className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-legal-gold rounded-sm p-1"
               aria-label="Ir para o início"
-              onKeyDown={(e) => e.key === 'Enter' && scrollToSection(NavigationSection.HOME)}
             >
               <div className="bg-legal-gold p-2 rounded-sm">
                 <Icons.Scale className="text-white" size={24} aria-hidden="true" />
@@ -207,28 +204,16 @@ const App: React.FC = () => {
                 <span className="text-legal-gold text-xs font-bold tracking-widest uppercase">Poder Judiciário</span>
                 <span className="text-white font-serif font-bold text-lg leading-tight">2ª Vara Cível</span>
               </div>
-            </div>
+            </a>
 
-            {/* Desktop Navigation */}
             <nav className="hidden md:flex gap-8" aria-label="Navegação Principal">
-              <NavLink section={NavigationSection.HOME} label="Início" />
-              <NavLink section={NavigationSection.INSTITUTIONAL} label="Institucional" />
-              <NavLink section={NavigationSection.JUDGE} label="Magistrado" />
-              <NavLink section={NavigationSection.SERVICES} label="Serviços" />
-              <NavLink section={NavigationSection.FAQ} label="Dúvidas" />
-              <NavLink section={NavigationSection.CONTACT} label="Contato" />
-              <a
-                href="/ACESSIBILIDADE_PLANO.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="uppercase tracking-wider font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-legal-gold rounded-sm text-white hover:text-legal-gold flex items-center gap-1"
-              >
-                <Icons.Accessibility size={16} aria-hidden="true" />
-                Acessibilidade
-              </a>
+              <NavLink section="home" label="Início" />
+              <NavLink section="judge" label="Magistrado" />
+              <NavLink section="services" label="Serviços" />
+              <NavLink section="faq" label="Dúvidas" />
+              <NavLink section="contact" label="Contato" />
             </nav>
 
-            {/* Mobile Menu Toggle */}
             <button 
               className="md:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-legal-gold rounded-sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -241,33 +226,18 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div id="mobile-menu" className="md:hidden bg-white border-t border-gray-200 absolute w-full shadow-xl">
-            <NavLink mobile section={NavigationSection.HOME} label="Início" />
-            <NavLink mobile section={NavigationSection.INSTITUTIONAL} label="Institucional" />
-            <NavLink mobile section={NavigationSection.JUDGE} label="Magistrado" />
-            <NavLink mobile section={NavigationSection.SERVICES} label="Serviços" />
-            <NavLink mobile section={NavigationSection.FAQ} label="Dúvidas" />
-            <NavLink mobile section={NavigationSection.CONTACT} label="Contato" />
-            <a
-              href="/ACESSIBILIDADE_PLANO.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-2 w-full text-left py-3 px-4 hover:bg-gray-100 border-b border-gray-100 text-gray-700 uppercase tracking-wider font-semibold text-sm"
-            >
-              <Icons.Accessibility size={16} className="text-legal-gold" aria-hidden="true" />
-              Acessibilidade
-            </a>
+            <NavLink mobile section="home" label="Início" />
+            <NavLink mobile section="judge" label="Magistrado" />
+            <NavLink mobile section="services" label="Serviços" />
+            <NavLink mobile section="faq" label="Dúvidas" />
+            <NavLink mobile section="contact" label="Contato" />
           </div>
         )}
       </header>
 
-      {/* Main Content */}
       <main id="main-content" className="flex-1 outline-none" tabIndex={-1}>
-        
-        {/* HERO SECTION */}
         <section id={NavigationSection.HOME} className="relative h-[600px] flex items-center justify-center bg-gray-900" aria-label="Introdução">
           <div className="absolute inset-0 overflow-hidden">
             <img 
@@ -308,7 +278,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* INSTITUTIONAL / JUDGE SECTION */}
         <section id={NavigationSection.JUDGE} className="py-20 bg-white" aria-label="Informações do Magistrado">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-12 items-center">
@@ -322,8 +291,8 @@ const App: React.FC = () => {
               </div>
               <div className="md:w-2/3">
                 <div className="flex items-center gap-2 mb-4">
-                   <div className="h-0.5 w-10 bg-legal-gold" aria-hidden="true"></div>
-                   <span className="text-legal-gold font-bold uppercase tracking-wider text-sm">O Magistrado</span>
+                  <div className="h-0.5 w-10 bg-legal-gold" aria-hidden="true"></div>
+                  <span className="text-legal-gold font-bold uppercase tracking-wider text-sm">O Magistrado</span>
                 </div>
                 <h2 className="text-4xl font-serif font-bold text-legal-blue mb-2">{JUDGE_INFO.name}</h2>
                 <h3 className="text-xl text-gray-500 mb-6 italic">{JUDGE_INFO.role}</h3>
@@ -349,7 +318,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* EQUIPE DO GABINETE */}
         <section className="py-16 bg-white" aria-label="Equipe do Gabinete">
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
@@ -398,7 +366,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* SERVICES SECTION */}
         <section id={NavigationSection.SERVICES} className="py-20 bg-light-bg" aria-label="Serviços Online">
           <div className="container mx-auto px-4">
             <SectionHeader 
@@ -407,655 +374,215 @@ const App: React.FC = () => {
             />
             
             <div className="flex flex-col gap-6 max-w-3xl mx-auto">
-              {SERVICES.map((service) => {
-                const getIcon = (name: string, size: number = 32) => {
-                  switch(name) {
-                    case 'search': return <Icons.Search size={size} aria-hidden="true" />;
-                    case 'video': return <Icons.Video size={size} aria-hidden="true" />;
-                    case 'calendar': return <Icons.Calendar size={size} aria-hidden="true" />;
-                    case 'download': return <Icons.Download size={size} aria-hidden="true" />;
-                    case 'file-text': return <Icons.FileText size={16} aria-hidden="true" />;
-                    case 'mail': return <Icons.Mail size={16} aria-hidden="true" />;
-                    case 'message-square': return <Icons.MessageSquare size={16} aria-hidden="true" />;
-                    case 'apple': return <Icons.Apple size={18} aria-hidden="true" />;
-                    case 'playstore': return <Icons.PlayStore size={18} aria-hidden="true" />;
-                    default: return <Icons.FileText size={size} aria-hidden="true" />;
-                  }
-                }
-
-                return (
-                  <div key={service.id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 group flex flex-col">
-                    <div className="w-16 h-16 bg-legal-blue/5 rounded-full flex items-center justify-center mb-6 text-legal-blue group-hover:bg-legal-gold group-hover:text-white transition-colors duration-300">
-                      {getIcon(service.icon)}
-                    </div>
-                    <h3 className="text-xl font-serif font-bold text-legal-blue mb-3">{service.title}</h3>
-                    <p className="text-gray-600 mb-6 flex-grow">{service.description}</p>
-
-                    {/* Actions: Multiple Links or Single URL */}
-                    {service.links ? (
-                      <div className="flex flex-col gap-2 w-full">
-                        {service.links.map((link, i) => (
-                           <a 
-                             key={i}
-                             href={link.url} 
-                             onClick={(e) => {
-                               if (link.url === '#chatbot') {
-                                 e.preventDefault();
-                                 setIsChatOpen(true);
-                               } else if (link.url.startsWith('#')) {
-                                 e.preventDefault();
-                                 scrollToSection(link.url.substring(1));
-                               }
-                             }}
-                             target={link.url.startsWith('#') || link.url.startsWith('mailto') ? undefined : "_blank"}
-                             rel={link.url.startsWith('#') || link.url.startsWith('mailto') ? undefined : "noopener noreferrer"}
-                             className="flex items-center justify-between px-4 py-2 rounded border border-legal-blue/20 text-legal-blue hover:bg-legal-blue hover:text-white transition-colors text-sm font-semibold"
-                           >
-                             <span className="flex items-center gap-2">
-                               {link.icon && getIcon(link.icon)}
-                               {link.label}
-                             </span>
-                             <Icons.ChevronDown className="-rotate-90" size={14} />
-                           </a>
-                        ))}
-                      </div>
-                    ) : (
-                      <a 
-                        href={service.url || '#'} 
-                        target={service.url ? "_blank" : undefined}
-                        rel={service.url ? "noopener noreferrer" : undefined}
-                        className="inline-flex items-center text-legal-gold font-semibold hover:text-legal-gold-hover focus:outline-none focus:underline focus:text-legal-blue mt-auto"
-                        aria-label={`Acessar serviço de ${service.title} ${service.url ? '(abre em nova aba)' : ''}`}
-                      >
-                        {service.icon === 'download' ? 'Baixar Aplicativo' : 'Acessar serviço'} 
-                        <Icons.Send size={16} className="ml-2" aria-hidden="true" />
-                      </a>
-                    )}
-                    
-                    {/* Tutorial Section if exists - appears below links */}
-                    {service.tutorial ? (
-                      <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
-                         <p className="text-xs font-bold text-legal-blue uppercase mb-3 flex items-center gap-1">
-                            <Icons.Info size={14} /> Passo a passo para participar:
-                         </p>
-                         <ol className="text-sm text-gray-700 list-decimal list-inside space-y-2 mb-3">
-                           {service.tutorial.map((step, idx) => (
-                             <li key={idx} className="leading-relaxed">{step}</li>
-                           ))}
-                         </ol>
-                         {service.tutorialTip && (
-                           <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-2">
-                             <Icons.AlertCircle size={16} className="text-yellow-600 mt-0.5 flex-shrink-0" />
-                             <p className="text-sm text-yellow-800 font-medium">{service.tutorialTip}</p>
-                           </div>
-                         )}
-                         <img 
-                           src={zoomTutorialImage} 
-                           alt="Exemplo de reunião por videoconferência"
-                           className="mt-4 w-full h-auto rounded-lg shadow-sm"
-                         />
-                      </div>
-                    ) : null}
+              {SERVICES.map((service) => (
+                <div key={service.id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 group flex flex-col">
+                  <div className="w-16 h-16 bg-legal-blue/5 rounded-full flex items-center justify-center mb-6 text-legal-blue group-hover:bg-legal-gold group-hover:text-white transition-colors duration-300">
+                    {getIcon(service.icon)}
                   </div>
-                );
-              })}
+                  <h3 className="text-xl font-serif font-bold text-legal-blue mb-3">{service.title}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow">{service.description}</p>
+
+                  {service.links ? (
+                    <div className="flex flex-col gap-2 w-full">
+                      {service.links.map((link, i) => (
+                        <a 
+                          key={i}
+                          href={link.url} 
+                          onClick={(e) => {
+                            if (link.url === '#chatbot') {
+                              e.preventDefault();
+                              setIsChatOpen(true);
+                            } else if (link.url.startsWith('#')) {
+                              e.preventDefault();
+                              scrollToSection(link.url.substring(1));
+                            }
+                          }}
+                          target={link.url.startsWith('#') || link.url.startsWith('mailto') ? undefined : "_blank"}
+                          rel={link.url.startsWith('#') || link.url.startsWith('mailto') ? undefined : "noopener noreferrer"}
+                          className="flex items-center justify-between px-4 py-2 rounded border border-legal-blue/20 text-legal-blue hover:bg-legal-blue hover:text-white transition-colors text-sm font-semibold"
+                        >
+                          <span className="flex items-center gap-2">
+                            {link.icon && getIcon(link.icon)}
+                            {link.label}
+                          </span>
+                          <Icons.ChevronDown className="-rotate-90" size={14} />
+                        </a>
+                      ))}
+                    </div>
+                  ) : service.tutorial ? (
+                    <div>
+                      <button 
+                        onClick={() => setExpandedService(expandedService === service.id ? null : service.id)}
+                        className="flex items-center gap-2 text-legal-blue font-semibold hover:text-legal-gold transition-colors"
+                      >
+                        {expandedService === service.id ? 'Ver menos' : 'Ver tutorial'}
+                        <Icons.ChevronDown className={`transform transition-transform ${expandedService === service.id ? 'rotate-180' : ''}`} size={16} />
+                      </button>
+                      
+                      {expandedService === service.id && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <ol className="list-decimal list-inside space-y-2 text-gray-600 text-sm">
+                            {service.tutorial.map((step, idx) => (
+                              <li key={idx}>{step}</li>
+                            ))}
+                          </ol>
+                          {service.tutorialTip && (
+                            <p className="mt-3 text-sm text-legal-gold font-semibold">{service.tutorialTip}</p>
+                          )}
+                          <img 
+                            src={zoomTutorialImage} 
+                            alt="Exemplo de reunião por videoconferência"
+                            className="mt-4 w-full h-auto rounded-lg shadow-sm"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ) : service.url ? (
+                    <a 
+                      href={service.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-legal-blue text-white font-semibold rounded hover:bg-legal-blue-light transition-colors"
+                    >
+                      Acessar
+                      <Icons.ExternalLink size={16} />
+                    </a>
+                  ) : null}
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* BLOG / ARTIGOS JURÍDICOS */}
-        <section className="py-16 bg-white" aria-label="Artigos e Publicações">
+        <section className="py-16 bg-white" aria-label="Blog Jurídico">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <Icons.FileText className="text-legal-gold" size={28} />
-                  <h2 className="text-3xl font-serif font-bold text-legal-blue">Artigos e Publicações</h2>
-                </div>
-                <p className="text-gray-600">Artigos jurídicos de colaboradores, notícias e orientações</p>
+            <SectionHeader 
+              title="Blog Jurídico" 
+              subtitle="Artigos, orientações e informativos da 2ª Vara Cível de Cariacica" 
+            />
+            
+            <div className="max-w-2xl mx-auto text-center py-12 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border-2 border-dashed border-amber-300">
+              <div className="w-20 h-20 mx-auto mb-6 bg-amber-100 rounded-full flex items-center justify-center">
+                <Icons.Info className="text-amber-600" size={40} />
               </div>
-              <button
-                onClick={() => setIsAdminOpen(true)}
-                className="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-legal-blue text-white font-semibold rounded-lg hover:bg-legal-blue-light transition-colors focus:outline-none focus:ring-2 focus:ring-legal-gold"
-              >
-                <Icons.Settings size={18} />
-                Gerenciar Artigos
-              </button>
+              <h3 className="text-2xl font-serif font-bold text-amber-800 mb-3">
+                Em Desenvolvimento
+              </h3>
+              <p className="text-amber-700 mb-6 px-6">
+                Estamos trabalhando para trazer artigos jurídicos, orientações ao cidadão e informativos relevantes. 
+                Em breve você terá acesso a conteúdo de qualidade produzido pela nossa equipe.
+              </p>
+              <div className="flex items-center justify-center gap-2 text-sm text-amber-600">
+                <Icons.Clock size={16} />
+                <span>Previsão de lançamento: Em breve</span>
+              </div>
             </div>
+          </div>
+        </section>
 
-            {articles.length === 0 ? (
-              <div className="text-center py-12 bg-gray-50 rounded-xl">
-                <Icons.FileText className="mx-auto text-gray-300 mb-4" size={48} />
-                <p className="text-gray-500 mb-4">Nenhum artigo publicado ainda.</p>
-                <button
-                  onClick={() => setIsAdminOpen(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-legal-gold text-white font-semibold rounded-lg hover:bg-legal-gold-hover transition-colors"
-                >
-                  Publicar primeiro artigo
-                </button>
+        <section className="py-16 bg-gradient-to-b from-gray-50 to-white" aria-label="Notícias TJES">
+          <div className="container mx-auto px-4">
+            <SectionHeader 
+              title="Notícias do TJES" 
+              subtitle="Últimas notícias do Tribunal de Justiça do Espírito Santo" 
+            />
+            
+            {newsItems.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Carregando notícias...</p>
               </div>
             ) : (
-
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {articles.slice(0, 6).map((article) => (
-                  <article 
-                    key={article.id}
-                    className={`group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 ${
-                      article.isFeatured ? 'md:col-span-2 lg:col-span-2' : ''
-                    }`}
+                {newsItems.slice(0, 6).map((news) => (
+                  <a
+                    key={news.id}
+                    href={news.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow p-6 border border-gray-100"
                   >
-                    <div className={`p-6 ${article.isFeatured ? 'lg:p-8' : ''}`}>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="px-3 py-1 bg-legal-blue/10 text-legal-blue text-xs font-semibold rounded-full">
-                          {article.category}
-                        </span>
-                        {article.isFeatured && (
-                          <span className="px-3 py-1 bg-legal-gold/10 text-legal-gold text-xs font-bold uppercase rounded-full">
-                            Destaque
-                          </span>
-                        )}
-                      </div>
-                      
-                      <h3 className={`font-serif font-bold text-legal-blue mb-3 group-hover:text-legal-gold transition-colors ${
-                        article.isFeatured ? 'text-2xl' : 'text-lg'
-                      }`}>
-                        {article.title}
-                      </h3>
-                      
-                      <p className={`text-gray-600 mb-4 ${article.isFeatured ? 'text-base line-clamp-3' : 'text-sm line-clamp-2'}`}>
-                        {article.excerpt}
-                      </p>
-                      
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <Icons.User size={14} />
-                          <span className="truncate max-w-[150px]">{article.author}</span>
-                        </div>
-                        <span className="text-xs text-gray-400">
-                          {new Date(article.publishedAt).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Icons.Newspaper className="text-legal-gold" size={16} />
+                      <span className="text-xs text-gray-500">
+                        {new Date(news.publishedAt).toLocaleDateString('pt-BR')}
+                      </span>
                     </div>
-                  </article>
+                    <h4 className="text-gray-800 font-semibold line-clamp-3 hover:text-legal-blue transition-colors">
+                      {news.title}
+                    </h4>
+                  </a>
                 ))}
               </div>
             )}
           </div>
         </section>
 
-        {/* NEWS SECTION - DESTAQUE */}
-        <section className="py-16 bg-gradient-to-b from-gray-50 to-white" aria-label="Notícias em Destaque">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <Icons.Newspaper className="text-legal-gold" size={28} />
-                  <h2 className="text-3xl font-serif font-bold text-legal-blue">Notícias em Destaque do TJES</h2>
-                </div>
-                <p className="text-gray-600">Fique por dentro das últimas novidades do TJES</p>
-              </div>
-              <a 
-                href="https://www.tjes.jus.br/canais/noticias/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="mt-4 md:mt-0 inline-flex items-center gap-2 text-legal-gold hover:text-legal-gold-hover font-semibold transition-colors focus:outline-none focus:underline"
-              >
-                Ver todas as notícias <Icons.ExternalLink size={18} />
-              </a>
-            </div>
-
-            {(() => {
-              const displayNews = newsItems.length > 0 ? newsItems : LATEST_NEWS;
-              const featuredNews = displayNews[0];
-              const secondaryNews = displayNews.slice(1, 7);
-              
-              return (
-                <div className="flex flex-col gap-6 max-w-3xl mx-auto">
-                  {/* Featured News Card */}
-                  {featuredNews && (
-                    <a 
-                      href={featuredNews.link || "https://www.tjes.jus.br/canais/noticias/"} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-legal-gold/50"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355] via-[#9C8465] to-[#A69070]"></div>
-                      <div className="relative p-6 md:p-8 min-h-[220px] flex flex-col justify-end">
-                        <div className="absolute top-4 left-4 flex gap-2">
-                          <span className="px-3 py-1 bg-legal-blue text-white text-xs font-bold uppercase rounded-full">
-                            Destaque
-                          </span>
-                          <span className="px-3 py-1 bg-legal-blue/60 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
-                            {featuredNews.date}
-                          </span>
-                        </div>
-                        <div>
-                          <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-3 group-hover:text-legal-blue transition-colors leading-tight">
-                            {featuredNews.title}
-                          </h3>
-                          {featuredNews.description && (
-                            <p className="text-white/90 text-base line-clamp-2 mb-3">
-                              {featuredNews.description}
-                            </p>
-                          )}
-                          <span className="inline-flex items-center gap-2 text-white font-semibold group-hover:gap-3 transition-all underline underline-offset-2">
-                            Ler notícia completa <Icons.ArrowRight size={18} />
-                          </span>
-                        </div>
-                      </div>
-                    </a>
-                  )}
-
-                  {/* Secondary News List */}
-                  <div className="space-y-4">
-                    {secondaryNews.map((news, idx) => (
-                      <a 
-                        key={news.id || idx}
-                        href={news.link || "https://www.tjes.jus.br/canais/noticias/"} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="group block p-4 bg-white rounded-lg border-l-4 border-legal-gold shadow-sm hover:shadow-md hover:border-legal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-legal-gold"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-legal-blue/10 flex items-center justify-center">
-                            <Icons.FileText className="text-legal-blue" size={18} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="text-xs text-legal-gold font-semibold">{news.date}</span>
-                            <h4 className="text-sm font-semibold text-gray-800 group-hover:text-legal-blue transition-colors line-clamp-2 mt-1">
-                              {news.title}
-                            </h4>
-                          </div>
-                          <Icons.ChevronRight className="flex-shrink-0 text-gray-400 group-hover:text-legal-gold group-hover:translate-x-1 transition-all" size={18} />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-
-          </div>
-        </section>
-
-        {/* FAQ SECTION */}
         <section id={NavigationSection.FAQ} className="py-20 bg-white" aria-label="Perguntas Frequentes">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <SectionHeader title="Perguntas Frequentes" subtitle="Respostas para as dúvidas mais comuns dos cidadãos." />
+          <div className="container mx-auto px-4">
+            <SectionHeader 
+              title="Perguntas Frequentes" 
+              subtitle="Encontre respostas para as dúvidas mais comuns." 
+            />
             
-            <div className="space-y-4">
-              {FAQS.map((faq) => (
-                <details key={faq.id} className="group bg-white rounded-lg border border-gray-200 open:shadow-md transition-all">
-                  <summary className="flex cursor-pointer items-center justify-between p-6 list-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-legal-gold rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <span className="text-xs font-bold text-legal-gold uppercase tracking-wide bg-legal-gold/10 px-2 py-1 rounded">
-                        {faq.category}
-                      </span>
-                      <h3 className="font-semibold text-gray-800">{faq.question}</h3>
+            <div className="max-w-3xl mx-auto space-y-4">
+              {FAQS.map((faq, index) => (
+                <div 
+                  key={index}
+                  className="border border-gray-200 rounded-lg overflow-hidden"
+                >
+                  <button
+                    onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                    className="w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
+                    aria-expanded={expandedFaq === index}
+                  >
+                    <span className="font-semibold text-legal-blue">{faq.question}</span>
+                    <Icons.ChevronDown 
+                      className={`text-legal-gold transform transition-transform ${expandedFaq === index ? 'rotate-180' : ''}`} 
+                      size={20}
+                    />
+                  </button>
+                  {expandedFaq === index && (
+                    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                      <p className="text-gray-600">{faq.answer}</p>
                     </div>
-                    <span className="transition group-open:rotate-180">
-                      <Icons.ChevronDown className="text-gray-400" aria-hidden="true" />
-                    </span>
-                  </summary>
-                  <div className="px-6 pb-6 pt-0 text-gray-600 leading-relaxed border-t border-transparent group-open:border-gray-100 group-open:pt-4">
-                    {faq.answer}
-                  </div>
-                </details>
+                  )}
+                </div>
               ))}
             </div>
-            
-            <div className="mt-10 text-center">
-              <p className="text-gray-600">Não encontrou o que procurava?</p>
-              <button 
-                onClick={() => scrollToSection(NavigationSection.CONTACT)}
-                className="mt-2 text-legal-gold font-bold hover:underline focus:outline-none focus:ring-2 focus:ring-legal-gold rounded px-2"
-              >
-                Entre em contato conosco
-              </button>
-            </div>
           </div>
         </section>
 
-        {/* CONTACT SECTION */}
-        <section id={NavigationSection.CONTACT} className="bg-legal-blue text-white py-20" aria-label="Contato">
+        <section id={NavigationSection.CONTACT} className="py-20 bg-legal-blue" aria-label="Contato">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+            <SectionHeader 
+              title="Entre em Contato" 
+              subtitle="Estamos à disposição para atendê-lo."
+              light 
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              <div className="bg-white/10 backdrop-blur rounded-lg p-6 text-center">
+                <Icons.MapPin className="text-legal-gold mx-auto mb-4" size={32} />
+                <h3 className="text-white font-semibold mb-2">Endereço</h3>
+                <p className="text-gray-300 text-sm">{CONTACT_INFO.address}</p>
+              </div>
               
-              {/* Contact Info */}
-              <div>
-                <h2 className="text-3xl font-serif font-bold mb-8 text-white">Canais de Atendimento</h2>
-                <div className="space-y-8">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-white/10 p-3 rounded-lg">
-                      <Icons.MapPin className="text-legal-gold" size={24} aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg mb-1">Endereço</h4>
-                      <p className="text-gray-300">{CONTACT_INFO.address}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="bg-white/10 p-3 rounded-lg">
-                      <Icons.Phone className="text-legal-gold" size={24} aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg mb-1">Telefone</h4>
-                      <p className="text-gray-300">{CONTACT_INFO.phone}</p>
-                      <p className="text-gray-400 text-sm">Seg-Sex: 12h às 18h</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-white/10 p-3 rounded-lg">
-                      <Icons.Mail className="text-legal-gold" size={24} aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg mb-1">E-mail</h4>
-                      <p className="text-gray-300">{CONTACT_INFO.email}</p>
-                    </div>
-                  </div>
-
-                  {/* Embedded Map */}
-                  <div className="mt-8 pt-8 border-t border-white/10">
-                    <h4 className="font-bold text-lg mb-4 text-white flex items-center gap-2">
-                      <Icons.MapPin className="text-legal-gold" size={20} /> 
-                      Localização
-                    </h4>
-                    <div className="w-full h-64 rounded-lg overflow-hidden shadow-lg border border-gray-600 relative bg-gray-800">
-                      <iframe 
-                        title="Mapa de Localização - Fórum de Cariacica" 
-                        width="100%" 
-                        height="100%" 
-                        src="https://maps.google.com/maps?q=F%C3%B3rum+Desembargador+Am%C3%A9rico+Ribeiro+Coelho,+R.+Meridional,+1000+-+Alto+Lage,+Cariacica+-+ES&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                        loading="lazy"
-                        className="absolute inset-0 w-full h-full filter hover:brightness-110 transition-all duration-300 border-0"
-                      ></iframe>
-                    </div>
-                    <a 
-                      href="https://maps.google.com/maps?q=F%C3%B3rum+Desembargador+Am%C3%A9rico+Ribeiro+Coelho,+R.+Meridional,+1000+-+Alto+Lage,+Cariacica+-+ES" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-legal-gold hover:text-white mt-3 text-sm transition-colors"
-                    >
-                      <Icons.ExternalLink size={14} /> Abrir no Google Maps
-                    </a>
-                  </div>
-                </div>
+              <div className="bg-white/10 backdrop-blur rounded-lg p-6 text-center">
+                <Icons.Phone className="text-legal-gold mx-auto mb-4" size={32} />
+                <h3 className="text-white font-semibold mb-2">Telefone</h3>
+                <p className="text-gray-300 text-sm">{CONTACT_INFO.phone}</p>
               </div>
-
-              {/* Contact Form */}
-              <div className="bg-white rounded-lg p-8 text-gray-800 shadow-2xl h-fit">
-                <h3 className="text-2xl font-serif font-bold text-legal-blue mb-6">Envie sua Mensagem</h3>
-                <form className="space-y-4" action="#" method="POST">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-semibold mb-1">Nome Completo <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="name"
-                        name="name"
-                        type="text" 
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        autoComplete="name"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-semibold mb-1">Telefone <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="phone"
-                        name="phone"
-                        type="tel" 
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        autoComplete="tel"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-semibold mb-1">E-mail <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <input 
-                      id="email" 
-                      name="email"
-                      type="email" 
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                      required
-                      aria-required="true"
-                      autoComplete="email"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-semibold mb-1">Assunto</label>
-                    <select 
-                      id="subject" 
-                      name="subject"
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
-                    >
-                      <option>Dúvida Processual</option>
-                      <option>Agendamento</option>
-                      <option>Outros</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-semibold mb-1">Mensagem <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <textarea 
-                      id="message" 
-                      name="message"
-                      rows={4} 
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
-                      required
-                      aria-required="true"
-                    ></textarea>
-                  </div>
-                  <button 
-                    type="submit" 
-                    className="w-full bg-legal-blue hover:bg-slate-800 text-white font-bold py-3 rounded transition-colors uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-legal-blue"
-                  >
-                    Enviar Mensagem
-                  </button>
-                </form>
+              
+              <div className="bg-white/10 backdrop-blur rounded-lg p-6 text-center">
+                <Icons.Clock className="text-legal-gold mx-auto mb-4" size={32} />
+                <h3 className="text-white font-semibold mb-2">Horário</h3>
+                <p className="text-gray-300 text-sm">Seg a Sex: 12h às 18h</p>
               </div>
-
             </div>
           </div>
         </section>
-
       </main>
 
-      {/* ACCESSIBILITY INFO SECTION */}
-      <section className="bg-slate-900 py-16 border-t border-gray-800" aria-label="Recursos de Acessibilidade">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <Icons.Accessibility className="text-legal-gold" size={32} />
-              <h2 className="text-2xl font-serif font-bold text-white">Recursos de Acessibilidade</h2>
-            </div>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Este portal segue as diretrizes do CNJ (Resolução 401/2021), e-MAG 3.1 e WCAG 2.2 para garantir acesso a todos os cidadãos.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
-            {/* Ferramenta 1 - Tamanho de Fonte */}
-            <div className="bg-slate-800/50 rounded-lg p-5 border border-gray-700">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-legal-gold/20 rounded-full flex items-center justify-center">
-                  <span className="text-legal-gold font-bold text-lg">A+</span>
-                </div>
-                <h3 className="text-white font-semibold">Tamanho da Fonte</h3>
-              </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Aumente ou diminua o tamanho do texto para melhor leitura.
-              </p>
-              <div className="bg-slate-900/50 rounded p-3 text-xs text-gray-500">
-                <strong className="text-gray-300">Como usar:</strong> Clique nos botões A, A+ ou A- na barra superior.
-              </div>
-            </div>
-
-            {/* Ferramenta 2 - Alto Contraste */}
-            <div className="bg-slate-800/50 rounded-lg p-5 border border-gray-700">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-legal-gold/20 rounded-full flex items-center justify-center">
-                  <Icons.Eye className="text-legal-gold" size={20} />
-                </div>
-                <h3 className="text-white font-semibold">Alto Contraste</h3>
-              </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Ativa fundo preto com texto claro para pessoas com baixa visão.
-              </p>
-              <div className="bg-slate-900/50 rounded p-3 text-xs text-gray-500">
-                <strong className="text-gray-300">Como usar:</strong> Clique em "Alto Contraste" na barra superior.
-              </div>
-            </div>
-
-            {/* Ferramenta 3 - Modo Noturno */}
-            <div className="bg-slate-800/50 rounded-lg p-5 border border-gray-700">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-legal-gold/20 rounded-full flex items-center justify-center">
-                  <Icons.Moon className="text-legal-gold" size={20} />
-                </div>
-                <h3 className="text-white font-semibold">Modo Noturno</h3>
-              </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Tema escuro para reduzir fadiga visual em ambientes com pouca luz.
-              </p>
-              <div className="bg-slate-900/50 rounded p-3 text-xs text-gray-500">
-                <strong className="text-gray-300">Como usar:</strong> Clique em "Modo Noturno" na barra superior.
-              </div>
-            </div>
-
-            {/* Ferramenta 4 - Navegação por Teclado */}
-            <div className="bg-slate-800/50 rounded-lg p-5 border border-gray-700">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-legal-gold/20 rounded-full flex items-center justify-center">
-                  <Icons.Keyboard className="text-legal-gold" size={20} />
-                </div>
-                <h3 className="text-white font-semibold">Navegação por Teclado</h3>
-              </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Navegue pelo site usando apenas o teclado, sem necessidade de mouse.
-              </p>
-              <div className="bg-slate-900/50 rounded p-3 text-xs text-gray-500">
-                <strong className="text-gray-300">Como usar:</strong> Use Tab para avançar, Shift+Tab para voltar, Enter para ativar.
-              </div>
-            </div>
-
-            {/* Ferramenta 5 - Skip Link */}
-            <div className="bg-slate-800/50 rounded-lg p-5 border border-gray-700">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-legal-gold/20 rounded-full flex items-center justify-center">
-                  <Icons.SkipForward className="text-legal-gold" size={20} />
-                </div>
-                <h3 className="text-white font-semibold">Pular para Conteúdo</h3>
-              </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Pule diretamente para o conteúdo principal, ignorando menus repetitivos.
-              </p>
-              <div className="bg-slate-900/50 rounded p-3 text-xs text-gray-500">
-                <strong className="text-gray-300">Como usar:</strong> Pressione Tab ao carregar a página e clique no link que aparecer.
-              </div>
-            </div>
-
-            {/* Ferramenta 6 - Leitor de Tela */}
-            <div className="bg-slate-800/50 rounded-lg p-5 border border-gray-700">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-legal-gold/20 rounded-full flex items-center justify-center">
-                  <Icons.Volume2 className="text-legal-gold" size={20} />
-                </div>
-                <h3 className="text-white font-semibold">Compatível com Leitores</h3>
-              </div>
-              <p className="text-gray-400 text-sm mb-3">
-                Site otimizado para NVDA, JAWS, VoiceOver e outros leitores de tela.
-              </p>
-              <div className="bg-slate-900/50 rounded p-3 text-xs text-gray-500">
-                <strong className="text-gray-300">Dica:</strong> Todos os elementos possuem descrições acessíveis (ARIA).
-              </div>
-            </div>
-          </div>
-
-          {/* Tabela de Atalhos */}
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-white font-semibold text-lg mb-4 text-center flex items-center justify-center gap-2">
-              <Icons.Keyboard size={20} className="text-legal-gold" />
-              Atalhos de Teclado (Padrão e-MAG)
-            </h3>
-            <div className="bg-slate-800/50 rounded-lg border border-gray-700 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-slate-800 border-b border-gray-700">
-                    <th className="text-left text-gray-300 font-semibold py-3 px-4">Atalho</th>
-                    <th className="text-left text-gray-300 font-semibold py-3 px-4">Ação</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Alt + 1</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Ir para o conteúdo principal</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Alt + 2</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Ir para o menu de navegação</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Alt + 3</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Ir para o rodapé</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Tab</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Próximo elemento interativo</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Shift + Tab</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Elemento anterior</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Enter</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Ativar elemento focado</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">
-                      <kbd className="bg-slate-700 text-legal-gold px-2 py-1 rounded text-xs font-mono">Esc</kbd>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400">Fechar modal ou menu</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="text-gray-500 text-xs text-center mt-3">
-              <strong>Nota:</strong> No Firefox, use Alt+Shift+número. No Safari (Mac), use Control+Option+número.
-            </p>
-          </div>
-
-          {/* Conformidade */}
-          <div className="mt-10 text-center">
-            <p className="text-gray-500 text-sm">
-              Este portal está em conformidade com a{' '}
-              <span className="text-legal-gold">Resolução CNJ nº 401/2021</span>,{' '}
-              <span className="text-legal-gold">e-MAG 3.1</span> e{' '}
-              <span className="text-legal-gold">WCAG 2.2 Nível AA</span>.
-            </p>
-            <p className="text-gray-600 text-xs mt-2">
-              Problemas de acessibilidade? Entre em contato pelo formulário acima ou ligue para a secretaria da vara.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
       <footer id="footer" className="bg-slate-950 text-gray-400 py-8 border-t border-gray-800" role="contentinfo">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1076,33 +603,14 @@ const App: React.FC = () => {
               >
                 Termos de Uso
               </button>
-              <button 
-                onClick={() => {
-                  const section = document.querySelector('[aria-label="Recursos de Acessibilidade"]');
-                  section?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
-              >
-                Acessibilidade
-              </button>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* AI Chatbot Widget */}
       <Chatbot isOpen={isChatOpen} onToggle={setIsChatOpen} />
-
-      {/* Legal Documents Modals */}
       <PrivacyPolicy isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
       <TermsOfUse isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
-      <AdminArticles 
-        isOpen={isAdminOpen} 
-        onClose={() => {
-          setIsAdminOpen(false);
-          fetchArticles().then(setArticles);
-        }} 
-      />
     </div>
   );
 };
