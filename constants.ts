@@ -67,8 +67,8 @@ export const FAQS: FaqItem[] = [
   {
     id: '5',
     category: 'Solicitações',
-    question: 'Como faço para registrar uma solicitação ou reclamação?',
-    answer: 'Use um dos canais disponíveis nesta página para registrar sua solicitação ou reclamação. Nossa equipe lhe dará uma resposta o mais breve possível.'
+    question: 'Como faço para registrar minha demanda ou fazer uma solicitação?',
+    answer: 'Você pode registrar sua demanda ou fazer uma solicitação por meio de um dos canais disponíveis nesta página: preenchendo o formulário de contato, enviando um e-mail para a secretaria ou utilizando o Chat. Nossa equipe analisará sua solicitação e entrará em contato o mais breve possível.'
   }
 ];
 
