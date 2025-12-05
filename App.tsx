@@ -247,12 +247,12 @@ const App: React.FC = () => {
         <section id={NavigationSection.HOME} className="relative h-[600px] flex items-center justify-center bg-gray-900" aria-label="Introdução">
           <div className="absolute inset-0 overflow-hidden">
             <img 
-              src="https://picsum.photos/1920/1080?grayscale" 
-              alt="Fachada do tribunal em tons de cinza" 
-              className="w-full h-full object-cover opacity-30"
+              src={forumImage} 
+              alt="Fórum Des. Américo Ribeiro Coelho - Cariacica" 
+              className="w-full h-full object-cover"
               aria-hidden="true"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-legal-blue via-legal-blue/50 to-transparent opacity-90"></div>
+            <div className="absolute inset-0 bg-legal-blue/80"></div>
           </div>
           
           <div className="relative z-10 container mx-auto px-4 text-center">
