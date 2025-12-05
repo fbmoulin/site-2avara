@@ -9,6 +9,7 @@ import {
   CONTACT_INFO 
 } from './constants';
 import { NavigationSection } from './types';
+import forumImage from '@assets/forum_1764897995940.jpg';
 
 // Helper component for Section Headers
 const SectionHeader: React.FC<{ title: string; subtitle?: string; light?: boolean }> = ({ title, subtitle, light }) => (
@@ -309,8 +310,8 @@ const App: React.FC = () => {
               <div className="md:w-1/3 relative">
                 <div className="absolute top-4 left-4 w-full h-full border-2 border-legal-gold rounded-lg -z-0" aria-hidden="true"></div>
                 <img 
-                  src={JUDGE_INFO.imageUrl} 
-                  alt={`Foto do magistrado ${JUDGE_INFO.name}`}
+                  src={forumImage} 
+                  alt="Fórum Des. Américo Ribeiro Coelho - Cariacica"
                   className="w-full h-auto rounded-lg shadow-xl relative z-10 bg-gray-200"
                 />
               </div>
