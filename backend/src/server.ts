@@ -2,12 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-// import { adminJs, adminRouter } from './admin.js'; // Temporariamente desabilitado
 import contactRoutes from './routes/contact.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import demandRoutes from './routes/demand.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import newsRoutes from './routes/news.routes.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
+import { initScheduler, runInitialFetch } from './scheduler.js';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -59,6 +60,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/demands', demandRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/news', newsRoutes);
 
 // Painel AdminJS (temporariamente desabilitado)
 // app.use(adminJs.options.rootPath, adminRouter);
@@ -82,6 +84,7 @@ app.get('/', (req, res) => {
       appointments: 'POST /api/appointments',
       demands: 'POST /api/demands',
       chat: 'POST /api/chat',
+      news: 'GET /api/news',
       admin: 'GET /admin',
       health: 'GET /health',
     },
@@ -108,7 +111,7 @@ app.use((req, res) => {
 
 // Iniciar servidor - bind to localhost only (internal) to avoid port conflicts in production
 const HOST = process.env.NODE_ENV === 'production' ? '127.0.0.1' : '0.0.0.0';
-app.listen(PORT, HOST, () => {
+app.listen(PORT, HOST, async () => {
   console.log(`
 ╔════════════════════════════════════════════════════════╗
 ║  🏛️  2ª Vara Cível de Cariacica - API Backend         ║
@@ -117,6 +120,9 @@ app.listen(PORT, HOST, () => {
 ║  Environment: ${process.env.NODE_ENV || 'development'}                       ║
 ╚════════════════════════════════════════════════════════╝
   `);
+  
+  initScheduler();
+  await runInitialFetch();
 });
 
 export default app;
