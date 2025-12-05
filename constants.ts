@@ -32,7 +32,7 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     id: '4',
-    title: 'Agendamento',
+    title: 'Solicitações e Agendamento',
     description: 'Escolha o melhor canal para solicitar seu agendamento:',
     icon: 'calendar',
     links: [
