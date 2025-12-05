@@ -1,0 +1,108 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Open Sans",
+      "role": "body"
+    },
+    {
+      "family": "Merriweather",
+      "role": "heading"
+    }
+  ],
+  "colors": {
+    "primary": "#0A101E",
+    "accent": "#B49B66",
+    "background": "#FFFFFF",
+    "textPrimary": "#0F172A",
+    "link": "#0F172A"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Open Sans",
+      "heading": "Merriweather"
+    },
+    "fontStacks": {
+      "heading": [
+        "Merriweather",
+        "serif"
+      ],
+      "body": [
+        "Open Sans",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Open Sans",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "60px",
+      "h2": "36px",
+      "body": "20px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "2px"
+  },
+  "components": {
+    "input": {
+      "borderColor": "#CCCCCC",
+      "borderRadius": "2px"
+    },
+    "buttonPrimary": {
+      "background": "#B49B66",
+      "textColor": "#FFFFFF",
+      "borderRadius": "2px",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px"
+    },
+    "buttonSecondary": {
+      "background": "#111827",
+      "textColor": "#B49B66",
+      "borderColor": "#B49B66",
+      "borderRadius": "2px",
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": "File saved at: attached_assets/logo.svg",
+    "favicon": null,
+    "ogImage": null
+  },
+  "__framework_hints": [
+    "tailwind"
+  ],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Logo #0 matches the brand name '2ª Vara Cível de Cariacica' and is located in the header, making it the primary brand logo.",
+    "confidence": 0.9
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 2,
+      "text": "Nossos Serviços",
+      "reasoning": "Button #2 has a vibrant background color (#B49B66) and action-oriented text ('Nossos Serviços'), making it the primary call-to-action. It stands out due to its color and purpose."
+    },
+    "secondary": {
+      "index": 1,
+      "text": "Fale Conosco",
+      "reasoning": "Button #1 has a different background color (#111827) and serves as a secondary action with less prominence. It is an outline style button, which is typical for secondary actions."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "legal professionals and clients seeking legal services"
+  },
+  "designSystem": {
+    "framework": "tailwind",
+    "componentLibrary": null
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  }
+}
