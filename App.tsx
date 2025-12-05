@@ -217,16 +217,15 @@ const App: React.FC = () => {
               <NavLink section={NavigationSection.SERVICES} label="Serviços" />
               <NavLink section={NavigationSection.FAQ} label="Dúvidas" />
               <NavLink section={NavigationSection.CONTACT} label="Contato" />
-              <button
-                onClick={() => {
-                  const section = document.querySelector('[aria-label="Recursos de Acessibilidade"]');
-                  section?.scrollIntoView({ behavior: 'smooth' });
-                }}
+              <a
+                href="/ACESSIBILIDADE_PLANO.md"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="uppercase tracking-wider font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-legal-gold rounded-sm text-white hover:text-legal-gold flex items-center gap-1"
               >
                 <Icons.Accessibility size={16} aria-hidden="true" />
                 Acessibilidade
-              </button>
+              </a>
             </nav>
 
             {/* Mobile Menu Toggle */}
@@ -251,17 +250,16 @@ const App: React.FC = () => {
             <NavLink mobile section={NavigationSection.SERVICES} label="Serviços" />
             <NavLink mobile section={NavigationSection.FAQ} label="Dúvidas" />
             <NavLink mobile section={NavigationSection.CONTACT} label="Contato" />
-            <button
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                const section = document.querySelector('[aria-label="Recursos de Acessibilidade"]');
-                section?.scrollIntoView({ behavior: 'smooth' });
-              }}
+            <a
+              href="/ACESSIBILIDADE_PLANO.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center gap-2 w-full text-left py-3 px-4 hover:bg-gray-100 border-b border-gray-100 text-gray-700 uppercase tracking-wider font-semibold text-sm"
             >
               <Icons.Accessibility size={16} className="text-legal-gold" aria-hidden="true" />
               Acessibilidade
-            </button>
+            </a>
           </div>
         )}
       </header>
