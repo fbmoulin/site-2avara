@@ -10,7 +10,7 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     id: '2',
-    title: 'Balcão Virtual',
+    title: 'Audiências Virtuais',
     description: 'Atendimento por videoconferência com a secretaria da vara.',
     icon: 'video',
     url: 'https://sistemas.tjes.jus.br/balcaovirtual/atendimento/informar-dados?unidade_id=5253'
