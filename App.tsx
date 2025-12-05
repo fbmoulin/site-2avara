@@ -290,7 +290,7 @@ const App: React.FC = () => {
               Notícias TJES <Icons.ExternalLink size={18} />
             </a>
             <div className="overflow-hidden relative w-full h-full flex items-center" tabIndex={0} aria-label="Lista de notícias em movimento">
-              <div className="animate-marquee motion-reduce:animate-none whitespace-nowrap absolute motion-reduce:relative flex items-center">
+              <div className="animate-marquee motion-reduce:animate-none whitespace-nowrap flex items-center">
                 {LATEST_NEWS.map((news, idx) => (
                   <a 
                     key={idx} 
@@ -300,6 +300,19 @@ const App: React.FC = () => {
                     className="mr-12 text-lg text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center focus:outline-none focus:ring-1 focus:ring-legal-gold rounded px-1"
                   >
                     <span className="font-semibold text-legal-gold mr-2" aria-label={`Data: ${news.date}`}>[{news.date}]</span>
+                    {news.title}
+                  </a>
+                ))}
+                {LATEST_NEWS.map((news, idx) => (
+                  <a 
+                    key={`dup-${idx}`} 
+                    href="https://www.tjes.jus.br/canais/noticias/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="mr-12 text-lg text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center focus:outline-none focus:ring-1 focus:ring-legal-gold rounded px-1"
+                    aria-hidden="true"
+                  >
+                    <span className="font-semibold text-legal-gold mr-2">[{news.date}]</span>
                     {news.title}
                   </a>
                 ))}
