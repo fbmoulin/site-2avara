@@ -466,10 +466,9 @@ const App: React.FC = () => {
                       rel="noopener noreferrer"
                       className="lg:col-span-2 group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-legal-gold/50"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-legal-blue via-legal-blue to-legal-blue-light"></div>
-                      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23b8860b%22 fill-opacity=%220.05%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-                      <div className="relative p-8 md:p-10 min-h-[320px] flex flex-col justify-end">
-                        <div className="absolute top-6 left-6 flex gap-2">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355] via-[#9C8465] to-[#A69070]"></div>
+                      <div className="relative p-6 md:p-8 min-h-[220px] flex flex-col justify-end">
+                        <div className="absolute top-4 left-4 flex gap-2">
                           <span className="px-3 py-1 bg-legal-gold text-white text-xs font-bold uppercase rounded-full">
                             Destaque
                           </span>
@@ -478,11 +477,11 @@ const App: React.FC = () => {
                           </span>
                         </div>
                         <div>
-                          <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4 group-hover:text-legal-gold transition-colors leading-tight">
+                          <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-3 group-hover:text-legal-gold transition-colors leading-tight">
                             {featuredNews.title}
                           </h3>
                           {featuredNews.description && (
-                            <p className="text-gray-200 text-lg line-clamp-2 mb-4">
+                            <p className="text-gray-100 text-base line-clamp-2 mb-3">
                               {featuredNews.description}
                             </p>
                           )}
