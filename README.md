@@ -1,4 +1,4 @@
-# 2ª Vara Cível de Cariacica - Website Oficial
+# 2ª Vara Cível de Cariacica - Portal Oficial
 
 <div align="center">
 
@@ -7,541 +7,353 @@
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
 ![React](https://img.shields.io/badge/react-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/typescript-5.8.2-blue)
+![Gemini](https://img.shields.io/badge/AI-Google%20Gemini-4285F4)
 
-Website oficial da 2ª Vara Cível de Cariacica - Tribunal de Justiça do Espírito Santo (TJES)
+**Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica**  
+Tribunal de Justiça do Estado do Espírito Santo (TJES)
 
-[Demo](#) · [Reportar Bug](https://github.com/fbmoulin/site-2avara/issues) · [Requisitar Feature](https://github.com/fbmoulin/site-2avara/issues)
+[Acessar Portal](#) · [Reportar Bug](https://github.com/fbmoulin/site-2avara/issues) · [Requisitar Feature](https://github.com/fbmoulin/site-2avara/issues)
 
 </div>
 
 ---
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
-Aplicação full-stack moderna desenvolvida para a 2ª Vara Cível de Cariacica, oferecendo serviços digitais ao cidadão, com integração de chatbot de IA para atendimento virtual, formulários interativos, e painel administrativo para gestão de mensagens, agendamentos e demandas.
+Aplicação full-stack moderna desenvolvida para a 2ª Vara Cível de Cariacica, oferecendo serviços digitais ao cidadão com **assistente virtual inteligente** alimentado por Google Gemini, formulários interativos para contato, agendamento e registro de demandas, e total conformidade com a **LGPD** (Lei Geral de Proteção de Dados).
 
-### ✨ Características Principais
+### Funcionalidades Principais
 
-- 🤖 **Chatbot com IA**: Assistente virtual alimentado por Google Gemini com integração ao Google Maps
-- 📱 **Design Responsivo**: Interface adaptável para desktop, tablet e mobile
-- ♿ **Acessibilidade**: Controles de tamanho de fonte, alto contraste e modo escuro
-- 🔐 **Segurança**: Implementação de Helmet, CORS, Rate Limiting e validação Zod
-- 📊 **Painel Admin**: Gerenciamento de contatos, agendamentos e demandas (AdminJS)
-- 🎨 **Interface Moderna**: Design clean com Tailwind CSS e componentes React
-- 📧 **Sistema de Email**: Integração com SendGrid para notificações
-- 💾 **Banco de Dados**: Prisma ORM com SQLite (desenvolvimento) / PostgreSQL (produção)
+| Funcionalidade | Descrição |
+|----------------|-----------|
+| **Assistente Virtual (IA)** | Chatbot com Google Gemini para triagem de atendimentos, agendamentos e orientações |
+| **Integração Google Maps** | Localização do fórum com mapa interativo integrado ao chatbot |
+| **Agendamento Inteligente** | Sistema de pré-reserva para atendimentos presenciais e virtuais (Zoom) |
+| **Registro de Demandas** | Canal para reclamações, pedidos de celeridade e petições urgentes |
+| **Conformidade LGPD** | Política de Privacidade e Termos de Uso integrados |
+| **Acessibilidade** | Controles de fonte, alto contraste e modo escuro |
+| **Segurança** | Helmet, CORS, Rate Limiting e validação de dados |
 
 ---
 
-## 🚀 Stack Tecnológica
+## Arquitetura
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         USUÁRIO (Browser)                           │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    FRONTEND (React + Vite)                          │
+│                         Porta 5000                                  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌────────────┐ │
+│  │   App.tsx   │  │  Chatbot    │  │   Forms     │  │ LegalDocs  │ │
+│  │  (Layout)   │  │ (Frontend)  │  │ (Contato)   │  │  (LGPD)    │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                            Proxy /api
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    BACKEND (Express + TypeScript)                   │
+│                         Porta 3001                                  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌────────────┐ │
+│  │  Chat API   │  │  Contact    │  │ Appointment │  │  Demand    │ │
+│  │  (Gemini)   │  │   API       │  │    API      │  │   API      │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+          │                                       │
+          ▼                                       ▼
+┌──────────────────┐                   ┌──────────────────┐
+│  Google Gemini   │                   │  SQLite/Postgres │
+│   (AI + Maps)    │                   │    (Prisma)      │
+└──────────────────┘                   └──────────────────┘
+```
+
+---
+
+## Stack Tecnológica
 
 ### Frontend
-- **React 19.2.0** - Biblioteca JavaScript para construção de interfaces
-- **TypeScript 5.8.2** - Superset JavaScript tipado
-- **Vite 6.2.0** - Build tool e dev server de alta performance
-- **Tailwind CSS** - Framework CSS utility-first (via classes inline)
-- **Lucide React** - Biblioteca de ícones moderna
-- **Google Generative AI** - SDK oficial do Gemini para chatbot
+| Tecnologia | Versão | Descrição |
+|------------|--------|-----------|
+| React | 19.2.0 | Biblioteca para interfaces |
+| TypeScript | 5.8.2 | Superset JavaScript tipado |
+| Vite | 6.2.0 | Build tool e dev server |
+| Tailwind CSS | CDN | Framework CSS utility-first |
+| Lucide React | 0.554.0 | Biblioteca de ícones |
 
 ### Backend
-- **Node.js + Express 4.21.2** - Framework web para Node.js
-- **TypeScript 5.8.2** - Tipagem estática
-- **Prisma 6.2.0** - ORM moderno para Node.js e TypeScript
-- **SQLite** - Banco de dados para desenvolvimento
-- **Zod 3.24.1** - Validação de esquemas TypeScript-first
-- **Helmet 8.0.0** - Middleware de segurança HTTP
-- **Express Rate Limit 7.5.0** - Proteção contra abuso de API
-- **SendGrid** - Serviço de email transacional
-- **AdminJS 7.8.13** - Painel administrativo auto-gerado
-- **Bcrypt 5.1.1** - Hash de senhas
+| Tecnologia | Versão | Descrição |
+|------------|--------|-----------|
+| Express | 4.21.2 | Framework web Node.js |
+| TypeScript | 5.8.2 | Tipagem estática |
+| Prisma | 6.2.0 | ORM moderno |
+| Google GenAI | 1.31.0 | SDK do Gemini |
+| Zod | 3.24.1 | Validação de schemas |
+| Helmet | 8.0.0 | Segurança HTTP |
 
 ---
 
-## 📂 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
-2avara-site/
-├── frontend/
-│   ├── api/                    # Cliente HTTP e serviços
-│   │   └── client.ts          # API client para backend
-│   ├── components/            # Componentes React
-│   │   ├── Chatbot.tsx        # Widget de chat com Gemini AI
-│   │   └── Icons.tsx          # Componentes de ícones
-│   ├── services/              # Serviços de integração
-│   │   └── geminiService.ts   # Integração Google Gemini
-│   ├── App.tsx                # Componente principal da aplicação
-│   ├── constants.ts           # Dados estáticos (serviços, FAQs, notícias)
-│   ├── types.ts               # Definições TypeScript
-│   ├── index.tsx              # Entry point React
-│   ├── index.html             # HTML shell
-│   ├── vite.config.ts         # Configuração Vite
-│   └── package.json           # Dependências frontend
-│
+/
+├── components/                 # Componentes React
+│   ├── Chatbot.tsx            # Widget de chat (UI)
+│   ├── Icons.tsx              # Ícones centralizados
+│   └── LegalDocuments.tsx     # Modais LGPD
+├── services/
+│   └── geminiService.ts       # Cliente API do chat (frontend)
 ├── backend/
 │   ├── src/
-│   │   ├── config/            # Configurações
-│   │   │   ├── database.ts    # Cliente Prisma
-│   │   │   └── email.ts       # Configuração SendGrid
-│   │   ├── controllers/       # Lógica de negócio
-│   │   │   ├── contact.controller.ts
-│   │   │   ├── appointment.controller.ts
-│   │   │   └── demand.controller.ts
-│   │   ├── routes/            # Rotas da API
-│   │   │   ├── contact.routes.ts
+│   │   ├── routes/
+│   │   │   ├── chat.routes.ts      # API do chatbot
+│   │   │   ├── contact.routes.ts   # API de contato
 │   │   │   ├── appointment.routes.ts
 │   │   │   └── demand.routes.ts
-│   │   ├── middleware/        # Middlewares Express
-│   │   │   ├── rateLimiter.ts # Rate limiting
-│   │   │   └── validator.ts   # Validação Zod
-│   │   ├── services/          # Serviços de negócio
+│   │   ├── services/
+│   │   │   ├── chat.service.ts     # Integração Gemini (BACKEND)
 │   │   │   └── email.service.ts
-│   │   ├── admin.ts           # Configuração AdminJS
-│   │   └── server.ts          # Entry point do servidor
-│   ├── prisma/
-│   │   ├── schema.prisma      # Schema do banco de dados
-│   │   └── dev.db             # Banco SQLite (dev)
-│   └── package.json           # Dependências backend
-│
-├── .env.local                 # Variáveis de ambiente (frontend)
-├── backend/.env               # Variáveis de ambiente (backend)
-├── CLAUDE.md                  # Instruções para Claude Code
-└── README.md                  # Este arquivo
+│   │   └── server.ts
+│   └── prisma/
+│       ├── schema.prisma
+│       └── dev.db
+├── attached_assets/            # Imagens e assets
+├── App.tsx                     # Componente principal
+├── constants.ts                # Dados estáticos
+├── types.ts                    # Interfaces TypeScript
+├── vite.config.ts              # Configuração Vite
+├── prod-server.js              # Servidor de produção
+└── replit.md                   # Documentação Replit
 ```
 
 ---
 
-## 🛠️ Instalação e Configuração
+## Assistente Virtual (Chatbot)
+
+O chatbot é alimentado por **Google Gemini 2.5 Flash** e implementa um protocolo de atendimento estruturado:
+
+### Protocolo de Atendimento
+
+```
+1. IDENTIFICAÇÃO
+   └── Pergunta se é Advogado ou Parte
+       ├── Advogado → Solicita OAB
+       └── Parte → Solicita CPF
+
+2. TIPO DE ATENDIMENTO
+   └── Presencial ou Virtual (Zoom)
+       └── Destaca: Virtual tem MAIOR DISPONIBILIDADE
+
+3. DIRECIONAMENTO
+   └── Por padrão: Assessoria do Gabinete
+       └── Juiz: Só se expressamente solicitado
+           └── Informa: casos urgentes ou despacho pendente
+
+4. COLETA DE DADOS
+   ├── Nome completo
+   ├── Número do processo
+   └── Dúvida/Assunto ou Motivo
+
+5. CONFIRMAÇÃO
+   └── "Solicitação pré-reservada. Secretaria entrará em contato."
+```
+
+### Funcionalidades do Chatbot
+
+- **Triagem de atendimentos** para advogados e partes
+- **Agendamento** presencial e virtual (destaque para Zoom)
+- **Registro de demandas** e reclamações
+- **Localização do fórum** com Google Maps integrado
+- **Informações gerais** sobre horário e contatos
+- **Memória de sessão** para contexto da conversa
+
+---
+
+## Conformidade LGPD
+
+O portal implementa conformidade com a Lei Geral de Proteção de Dados (Lei 13.709/2018):
+
+### Documentos Disponíveis
+
+| Documento | Conteúdo |
+|-----------|----------|
+| **Política de Privacidade** | Dados coletados, finalidades, direitos do titular, segurança |
+| **Termos de Uso** | Objeto, direitos/deveres, vedações, responsabilidades |
+
+### Direitos do Titular (Art. 18 LGPD)
+
+- Confirmação de tratamento
+- Acesso aos dados
+- Correção de dados
+- Anonimização/bloqueio
+- Portabilidade
+- Revogação do consentimento
+
+---
+
+## Instalação
 
 ### Pré-requisitos
 
-- **Node.js** >= 18.0.0
-- **npm** ou **yarn**
-- **Git**
-- Chave API do Google Gemini ([obter aqui](https://aistudio.google.com/app/apikey))
+- Node.js >= 18.0.0
+- npm ou yarn
+- Chave API do Google Gemini
 
-### 1. Clonar o Repositório
+### Configuração Local
 
 ```bash
+# Clonar repositório
 git clone https://github.com/fbmoulin/site-2avara.git
 cd site-2avara
-```
 
-### 2. Configurar Frontend
-
-```bash
-# Instalar dependências
+# Instalar dependências do frontend
 npm install
 
-# Criar arquivo .env.local
-cat > .env.local << EOF
-GEMINI_API_KEY=sua_chave_api_aqui
-VITE_API_URL=http://localhost:4000/api
-EOF
+# Instalar dependências do backend
+cd backend && npm install && cd ..
+
+# Configurar banco de dados
+cd backend && npx prisma generate && npx prisma migrate dev && cd ..
 ```
 
-### 3. Configurar Backend
+### Variáveis de Ambiente
 
-```bash
-cd backend
-
-# Instalar dependências
-npm install
-
-# Criar arquivo .env
-cat > .env << EOF
-# Database
-DATABASE_URL="file:./dev.db"
-
-# Server
-PORT=4000
-NODE_ENV="development"
-FRONTEND_URL="http://localhost:3000"
-
-# SendGrid (opcional - modo demo se vazio)
-SENDGRID_API_KEY=""
-EMAIL_FROM="noreply@2varacivel.jus.br"
-EMAIL_TO="2varacivel@tjes.jus.br"
-
-# AdminJS
-ADMIN_EMAIL="admin@tjes.jus.br"
-ADMIN_PASSWORD="admin123"
-SESSION_SECRET="sua-chave-secreta-aqui"
-
-# CORS
-ALLOWED_ORIGINS="http://localhost:3000,http://localhost:5173"
-EOF
-
-# Gerar Prisma Client
-npx prisma generate
-
-# Executar migrations
-npx prisma migrate dev
+**Secrets (obrigatórios):**
+```env
+GEMINI_API_KEY=sua_chave_gemini
 ```
+
+**Backend (backend/.env):**
+```env
+DATABASE_URL="file:./prisma/dev.db"
+BACKEND_PORT=3001
+NODE_ENV=development
+```
+
+**Nota:** O `DATABASE_URL` é relativo ao diretório `backend/`.
 
 ---
 
-## 🚀 Executando a Aplicação
+## Executando
 
 ### Desenvolvimento
 
-**Terminal 1 - Backend:**
 ```bash
-cd backend
-npm run dev
-```
-Servidor disponível em: `http://localhost:4000`
+# Terminal 1 - Backend
+cd backend && npm run dev
 
-**Terminal 2 - Frontend:**
-```bash
+# Terminal 2 - Frontend
 npm run dev
 ```
-Aplicação disponível em: `http://localhost:3000`
+
+- Frontend: http://localhost:5000
+- Backend: http://localhost:3001
 
 ### Produção
 
-**Build Frontend:**
 ```bash
+# Build completo (frontend Vite + backend TypeScript)
 npm run build
-npm run preview
+
+# Iniciar servidores
+npm run start:backend &  # Backend na porta 3001
+npm start               # Frontend + proxy na porta 5000
 ```
 
-**Build Backend:**
-```bash
-cd backend
-npm run build
-npm start
-```
+**Nota:** O `prod-server.js` serve os arquivos estáticos do frontend e faz proxy das requisições `/api` para o backend.
 
 ---
 
-## 🎯 Funcionalidades
+## API Endpoints
 
-### Para o Cidadão
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/chat` | Enviar mensagem ao chatbot |
+| POST | `/api/chat/clear` | Limpar sessão do chat |
+| POST | `/api/contact` | Enviar mensagem de contato |
+| POST | `/api/appointments` | Criar agendamento |
+| POST | `/api/demands` | Registrar demanda |
+| GET | `/health` | Health check |
 
-#### 🏠 Página Principal
-- Informações sobre a vara cível
-- Biografia da magistrada
-- Notícias e comunicados
-- Serviços judiciais integrados (PJe, Balcão Virtual)
+### Exemplo: Chat
 
-#### 💬 Chatbot de IA
-- Atendimento virtual 24/7
-- Respostas contextualizadas sobre serviços jurídicos
-- Integração com Google Maps para localização
-- Interface conversacional intuitiva
-
-#### 📝 Formulários Interativos
-1. **Mensagem de Contato**
-   - Validação de campos (nome, telefone, email)
-   - Categorização por assunto
-   - Confirmação de envio
-
-2. **Agendamento de Atendimento**
-   - Escolha de tipo (presencial/virtual)
-   - Seleção de destinatário (assessoria/juiz)
-   - Data e horário preferencial
-   - Geração automática de link Zoom (virtual)
-
-3. **Registro de Demandas**
-   - Tipos: Reclamação, Celeridade, Petição Urgente
-   - Número do processo
-   - Descrição detalhada
-   - Priorização automática
-
-#### ♿ Acessibilidade
-- Aumentar/diminuir tamanho da fonte
-- Modo de alto contraste
-- Modo escuro
-- Navegação por teclado
-- Labels ARIA para leitores de tela
-
-### Para Administradores
-
-#### 🔐 Painel AdminJS (Em desenvolvimento)
-- Login seguro com bcrypt
-- Gerenciamento de mensagens de contato
-- Gestão de agendamentos
-- Acompanhamento de demandas
-- Exportação de dados
-
----
-
-## 🔌 API Endpoints
-
-### Contato
 ```http
-POST /api/contact
+POST /api/chat
 Content-Type: application/json
 
 {
-  "name": "João Silva",
-  "phone": "(27) 99999-9999",
-  "email": "joao@example.com",
-  "subject": "Informação sobre processo",
-  "message": "Gostaria de saber o andamento do processo 12345..."
+  "message": "Quero agendar um atendimento",
+  "sessionId": "unique-session-id"
 }
 
-Response: 201 Created
+Response:
 {
   "success": true,
-  "id": "uuid-gerado",
-  "message": "Mensagem enviada com sucesso"
-}
-```
-
-### Agendamento
-```http
-POST /api/appointments
-Content-Type: application/json
-
-{
-  "type": "virtual",
-  "withWhom": "assessoria",
-  "name": "Maria Santos",
-  "oabNumber": "ES 12345",
-  "processNumber": "0012345-67.2024.8.08.0012",
-  "reason": "Esclarecimento sobre prazo",
-  "preferredDate": "2024-12-01T14:00:00Z"
-}
-
-Response: 201 Created
-{
-  "success": true,
-  "id": "uuid-gerado",
-  "status": "pre_reserved",
-  "zoomLink": "https://zoom.us/j/..."
-}
-```
-
-### Demanda
-```http
-POST /api/demands
-Content-Type: application/json
-
-{
-  "processNumber": "0012345-67.2024.8.08.0012",
-  "demandType": "celeridade",
-  "description": "Processo parado há 60 dias aguardando despacho..."
-}
-
-Response: 201 Created
-{
-  "success": true,
-  "id": "uuid-gerado",
-  "status": "pending",
-  "priority": "normal"
-}
-```
-
-### Health Check
-```http
-GET /health
-
-Response: 200 OK
-{
-  "status": "ok",
-  "timestamp": "2024-11-22T14:00:00.000Z",
-  "environment": "development"
+  "data": {
+    "text": "Resposta do assistente...",
+    "groundingMetadata": { ... }
+  }
 }
 ```
 
 ---
 
-## 💾 Banco de Dados
+## Acessibilidade
 
-### Schema Prisma
+O portal implementa recursos de acessibilidade:
 
-#### ContactMessage
-- Mensagens de contato do formulário
-- Status: pending, answered, archived
-- Campos de auditoria (createdAt, answeredAt, answeredBy)
-
-#### Appointment
-- Agendamentos de atendimento
-- Tipos: presencial, virtual
-- Status: pre_reserved, confirmed, completed, cancelled
-- Integração com Zoom para atendimentos virtuais
-
-#### Demand
-- Demandas e reclamações
-- Tipos: reclamacao, celeridade, peticao_urgente
-- Prioridades: low, normal, high, urgent
-- Status: pending, in_analysis, resolved, archived
-
-### Comandos Prisma
-
-```bash
-# Gerar cliente
-npx prisma generate
-
-# Criar migration
-npx prisma migrate dev --name descricao_da_mudanca
-
-# Visualizar banco de dados
-npx prisma studio
-
-# Reset banco (CUIDADO!)
-npx prisma migrate reset
-```
+- **Ajuste de fonte**: 3 tamanhos (normal, grande, extra grande)
+- **Alto contraste**: Modo de cores otimizado
+- **Modo escuro**: Tema noturno
+- **Navegação por teclado**: Skip links e focus management
+- **ARIA labels**: Suporte a leitores de tela
 
 ---
 
-## 🔐 Variáveis de Ambiente
+## Deploy
 
-### Frontend (`.env.local`)
-```env
-GEMINI_API_KEY=         # Chave API do Google Gemini (obrigatório)
-VITE_API_URL=           # URL do backend (padrão: http://localhost:4000/api)
-```
+### Replit (Recomendado)
 
-### Backend (`backend/.env`)
-```env
-# Database
-DATABASE_URL=           # Conexão Prisma (SQLite/PostgreSQL)
+O projeto está configurado para Replit com:
+- Frontend na porta 5000 (webview)
+- Backend na porta 3001 (interno)
+- Proxy automático de `/api`
+- Secrets gerenciados via painel
 
-# Server
-PORT=                   # Porta do servidor (padrão: 4000)
-NODE_ENV=               # Ambiente: development/production
-FRONTEND_URL=           # URL do frontend para CORS
+### Outras Plataformas
 
-# Email (opcional)
-SENDGRID_API_KEY=       # Chave API SendGrid
-EMAIL_FROM=             # Email remetente
-EMAIL_TO=               # Email destinatário
-
-# AdminJS
-ADMIN_EMAIL=            # Email do administrador
-ADMIN_PASSWORD=         # Senha do admin (use hash em produção)
-SESSION_SECRET=         # Segredo para sessões (min 32 caracteres)
-
-# CORS
-ALLOWED_ORIGINS=        # Origens permitidas (separadas por vírgula)
-```
+Consulte [DEPLOYMENT.md](DEPLOYMENT.md) para instruções detalhadas de deploy em:
+- Vercel/Netlify (frontend)
+- Render/Railway (backend)
+- Supabase/PostgreSQL (banco de dados)
 
 ---
 
-## 🚢 Deploy
+## Licença
 
-### Frontend (Vercel/Netlify)
-
-```bash
-# Build
-npm run build
-
-# Deploy pasta dist/
-# Configure variáveis de ambiente no painel
-```
-
-### Backend (Render/Railway/Fly.io)
-
-```bash
-# Preparação
-cd backend
-npm run build
-
-# Configure as variáveis de ambiente
-# Use PostgreSQL em produção (não SQLite)
-
-# Comando start
-npm start
-```
-
-### Migração para PostgreSQL (Produção)
-
-1. Atualizar `backend/prisma/schema.prisma`:
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-2. Atualizar `DATABASE_URL` no `.env`:
-```env
-DATABASE_URL="postgresql://user:password@host:5432/database?schema=public"
-```
-
-3. Executar migrations:
-```bash
-npx prisma migrate deploy
-```
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para detalhes.
 
 ---
 
-## 🧪 Testes
+## Contato
 
-```bash
-# Frontend (a implementar)
-npm test
+**2ª Vara Cível de Cariacica**  
+Fórum Des. Américo Ribeiro Coelho  
+R. Meridional, 1000 - Alto Lage, Cariacica - ES
 
-# Backend (a implementar)
-cd backend
-npm test
-
-# TypeScript check
-npx tsc --noEmit
-```
-
----
-
-## 📝 Scripts Disponíveis
-
-### Frontend
-- `npm run dev` - Inicia servidor de desenvolvimento (porta 3000)
-- `npm run build` - Gera build de produção
-- `npm run preview` - Preview do build de produção
-
-### Backend
-- `npm run dev` - Inicia servidor com hot reload (tsx watch)
-- `npm run build` - Compila TypeScript para JavaScript
-- `npm start` - Inicia servidor de produção
-- `npm run migrate` - Executa migrations do banco
-
----
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Por favor, siga estes passos:
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
----
-
-## 👥 Autores
-
-- **Lex Intelligentia** - *Desenvolvimento Inicial* - [lex@intelligentia.dev](mailto:lex@intelligentia.dev)
-
----
-
-## 🙏 Agradecimentos
-
-- Tribunal de Justiça do Espírito Santo (TJES)
-- 2ª Vara Cível de Cariacica
-- Google Gemini AI
-- Comunidade Open Source
-
----
-
-## 📞 Suporte
-
-Para suporte, envie um email para [2varacivel@tjes.jus.br](mailto:2varacivel@tjes.jus.br) ou abra uma issue no GitHub.
+- **Email**: 2varacivel@tjes.jus.br
+- **Telefone**: (27) 3246-5641
+- **Horário**: Segunda a sexta, 12h às 18h
 
 ---
 
 <div align="center">
 
-**[⬆ Voltar ao topo](#2ª-vara-cível-de-cariacica---website-oficial)**
+Desenvolvido com dedicação para a Justiça do Espírito Santo
 
-Desenvolvido com ❤️ para a Justiça do Espírito Santo
+**[Voltar ao topo](#2ª-vara-cível-de-cariacica---portal-oficial)**
 
 </div>

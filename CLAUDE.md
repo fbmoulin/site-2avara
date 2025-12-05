@@ -4,112 +4,214 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React + TypeScript website for the 2ª Vara Cível de Cariacica (2nd Civil Court of Cariacica), a Brazilian civil court. The site provides public services, court information, and an AI-powered chatbot for virtual assistance using Google Gemini.
+Full-stack web application for the 2ª Vara Cível de Cariacica (2nd Civil Court of Cariacica), a Brazilian civil court. The site provides public services, court information, LGPD-compliant legal documents, and an **AI-powered chatbot** using Google Gemini with Google Maps integration.
+
+## Critical Architecture Note
+
+**The Gemini API integration is in the BACKEND, not the frontend.**
+
+```
+Frontend (Chatbot.tsx) → HTTP POST /api/chat → Backend (chat.service.ts) → Google Gemini
+```
+
+This architecture ensures the API key is never exposed in the browser.
 
 ## Development Commands
 
 ```bash
-# Install dependencies
-npm install
+# Install all dependencies
+npm install && cd backend && npm install && cd ..
 
-# Start development server (runs on port 3000)
+# Start development (both servers)
+# Terminal 1 - Backend:
+cd backend && npm run dev
+
+# Terminal 2 - Frontend:
 npm run dev
 
-# Build for production (outputs to dist/)
+# Build for production
 npm run build
-
-# Preview production build
-npm run preview
 ```
 
-**Environment Setup**: Before running any command, set `GEMINI_API_KEY` in `.env.local`. The Vite config maps this to `process.env.API_KEY` for the Gemini service.
+**Ports:**
+- Frontend: 5000 (configured for Replit webview)
+- Backend: 3001 (internal, proxied via Vite or prod-server.js)
+
+## Environment Setup
+
+**Required Secret:**
+```
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+The key is accessed ONLY in `backend/src/services/chat.service.ts` via `process.env.GEMINI_API_KEY`.
+
+**DO NOT** add Gemini API key to:
+- vite.config.ts
+- Frontend environment variables
+- Any client-side code
 
 ## Architecture
 
-### Core Application Structure
+### Frontend Structure
 
-- **App.tsx**: Main application component containing all page sections, navigation state, accessibility controls (font size, high contrast, dark mode), and scroll-spy navigation. All sections render in a single-page layout.
-- **index.tsx**: React app entry point that mounts App.tsx into the DOM.
-- **index.html**: Main HTML shell with inline CSS for theme classes (font-lg, font-xl, high-contrast, dark-mode) and animations.
+```
+/
+├── App.tsx              # Main component, all sections, accessibility
+├── components/
+│   ├── Chatbot.tsx      # Chat UI, message rendering, Maps display
+│   ├── Icons.tsx        # Lucide icon components
+│   └── LegalDocuments.tsx  # Privacy Policy & Terms modals
+├── services/
+│   └── geminiService.ts # HTTP client for /api/chat (NOT direct Gemini)
+├── constants.ts         # Services, FAQs, news, contact info
+├── types.ts             # TypeScript interfaces
+└── vite.config.ts       # Vite config with /api proxy
+```
 
-### Content Management
+### Backend Structure
 
-- **constants.ts**: Central data store for all user-facing content:
-  - `SERVICES`: Service cards with links, icons, and optional tutorials
-  - `FAQS`: FAQ items with categories
-  - `LATEST_NEWS`: News ticker items
-  - `JUDGE_INFO`: Magistrate biography and photo
-  - `CONTACT_INFO`: Address, phone, email, WhatsApp
+```
+backend/
+├── src/
+│   ├── server.ts        # Express app entry point
+│   ├── routes/
+│   │   ├── chat.routes.ts      # POST /api/chat, /api/chat/clear
+│   │   ├── contact.routes.ts
+│   │   ├── appointment.routes.ts
+│   │   └── demand.routes.ts
+│   ├── services/
+│   │   ├── chat.service.ts     # GEMINI INTEGRATION HERE
+│   │   └── email.service.ts
+│   └── middleware/
+│       ├── rateLimiter.ts
+│       └── validator.ts
+└── prisma/
+    ├── schema.prisma
+    └── dev.db
+```
 
-- **types.ts**: TypeScript interfaces for all data structures (ServiceItem, FaqItem, ChatMessage, etc.) and NavigationSection enum.
+### Data Flow
 
-### Components
+1. **User types message** in Chatbot.tsx
+2. **Frontend calls** `POST /api/chat` with message and sessionId
+3. **Vite proxy** forwards to backend on port 3001
+4. **chat.routes.ts** validates request with Zod
+5. **chat.service.ts** sends to Gemini with system instruction
+6. **Response** includes text and optional groundingMetadata (Maps)
+7. **Chatbot.tsx** renders response, including embedded Maps if present
 
-- **components/Chatbot.tsx**: Floating chat widget with:
-  - Gemini AI integration via geminiService
-  - Message history state management
-  - Google Maps grounding metadata rendering (displays embedded maps when Gemini uses Maps tool)
-  - Accessibility features (keyboard navigation, focus management, ARIA labels)
+## Chatbot Protocol
 
-- **components/Icons.tsx**: Centralized icon components from lucide-react (Scale, Menu, X, MapPin, Phone, etc.).
+The system instruction in `chat.service.ts` defines:
 
-### Services
+### Identification Flow
+1. Ask if Advogado (lawyer) or Parte (party)
+2. Request OAB (lawyer) or CPF (party)
 
-- **services/geminiService.ts**: Wrapper for Google Gemini API:
-  - Uses `@google/genai` SDK
-  - Maintains a persistent chat session
-  - System instruction defines chatbot behavior as a court virtual assistant
-  - Configured with Google Maps tool integration for location queries
-  - Returns both text responses and grounding metadata
+### Scheduling Flow
+1. Ask Presencial or Virtual (Zoom)
+2. **Highlight**: Virtual has MORE AVAILABILITY
+3. **Default**: Direct to Assessoria do Gabinete
+4. **Only mention Juiz** if user explicitly requests
 
-### Styling Approach
+### Data Collection
+- Nome completo (full name)
+- Nº do Processo (case number)
+- Dúvida/Assunto or Motivo (question/reason)
 
-- Tailwind CSS via inline className strings
-- Custom color palette: `legal-blue` (#0a2540), `legal-gold` (#c49a3c), `light-bg` (#f8f9fa)
-- Theme classes applied to document.body: `dark-mode`, `high-contrast`
-- Font size classes applied to document.documentElement: `font-lg`, `font-xl`
+### Google Maps Integration
+- Enabled via `tools: [{ googleMaps: {} }]`
+- Triggered by location questions ("onde fica", "como chegar")
+- Returns groundingMetadata with map data
+- Frontend renders embedded iframe
 
-### Key Features Implementation
+## Content Management
 
-1. **Accessibility Controls**: Implemented in App.tsx accessibility bar with state for fontSize, highContrast, and isDarkMode that apply CSS classes via useEffect.
+### constants.ts
+- `SERVICES`: Service cards with icons, links, tutorials
+- `FAQS`: FAQ items organized by category
+- `LATEST_NEWS`: News ticker items
+- `JUDGE_INFO`: Magistrate information
+- `CONTACT_INFO`: Address, phone, email
 
-2. **Scroll-Spy Navigation**: useEffect in App.tsx monitors scroll position and updates activeSection state based on which section is in viewport.
+### types.ts
+- `ServiceItem`, `FaqItem`, `NewsItem` interfaces
+- `ChatMessage` with groundingMetadata support
+- `NavigationSection` enum
 
-3. **Service Cards with Multiple Actions**: Services in constants.ts can have either a single `url` or multiple `links` array. The App.tsx rendering handles both cases, with special handling for `#chatbot` links that open the chat drawer.
+## Components
 
-4. **Chatbot Google Maps Integration**: When Gemini uses Maps tool, groundingMetadata contains map data. Chatbot.tsx renders this as embedded iframes with Google Maps embeds.
+### LegalDocuments.tsx
+LGPD-compliant modals for:
+- **Privacy Policy**: Data collection, purposes, rights, security
+- **Terms of Use**: Object, duties, prohibitions, responsibilities
+
+Accessible from footer links via state: `isPrivacyOpen`, `isTermsOpen`
+
+### Chatbot.tsx
+- Session management via sessionStorage
+- Message history state
+- Loading indicators
+- Google Maps iframe rendering from groundingMetadata
+- Accessibility: ARIA labels, keyboard navigation, focus management
+
+## Styling
+
+- Tailwind CSS via CDN (development)
+- Custom colors: `legal-blue` (#0a2540), `legal-gold` (#c49a3c)
+- Theme classes on body: `dark-mode`, `high-contrast`
+- Font classes on html: `font-lg`, `font-xl`
 
 ## Important Implementation Notes
 
-### Environment Variables
-- Vite config defines both `process.env.API_KEY` and `process.env.GEMINI_API_KEY` from the `GEMINI_API_KEY` environment variable
-- The geminiService uses `process.env.API_KEY`
-- Without a valid API key, chatbot operates in demo mode with fallback message
+### Session Persistence
+```typescript
+// Frontend: sessionStorage
+const sessionId = sessionStorage.getItem('chat_session_id');
 
-### Gemini AI Configuration
-- Model: `gemini-2.5-flash`
-- System instruction in services/geminiService.ts defines chatbot personality and protocols
-- Chatbot is configured for legal/court context with formal tone
-- Google Maps tool is enabled for location queries
-- Chat session persists across messages (not recreated per message)
+// Backend: in-memory Map
+let chatSessions: Map<string, Chat> = new Map();
+```
 
-### Navigation Pattern
-- All navigation uses `scrollToSection(id)` helper that calls `scrollIntoView({ behavior: 'smooth' })`
-- Navigation sections defined in NavigationSection enum in types.ts
-- Mobile menu state controlled by `isMobileMenuOpen` boolean
+### Error Handling
+- Frontend shows user-friendly error messages
+- Backend logs errors with console.error
+- Graceful fallback if Gemini unavailable
 
-### Data Flow for Service Actions
-- Services with `links` array render multiple action buttons
-- Links with `#chatbot` URL trigger `setIsChatOpen(true)` instead of navigation
-- Links with `#` prefix trigger scrollToSection, others open in new tab
-- Email links (`mailto:`) handled appropriately (no target="_blank")
+### Rate Limiting
+- Configured in `backend/src/middleware/rateLimiter.ts`
+- Applied to all `/api` routes
 
 ## Code Modification Guidelines
 
-When adding new services, update constants.ts SERVICES array with proper ServiceItem structure. For services needing multiple action buttons, use the `links` array pattern rather than single `url`.
+### Adding New Chat Behaviors
+1. Update SYSTEM_INSTRUCTION in `backend/src/services/chat.service.ts`
+2. Test with various user inputs
+3. Verify Maps integration still works
 
-When modifying chatbot behavior, update SYSTEM_INSTRUCTION in services/geminiService.ts. The instruction defines protocols for scheduling, information requests, and tool usage.
+### Adding New API Endpoints
+1. Create route file in `backend/src/routes/`
+2. Add Zod validation schema
+3. Register in `backend/src/server.ts`
+4. Update API documentation
 
-When adding new sections to the page, add to NavigationSection enum in types.ts, create section element with matching id in App.tsx, and add NavLink in header navigation.
+### Modifying Legal Documents
+1. Edit `components/LegalDocuments.tsx`
+2. Maintain LGPD compliance (Art. 18 rights)
+3. Update version and date
 
-For accessibility features, maintain ARIA labels, keyboard navigation support, and focus management patterns established in existing components. The skip link, toolbar roles, and live regions are critical for screen reader users.
+### Adding New Sections
+1. Add to `NavigationSection` enum in `types.ts`
+2. Create section with matching id in `App.tsx`
+3. Add NavLink in header navigation
+4. Maintain accessibility patterns
+
+## Security Checklist
+
+- [ ] GEMINI_API_KEY only in backend environment
+- [ ] No API keys in vite.config.ts
+- [ ] No secrets in git history
+- [ ] Rate limiting enabled
+- [ ] CORS properly configured
+- [ ] Input validation on all endpoints

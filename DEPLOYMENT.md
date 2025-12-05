@@ -1,198 +1,280 @@
-# Guia de Deploy - 2a Vara Civel de Cariacica
+# Guia de Deploy - 2ª Vara Cível de Cariacica
 
-## Arquitetura
+## Arquitetura de Produção
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│    Frontend     │────▶│     Backend     │────▶│    Supabase     │
-│  (React/Vite)   │     │   (Express)     │     │  (PostgreSQL)   │
-│                 │     │                 │     │                 │
-│  Vercel/Netlify │     │ Render/Railway  │     │   supabase.com  │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-         │                      │
-         │                      │
-         ▼                      ▼
-   Google Gemini          SendGrid
-     (Chatbot)             (Email)
+┌─────────────────────────────────────────────────────────────────────┐
+│                           INTERNET                                  │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      REPLIT / VERCEL / NETLIFY                      │
+│                         (Frontend + Proxy)                          │
+│                            Porta 5000                               │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                            Proxy /api
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    BACKEND (Express + TypeScript)                   │
+│                            Porta 3001                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
+│  │  Chat API    │  │  Forms API   │  │     Gemini Service       │  │
+│  │  /api/chat   │  │  /api/*      │  │  (GEMINI_API_KEY aqui)   │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+          │                                       │
+          ▼                                       ▼
+┌──────────────────┐                   ┌──────────────────┐
+│  Google Gemini   │                   │  PostgreSQL      │
+│  + Google Maps   │                   │  (Supabase/Neon) │
+└──────────────────┘                   └──────────────────┘
 ```
 
-## Passo a Passo
+---
 
-### 1. Configurar Supabase
+## Opção 1: Deploy no Replit (Recomendado)
 
-1. Criar conta em https://supabase.com
-2. Criar novo projeto
-3. Aguardar provisionamento (~2 min)
-4. Ir em **Project Settings** > **Database**
-5. Copiar as connection strings:
+O projeto está pré-configurado para Replit.
 
-   **Transaction Mode (para aplicacao):**
-   ```
-   postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true
-   ```
+### Configuração Automática
 
-   **Session Mode (para migrations):**
-   ```
-   postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
-   ```
+1. **Importar repositório** no Replit
+2. **Adicionar Secrets** no painel:
+   - `GEMINI_API_KEY` - Chave da API do Google Gemini
 
-### 2. Preparar Schema para Producao
+### Workflows Configurados
 
+| Workflow | Comando | Porta | Saída |
+|----------|---------|-------|-------|
+| Frontend | `npm run dev` | 5000 | Webview |
+| Backend | `cd backend && npm run dev` | 3001 | Console |
+
+### Deploy para Produção (Replit)
+
+1. Clique em **Deploy** no Replit
+2. Selecione **VM** (requer estado do backend)
+3. Configuração:
+   - Build: `npm run build` (compila frontend Vite + backend TypeScript)
+   - Run: `npm run start:backend & npm start`
+   
+**Fluxo de Produção:**
+```
+npm run start:backend → cd backend && npm start → node dist/server.js (porta 3001)
+npm start → node prod-server.js (porta 5000, serve frontend + proxy /api)
+```
+
+---
+
+## Opção 2: Deploy Separado (Vercel + Render)
+
+### Passo 1: Configurar Banco de Dados
+
+#### Supabase (Recomendado)
 ```bash
-# Copiar schema do Supabase
-cp backend/prisma/schema.postgresql.prisma backend/prisma/schema.prisma
+# 1. Criar projeto em https://supabase.com
+# 2. Copiar connection strings:
+
+# Transaction Mode (aplicação):
+postgresql://postgres.[REF]:[PASS]@pooler.supabase.com:6543/postgres?pgbouncer=true
+
+# Session Mode (migrations):
+postgresql://postgres.[REF]:[PASS]@pooler.supabase.com:5432/postgres
 ```
 
-### 3. Configurar Variaveis de Ambiente
-
-**Backend (.env):**
-```env
-# Supabase Database
-DATABASE_URL="postgresql://postgres.[REF]:[PASS]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.[REF]:[PASS]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
-
-# Server
-NODE_ENV=production
-PORT=3001
-FRONTEND_URL=https://seu-frontend.vercel.app
-ALLOWED_ORIGINS=https://seu-frontend.vercel.app
-
-# Security (gerar valores seguros!)
-SESSION_SECRET=<openssl rand -base64 32>
-
-# Email (opcional)
-SENDGRID_API_KEY=<sua-chave>
-EMAIL_FROM=noreply@seu-dominio.com
-EMAIL_TO=admin@seu-dominio.com
+#### Neon (Alternativa)
+```bash
+# 1. Criar projeto em https://neon.tech
+# 2. Copiar connection string
 ```
 
-### 4. Executar Migrations
+### Passo 2: Preparar Schema PostgreSQL
 
 ```bash
 cd backend
 
-# Gerar Prisma Client
-npm run db:generate
+# Usar schema PostgreSQL
+cp prisma/schema.postgresql.prisma prisma/schema.prisma
 
-# Aplicar migrations no Supabase
-npm run db:migrate
+# Gerar cliente
+npx prisma generate
+
+# Aplicar migrations
+npx prisma migrate deploy
 ```
 
-### 5. Deploy do Backend
+### Passo 3: Deploy do Backend (Render)
 
-#### Render.com (Recomendado)
-1. New → Web Service
+1. **New → Web Service** no Render
 2. Conectar repositório GitHub
 3. Configurar:
-   - **Root Directory**: `backend`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm run db:migrate && npm start`
-4. Adicionar variaveis de ambiente (do passo 3)
 
-#### Vercel (Serverless)
-1. Importar repositório
-2. Framework: Other
-3. Root Directory: `backend`
-4. Build Command: `npm install && npm run build`
-5. Adicionar variaveis de ambiente
+| Campo | Valor |
+|-------|-------|
+| Root Directory | `backend` |
+| Build Command | `npm install && npm run build` |
+| Start Command | `npm run db:migrate && npm start` |
 
-### 6. Deploy do Frontend
+4. Variáveis de ambiente:
 
-#### Vercel
-1. Importar repositório
-2. Framework: Vite
-3. Root Directory: `.` (raiz)
-4. Variaveis de ambiente:
-   ```
-   GEMINI_API_KEY=<sua-chave-api>
-   VITE_API_URL=https://seu-backend.onrender.com/api
-   ```
-
-### 7. Verificar Deploy
-
-1. Acessar URL do backend: `https://seu-backend.onrender.com/health`
-2. Acessar frontend e testar formularios
-3. Verificar dados no Supabase Dashboard > Table Editor
-
----
-
-## Supabase - Recursos Adicionais
-
-### Visualizar Dados
-- Supabase Dashboard > Table Editor
-- Ver tabelas: `contact_messages`, `appointments`, `demands`
-
-### Backup Automatico
-- Supabase Pro: backups diarios automaticos
-- Free tier: exportar manualmente via pg_dump
-
-### Row Level Security (Opcional)
-O Supabase suporta RLS para seguranca adicional. Para este projeto, a API backend ja gerencia a seguranca.
-
----
-
-## Comandos Uteis
-
-```bash
-# Backend - Local
-cd backend
-npm run dev          # Desenvolvimento
-npm run build        # Build producao
-npm run db:studio    # Interface visual do banco
-
-# Frontend - Local
-npm run dev          # Desenvolvimento
-npm run build        # Build producao
-npm run preview      # Preview do build
-
-# Database
-npm run db:generate  # Gerar Prisma Client
-npm run db:migrate   # Aplicar migrations
-npm run db:push      # Push schema (dev only)
+```env
+DATABASE_URL=postgresql://...?pgbouncer=true
+DIRECT_URL=postgresql://...:5432/postgres
+GEMINI_API_KEY=sua_chave_aqui
+NODE_ENV=production
+BACKEND_PORT=3001
+FRONTEND_URL=https://seu-frontend.vercel.app
+ALLOWED_ORIGINS=https://seu-frontend.vercel.app
+SESSION_SECRET=gerar_com_openssl_rand_base64_32
 ```
+
+### Passo 4: Deploy do Frontend (Vercel)
+
+1. **Import Project** no Vercel
+2. Conectar repositório
+3. Configurar:
+
+| Campo | Valor |
+|-------|-------|
+| Framework | Vite |
+| Root Directory | `.` (raiz) |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+
+4. Variáveis de ambiente:
+
+```env
+VITE_API_URL=https://seu-backend.onrender.com/api
+```
+
+**Nota:** Não adicione `GEMINI_API_KEY` no frontend!
+
+---
+
+## Variáveis de Ambiente
+
+### Backend (Obrigatórias)
+
+| Variável | Descrição | Exemplo |
+|----------|-----------|---------|
+| `GEMINI_API_KEY` | Chave API Google Gemini | `AIza...` |
+| `DATABASE_URL` | Conexão PostgreSQL | `postgresql://...` |
+| `NODE_ENV` | Ambiente | `production` |
+| `BACKEND_PORT` | Porta do servidor | `3001` |
+| `FRONTEND_URL` | URL do frontend | `https://...` |
+| `ALLOWED_ORIGINS` | CORS permitido | `https://...` |
+| `SESSION_SECRET` | Segredo de sessão | `base64...` |
+
+### Backend (Opcionais)
+
+| Variável | Descrição |
+|----------|-----------|
+| `SENDGRID_API_KEY` | Chave SendGrid para emails |
+| `EMAIL_FROM` | Email remetente |
+| `EMAIL_TO` | Email destinatário |
+| `ADMIN_EMAIL` | Email admin (AdminJS) |
+| `ADMIN_PASSWORD` | Senha admin (AdminJS) |
+
+### Frontend
+
+| Variável | Descrição |
+|----------|-----------|
+| `VITE_API_URL` | URL da API (default: `/api`) |
+
+---
+
+## Servidor de Produção
+
+O arquivo `prod-server.js` serve:
+- Arquivos estáticos do frontend (`dist/`)
+- Proxy de `/api` para o backend
+
+```javascript
+// Estrutura simplificada
+app.use('/api', proxy('http://localhost:3001'));
+app.use(express.static('dist'));
+app.get('*', (req, res) => res.sendFile('dist/index.html'));
+```
+
+---
+
+## Verificação do Deploy
+
+### 1. Testar Health Check
+```bash
+curl https://seu-backend.onrender.com/health
+# Esperado: {"status":"ok","timestamp":"...","environment":"production"}
+```
+
+### 2. Testar Chat API
+```bash
+curl -X POST https://seu-backend.onrender.com/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Olá","sessionId":"test"}'
+# Esperado: {"success":true,"data":{"text":"..."}}
+```
+
+### 3. Testar Frontend
+- Acessar URL do frontend
+- Abrir chatbot e enviar mensagem
+- Verificar se mapas aparecem ao perguntar localização
 
 ---
 
 ## Troubleshooting
 
+### Erro: "Gemini API key not configured"
+- Verificar se `GEMINI_API_KEY` está no backend
+- NÃO adicionar no frontend
+
+### Erro: CORS
+- Verificar `ALLOWED_ORIGINS` inclui URL exata do frontend
+- Incluir `https://` na URL
+- Não incluir barra final
+
 ### Erro: "prepared statement already exists"
-- Causa: Connection pooling com Prisma
-- Solucao: Usar `?pgbouncer=true` na DATABASE_URL
+- Adicionar `?pgbouncer=true` na `DATABASE_URL`
 
-### Erro: "Connection refused"
-- Verificar se as URLs estao corretas
-- Confirmar que a senha nao tem caracteres especiais sem encoding
+### Chatbot não responde
+- Verificar logs do backend
+- Testar endpoint `/api/chat` diretamente
+- Verificar quota do Gemini API
 
-### Erro de CORS
-- Verificar `ALLOWED_ORIGINS` com URL exata (com https://)
-- Nao incluir barra final na URL
-
-### Migrations falham
-- Usar `DIRECT_URL` (porta 5432) para migrations
-- `DATABASE_URL` (porta 6543) para aplicacao
+### Maps não aparecem no chat
+- Perguntar especificamente sobre localização
+- Verificar se `groundingMetadata` está sendo retornado
+- Verificar console do frontend
 
 ---
 
-## Custos
+## Custos Estimados
 
-| Servico | Plano Gratuito | Notas |
-|---------|----------------|-------|
-| **Supabase** | 500MB DB, 1GB storage | Ideal para comecar |
-| **Vercel** | Ilimitado para frontend | Hobby plan |
-| **Render** | 750h/mes | Backend (spin down apos 15min) |
+| Serviço | Plano Gratuito | Limitações |
+|---------|----------------|------------|
+| **Replit** | Core $20/mês | Recomendado para produção |
+| **Supabase** | 500MB DB | Ideal para começar |
+| **Vercel** | Ilimitado | Hobby plan |
+| **Render** | 750h/mês | Spin down após 15min |
+| **Gemini** | Gratuito | Limites de quota |
 | **SendGrid** | 100 emails/dia | Opcional |
-| **Gemini** | Gratuito | Com limites de quota |
 
 ---
 
-## Checklist Pre-Deploy
+## Checklist de Deploy
 
-- [ ] Supabase projeto criado
-- [ ] `DATABASE_URL` com `?pgbouncer=true`
-- [ ] `DIRECT_URL` com porta 5432
-- [ ] Schema copiado: `schema.postgresql.prisma` → `schema.prisma`
-- [ ] Migrations executadas com sucesso
-- [ ] `SESSION_SECRET` com 32+ caracteres
+### Pré-Deploy
+- [ ] Banco de dados configurado
+- [ ] `GEMINI_API_KEY` no backend
+- [ ] Migrations executadas
+- [ ] `SESSION_SECRET` gerado (32+ caracteres)
 - [ ] `ALLOWED_ORIGINS` configurado
-- [ ] Frontend `VITE_API_URL` apontando para backend
-- [ ] HTTPS em todos os servicos
+
+### Pós-Deploy
+- [ ] Health check respondendo
+- [ ] Chat API funcionando
+- [ ] Frontend carregando
+- [ ] Chatbot respondendo
+- [ ] Maps aparecendo em perguntas de localização
+- [ ] Formulários enviando
+- [ ] HTTPS ativo em todos os serviços
