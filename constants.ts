@@ -108,5 +108,5 @@ export const JUDGE_INFO = {
 export const CONTACT_INFO = {
   address: 'R. Meridional, 1000 - Alto Lage, Cariacica - ES, 29151-230',
   email: '2varacivel@tjes.jus.br',
-  phone: '(27) 3246-5500'
+  phone: '(27) 3246-5641'
 };
