@@ -13,18 +13,6 @@ export const SERVICES: ServiceItem[] = [
     title: 'Audiências Virtuais',
     description: 'As audiências virtuais são realizadas por meio do Aplicativo Zoom. Baixe e instale o aplicativo no seu celular com antecedência para evitar atrasos, por meio dos links abaixo:',
     icon: 'video',
-    url: 'https://sistemas.tjes.jus.br/balcaovirtual/atendimento/informar-dados?unidade_id=5253'
-  },
-  {
-    id: '5',
-    title: 'Zoom (Audiências)',
-    description: 'Baixe o aplicativo e prepare-se para sua audiência virtual.',
-    icon: 'video',
-    tutorial: [
-      "Instale o aplicativo Zoom no seu celular ou computador.",
-      "Clique no link da audiência enviado por e-mail.",
-      "Ao entrar na sala, clique em 'Ligar via Internet' ou 'Juntar-se ao áudio' para ouvir e falar."
-    ],
     links: [
       { label: 'App Store (iOS)', url: 'https://apps.apple.com/br/app/zoom-one-platform-to-connect/id546505307', icon: 'apple' },
       { label: 'Google Play (Android)', url: 'https://play.google.com/store/apps/details?id=us.zoom.videomeetings', icon: 'playstore' }
