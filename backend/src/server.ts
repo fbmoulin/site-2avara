@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import contactRoutes from './routes/contact.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import demandRoutes from './routes/demand.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 
 // Carregar variáveis de ambiente
@@ -57,6 +58,7 @@ app.use('/api', apiLimiter);
 app.use('/api/contact', contactRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/demands', demandRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Painel AdminJS (temporariamente desabilitado)
 // app.use(adminJs.options.rootPath, adminRouter);
@@ -79,6 +81,7 @@ app.get('/', (req, res) => {
       contact: 'POST /api/contact',
       appointments: 'POST /api/appointments',
       demands: 'POST /api/demands',
+      chat: 'POST /api/chat',
       admin: 'GET /admin',
       health: 'GET /health',
     },
