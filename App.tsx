@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Icons } from './components/Icons';
 import { Chatbot } from './components/Chatbot';
 import { PrivacyPolicy, TermsOfUse } from './components/LegalDocuments';
-import VLibrasWidget from './components/VLibrasWidget';
 import { 
   SERVICES, 
   FAQS, 
@@ -120,7 +119,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col transition-colors duration-300">
-      <VLibrasWidget />
       <a 
         href="#main-content" 
         className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:bg-legal-gold focus:text-white focus:px-4 focus:py-2 focus:rounded shadow-lg"
