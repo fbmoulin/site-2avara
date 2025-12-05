@@ -23,6 +23,10 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 - ✅ Configuração do secret `GEMINI_API_KEY`
 - ✅ Correção de segurança: remoção de API key do bundle frontend
 - ✅ Limpeza de código: pastas e dependências não utilizadas removidas
+- ✅ **Chatbot como canal principal**: botão expandido, indicador online, tooltip proativo
+- ✅ **Hero CTA**: botão "Fale Conosco" abre chatbot diretamente
+- ✅ **Verificação de segurança**: API keys, CORS, rate limiting, headers validados
+- ✅ **Deploy configurado**: Reserved VM pronto para publicação
 
 ---
 
@@ -137,6 +141,20 @@ O chatbot implementa um protocolo estruturado de atendimento:
 - Ativada automaticamente para perguntas de localização
 - Retorna mapa interativo embutido no chat
 - Endereço: Fórum Des. Américo Ribeiro Coelho, R. Meridional, 1000
+
+### UX do Chatbot (Canal Principal)
+O chatbot foi projetado como o principal canal de comunicação:
+
+| Elemento | Descrição |
+|----------|-----------|
+| **Botão Expandido** | Mostra "Atendimento Virtual" (desktop) ou "Fale Conosco" (mobile) |
+| **Indicador Online** | Badge verde pulsante no canto superior direito |
+| **Animação Pulse** | Anel sutil que chama atenção sem ser intrusivo |
+| **Tooltip Proativo** | Aparece após 3s: "Precisa de ajuda com agendamentos ou informações?" |
+| **Hero CTA** | Botão "Fale Conosco" na hero section abre o chatbot diretamente |
+| **Status no Chat** | Header mostra "Online agora" quando aberto |
+
+Todas as animações respeitam `prefers-reduced-motion` para acessibilidade.
 
 ---
 
@@ -289,14 +307,14 @@ O `prod-server.js` serve:
 
 ## Notas Importantes
 
-### Segurança
-- `GEMINI_API_KEY` está **apenas no backend**
-- Nunca expor chaves de API no frontend
-- Proxy de `/api` protege o backend
-
-### CORS
-- Backend aceita requisições de domínios `.replit.dev`
-- Localhost permitido nas portas 5000, 3000, 5173
+### Segurança (Verificado)
+| Aspecto | Status | Detalhes |
+|---------|--------|----------|
+| **API Keys** | ✅ Seguro | `GEMINI_API_KEY` apenas no backend, nunca exposta |
+| **CORS** | ✅ Configurado | Aceita `.replit.dev` e localhost (5000, 3000, 5173) |
+| **Headers** | ✅ Ativo | Helmet protege contra XSS, clickjacking, etc. |
+| **Rate Limiting** | ✅ Ativo | 100/min geral, 3-10/15min por formulário |
+| **Erros** | ✅ Seguro | Stack traces ocultos em produção |
 
 ### Vite
 - Porta 5000 para compatibilidade com webview Replit
