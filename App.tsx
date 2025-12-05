@@ -214,13 +214,22 @@ const App: React.FC = () => {
               </div>
             </a>
 
-            <nav className="hidden md:flex gap-6" aria-label="Navegação Principal">
+            <nav className="hidden md:flex gap-6 items-center" aria-label="Navegação Principal">
               <NavLink section="home" label="Início" />
-              <NavLink section="institutional" label="Institucional" />
               <NavLink section="judge" label="Magistrado" />
               <NavLink section="services" label="Serviços" />
               <NavLink section="faq" label="Dúvidas" />
               <NavLink section="contact" label="Contato" />
+              <a 
+                href="https://maps.google.com/maps?q=F%C3%B3rum+Desembargador+Am%C3%A9rico+Ribeiro+Coelho,+R.+Meridional,+1000+-+Alto+Lage,+Cariacica+-+ES"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-gray-200 hover:text-legal-gold font-medium transition-colors text-sm"
+                title="Ver localização no Google Maps"
+              >
+                <Icons.MapPin size={16} />
+                Localização
+              </a>
             </nav>
 
             <button 
@@ -238,11 +247,20 @@ const App: React.FC = () => {
         {isMobileMenuOpen && (
           <div id="mobile-menu" className="md:hidden bg-white border-t border-gray-200 absolute w-full shadow-xl">
             <NavLink mobile section="home" label="Início" />
-            <NavLink mobile section="institutional" label="Institucional" />
             <NavLink mobile section="judge" label="Magistrado" />
             <NavLink mobile section="services" label="Serviços" />
             <NavLink mobile section="faq" label="Dúvidas" />
             <NavLink mobile section="contact" label="Contato" />
+            <a 
+              href="https://maps.google.com/maps?q=F%C3%B3rum+Desembargador+Am%C3%A9rico+Ribeiro+Coelho,+R.+Meridional,+1000+-+Alto+Lage,+Cariacica+-+ES"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 py-4 text-legal-blue hover:bg-legal-gold hover:text-white transition-colors border-b border-gray-100"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Icons.MapPin size={18} />
+              Localização
+            </a>
           </div>
         )}
       </header>
