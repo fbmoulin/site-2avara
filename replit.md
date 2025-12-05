@@ -16,6 +16,8 @@ Full-stack web application for the 2nd Civil Court of Cariacica (TJES). This is 
 - ✅ Added Google Gemini AI integration for chatbot (backend service with session support)
 - ✅ Created LGPD-compliant Privacy Policy and Terms of Use modals
 - ✅ Configured GEMINI_API_KEY secret for chatbot AI functionality
+- ✅ Security fix: Removed GEMINI_API_KEY exposure from frontend bundle
+- ✅ Code cleanup: Removed unused dependencies and folders (output/, api/, migrations-postgresql/)
 
 ## Project Architecture
 
