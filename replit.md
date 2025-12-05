@@ -222,9 +222,10 @@ cd backend && npx prisma studio
 ## Configuração de Deploy
 
 ### Target
-- **Tipo**: VM (requer estado do backend)
-- **Build**: `npm run build` (compila frontend e backend)
-- **Run**: `npm run start:backend & npm start` (inicia backend + prod-server.js)
+- **Tipo**: Reserved VM (requer estado do backend para sessões de chat)
+- **Build**: `npm run build` (compila frontend Vite + backend TypeScript)
+- **Run**: `cd backend && npm start & sleep 2 && npm start` (inicia backend + prod-server.js)
+- **Status**: Pronto para publicação
 
 ### Scripts Disponíveis (Root)
 | Script | Descrição |
