@@ -522,43 +522,6 @@ const App: React.FC = () => {
               );
             })()}
 
-            {/* News Ticker - Compact Version */}
-            <div className="mt-10 bg-legal-blue/5 rounded-lg p-4 border border-legal-blue/10">
-              <div className="flex items-center gap-4">
-                <span className="flex-shrink-0 px-3 py-1 bg-legal-blue text-white text-xs font-bold uppercase rounded">
-                  Últimas
-                </span>
-                <div className="overflow-hidden relative flex-1" aria-label="Ticker de notícias">
-                  <div className="animate-marquee motion-reduce:animate-none whitespace-nowrap flex items-center">
-                    {(newsItems.length > 0 ? newsItems : LATEST_NEWS).map((news, idx) => (
-                      <a 
-                        key={news.id || idx} 
-                        href={news.link || "https://www.tjes.jus.br/canais/noticias/"} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="mr-10 text-sm text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center focus:outline-none focus:underline"
-                      >
-                        <span className="font-semibold text-legal-gold mr-2">[{news.date}]</span>
-                        {news.title}
-                      </a>
-                    ))}
-                    {(newsItems.length > 0 ? newsItems : LATEST_NEWS).map((news, idx) => (
-                      <a 
-                        key={`dup-${news.id || idx}`} 
-                        href={news.link || "https://www.tjes.jus.br/canais/noticias/"} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="mr-10 text-sm text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center"
-                        aria-hidden="true"
-                      >
-                        <span className="font-semibold text-legal-gold mr-2">[{news.date}]</span>
-                        {news.title}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
