@@ -42,6 +42,17 @@ export const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
     }
   }, [welcomeDismissed, isOpen]);
 
+  // Auto-dismiss welcome tooltip after 5 seconds
+  useEffect(() => {
+    if (showWelcome) {
+      const dismissTimer = setTimeout(() => {
+        setShowWelcome(false);
+        setWelcomeDismissed(true);
+      }, 5000);
+      return () => clearTimeout(dismissTimer);
+    }
+  }, [showWelcome]);
+
   useEffect(() => {
     if (isOpen) {
       setShowWelcome(false);
