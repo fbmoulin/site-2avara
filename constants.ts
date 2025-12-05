@@ -11,7 +11,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: '2',
     title: 'Audiências Virtuais',
-    description: 'Atendimento por videoconferência com a secretaria da vara.',
+    description: 'As audiências virtuais são realizadas por meio do Aplicativo Zoom. Baixe e instale o aplicativo no seu celular com antecedência para evitar atrasos, por meio dos links abaixo:',
     icon: 'video',
     url: 'https://sistemas.tjes.jus.br/balcaovirtual/atendimento/informar-dados?unidade_id=5253'
   },
