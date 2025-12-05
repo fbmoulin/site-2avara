@@ -13,7 +13,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 ### Dezembro 2025
 - ✅ Importação do repositório GitHub para Replit
 - ✅ Configuração do Vite na porta 5000 com suporte a proxy Replit
-- ✅ Setup do backend com SQLite e Prisma ORM
+- ✅ Setup do backend com Prisma ORM
 - ✅ Configuração de variáveis de ambiente
 - ✅ CORS atualizado para domínios Replit
 - ✅ Workflows configurados (Frontend + Backend)
@@ -28,6 +28,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 - ✅ **Verificação de segurança**: API keys, CORS, rate limiting, headers validados
 - ✅ **Deploy configurado**: Reserved VM pronto para publicação
 - ✅ **PostgreSQL**: Migrado de SQLite para PostgreSQL Replit
+- ✅ **Email Gmail**: Sistema de notificações configurado com Nodemailer + Gmail App Password
 
 ---
 
@@ -71,6 +72,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 | Secret | Status | Descrição |
 |--------|--------|-----------|
 | `GEMINI_API_KEY` | ✅ Configurado | Chave API Google Gemini |
+| `GMAIL_APP_PASSWORD` | ✅ Configurado | Senha de app do Gmail (16 caracteres) |
 
 ### Ambiente de Desenvolvimento
 | Variável | Valor | Descrição |
@@ -298,8 +300,7 @@ O `prod-server.js` serve:
 │   │   │   └── email.service.ts
 │   │   └── server.ts
 │   └── prisma/
-│       ├── schema.prisma
-│       └── dev.db
+│       └── schema.prisma
 ├── attached_assets/
 ├── App.tsx
 ├── constants.ts
@@ -331,11 +332,11 @@ O `prod-server.js` serve:
 
 ## Próximos Passos Sugeridos
 
-1. **Email**: Configurar SendGrid para notificações
-2. **AdminJS**: Reativar painel administrativo
-3. **Tailwind**: Migrar de CDN para PostCSS (produção)
-4. **PostgreSQL**: Migrar banco para produção
-5. **Testes**: Adicionar suite de testes automatizados
+1. **AdminJS**: Reativar painel administrativo
+2. **Tailwind**: Migrar de CDN para PostCSS (produção)
+3. **Testes**: Adicionar suite de testes automatizados
+4. **Monitoramento**: Adicionar logs e métricas de uso
+5. **Backup**: Configurar backup automático do banco de dados
 
 ---
 

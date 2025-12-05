@@ -39,9 +39,10 @@ npm run build
 
 ## Environment Setup
 
-**Required Secret:**
+**Required Secrets:**
 ```
 GEMINI_API_KEY=your_gemini_api_key
+GMAIL_APP_PASSWORD=your_gmail_app_password_16_chars
 ```
 
 The key is accessed ONLY in `backend/src/services/chat.service.ts` via `process.env.GEMINI_API_KEY`.
@@ -87,8 +88,7 @@ backend/
 │       ├── rateLimiter.ts
 │       └── validator.ts
 └── prisma/
-    ├── schema.prisma
-    └── dev.db
+    └── schema.prisma
 ```
 
 ### Data Flow

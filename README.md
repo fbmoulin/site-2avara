@@ -29,9 +29,9 @@ Aplicação full-stack com assistente virtual (Google Gemini), formulários inte
 | Frontend | Backend |
 |----------|---------|
 | React 19.2 | Express 4.21 |
-| TypeScript 5.8 | Prisma 6.2 |
+| TypeScript 5.8 | Prisma + PostgreSQL |
 | Vite 6.2 | Google GenAI |
-| Tailwind CSS | Zod + Helmet |
+| Tailwind CSS | Nodemailer + Gmail |
 
 ## Instalação
 
@@ -49,13 +49,18 @@ cd backend && npx prisma generate && npx prisma migrate dev && cd ..
 ## Configuração
 
 ```env
-# Secret (obrigatório)
+# Secrets (obrigatório)
 GEMINI_API_KEY=sua_chave_gemini
+GMAIL_APP_PASSWORD=senha_app_gmail_16_caracteres
 
 # Backend (.env)
-DATABASE_URL="file:./prisma/dev.db"
+DATABASE_URL="postgresql://..."  # PostgreSQL Replit
 BACKEND_PORT=3001
 NODE_ENV=development
+
+# Email
+EMAIL_FROM=2acivelcariacica@gmail.com
+EMAIL_TO=2acivelcariacica@gmail.com
 ```
 
 ## Executando

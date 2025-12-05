@@ -24,7 +24,7 @@
 - `backend/src/routes/appointment.routes.ts` - Appointment scheduling API
 - `backend/src/routes/demand.routes.ts` - Demand registration API
 - `backend/src/services/chat.service.ts` - **Gemini AI integration (API key here)**
-- `backend/src/services/email.service.ts` - SendGrid email service
+- `backend/src/services/email.service.ts` - Gmail/Nodemailer email service
 - `backend/prisma/schema.prisma` - Database schema
 
 ### Assets
@@ -62,11 +62,14 @@ npx prisma studio    # Visual database browser
 
 ### Secrets (Required)
 - `GEMINI_API_KEY` - Google Gemini API key (backend only, NEVER in frontend)
+- `GMAIL_APP_PASSWORD` - Gmail app password for email notifications (16 characters)
 
 ### Development Environment
-- `DATABASE_URL` - Prisma connection string (SQLite for dev)
+- `DATABASE_URL` - Prisma connection string (PostgreSQL for Replit)
 - `BACKEND_PORT` - Backend server port (default: 3001)
 - `NODE_ENV` - Environment mode (development/production)
+- `EMAIL_FROM` - Email sender address (default: 2acivelcariacica@gmail.com)
+- `EMAIL_TO` - Email recipient address (default: 2acivelcariacica@gmail.com)
 
 ## Architecture Notes
 

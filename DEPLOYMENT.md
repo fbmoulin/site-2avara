@@ -43,6 +43,7 @@ O projeto está pré-configurado para Replit.
 1. **Importar repositório** no Replit
 2. **Adicionar Secrets** no painel:
    - `GEMINI_API_KEY` - Chave da API do Google Gemini
+   - `GMAIL_APP_PASSWORD` - Senha de app do Gmail (16 caracteres)
 
 ### Workflows Configurados
 
@@ -166,13 +167,18 @@ VITE_API_URL=https://seu-backend.onrender.com/api
 | `ALLOWED_ORIGINS` | CORS permitido | `https://...` |
 | `SESSION_SECRET` | Segredo de sessão | `base64...` |
 
+### Backend (Email - Gmail)
+
+| Variável | Descrição |
+|----------|-----------|
+| `GMAIL_APP_PASSWORD` | Senha de app do Gmail (16 caracteres) |
+| `EMAIL_FROM` | Email remetente (padrão: 2acivelcariacica@gmail.com) |
+| `EMAIL_TO` | Email destinatário (padrão: 2acivelcariacica@gmail.com) |
+
 ### Backend (Opcionais)
 
 | Variável | Descrição |
 |----------|-----------|
-| `SENDGRID_API_KEY` | Chave SendGrid para emails |
-| `EMAIL_FROM` | Email remetente |
-| `EMAIL_TO` | Email destinatário |
 | `ADMIN_EMAIL` | Email admin (AdminJS) |
 | `ADMIN_PASSWORD` | Senha admin (AdminJS) |
 
@@ -257,7 +263,7 @@ curl -X POST https://seu-backend.onrender.com/api/chat \
 | **Vercel** | Ilimitado | Hobby plan |
 | **Render** | 750h/mês | Spin down após 15min |
 | **Gemini** | Gratuito | Limites de quota |
-| **SendGrid** | 100 emails/dia | Opcional |
+| **Gmail** | 500 emails/dia | Gratuito (Nodemailer) |
 
 ---
 
