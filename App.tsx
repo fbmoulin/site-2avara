@@ -505,17 +505,6 @@ const App: React.FC = () => {
 
                   <div className="flex items-start gap-4">
                     <div className="bg-white/10 p-3 rounded-lg">
-                      <Icons.MessageSquare className="text-legal-gold" size={24} aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg mb-1">WhatsApp (Balcão Virtual)</h4>
-                      <p className="text-gray-300">{CONTACT_INFO.whatsapp}</p>
-                      <p className="text-gray-400 text-sm">Apenas mensagens de texto</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-white/10 p-3 rounded-lg">
                       <Icons.Mail className="text-legal-gold" size={24} aria-hidden="true" />
                     </div>
                     <div>
