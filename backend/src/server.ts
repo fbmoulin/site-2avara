@@ -17,6 +17,9 @@ const app = express();
 // Use BACKEND_PORT to avoid conflict with frontend PORT in deployment
 const PORT = parseInt(process.env.BACKEND_PORT || '3001', 10);
 
+// Trust proxy for rate limiting behind reverse proxy (Replit)
+app.set('trust proxy', 1);
+
 // Middleware de segurança
 app.use(helmet({
   contentSecurityPolicy: false, // AdminJS precisa disso desabilitado

@@ -29,6 +29,10 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 - ✅ **Deploy configurado**: Reserved VM pronto para publicação
 - ✅ **PostgreSQL**: Migrado de SQLite para PostgreSQL Replit
 - ✅ **Email Gmail**: Sistema de notificações configurado com Nodemailer + Gmail App Password
+- ✅ **Notícias Automáticas**: Sistema de busca de notícias TJES com atualização diária às 9h (America/Sao_Paulo)
+  - Pipeline multi-estratégia: RSS direto → Proxy RSS (r.jina.ai) → HTML scraping → Fallback estático
+  - Mecanismo de backoff para evitar spam de erros 403
+  - Frontend dinâmico com fallback para constantes
 
 ---
 
@@ -60,6 +64,7 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 | 🤖 **Chatbot IA** | Google Gemini com integração Google Maps |
 | 📝 **Formulários** | Contato, agendamento e demandas |
 | 📅 **Agendamento** | Presencial e virtual (Zoom) |
+| 📰 **Notícias Automáticas** | Atualização diária às 9h do TJES |
 | ♿ **Acessibilidade** | Fonte, contraste e modo escuro |
 | 🔐 **Segurança** | Helmet, CORS, Rate Limiting |
 | 📋 **LGPD** | Política de Privacidade e Termos de Uso |
@@ -199,6 +204,9 @@ Inclui seções sobre:
 | `POST` | `/api/contact` | Enviar mensagem de contato |
 | `POST` | `/api/appointments` | Criar agendamento |
 | `POST` | `/api/demands` | Registrar demanda |
+| `GET` | `/api/news` | Listar notícias ativas |
+| `GET` | `/api/news/status` | Status do sistema de notícias |
+| `POST` | `/api/news/refresh` | Atualizar notícias manualmente |
 | `GET` | `/health` | Health check |
 
 ### Exemplo: Chat API
@@ -230,6 +238,7 @@ POST /api/chat
 | `ContactMessage` | Mensagens do formulário de contato |
 | `Appointment` | Agendamentos (presencial/virtual) |
 | `Demand` | Demandas e reclamações |
+| `News` | Notícias do TJES (atualização automática) |
 
 ### Comandos
 ```bash

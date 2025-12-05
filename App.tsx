@@ -10,6 +10,7 @@ import {
   CONTACT_INFO 
 } from './constants';
 import { NavigationSection } from './types';
+import { fetchNews, NewsItem } from './services/newsService';
 import forumImage from '@assets/forum_1764897995940.jpg';
 import zoomTutorialImage from '@assets/stock_images/zoom_video_conferenc_61e7f082.jpg';
 
@@ -33,6 +34,11 @@ const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+
+  useEffect(() => {
+    fetchNews(10).then(setNewsItems);
+  }, []);
 
   // Handle scroll spy to update active nav link
   useEffect(() => {
@@ -277,49 +283,138 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* LATEST NEWS TICKER */}
-        <div className="bg-gray-100 border-b border-gray-200 py-3" role="complementary" aria-label="Últimas Notícias">
-          <div className="container mx-auto px-4 flex items-center gap-4 h-12">
-            <a 
-              href="https://www.tjes.jus.br/canais/noticias/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="font-bold text-lg text-legal-blue uppercase tracking-wider whitespace-nowrap flex items-center gap-2 hover:text-legal-gold transition-colors focus:outline-none focus:underline"
-              title="Ir para o site do TJES (Abre em nova aba)"
-            >
-              Notícias TJES <Icons.ExternalLink size={18} />
-            </a>
-            <div className="overflow-hidden relative w-full h-full flex items-center" tabIndex={0} aria-label="Lista de notícias em movimento">
-              <div className="animate-marquee motion-reduce:animate-none whitespace-nowrap flex items-center">
-                {LATEST_NEWS.map((news, idx) => (
-                  <a 
-                    key={idx} 
-                    href="https://www.tjes.jus.br/canais/noticias/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="mr-12 text-lg text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center focus:outline-none focus:ring-1 focus:ring-legal-gold rounded px-1"
-                  >
-                    <span className="font-semibold text-legal-gold mr-2" aria-label={`Data: ${news.date}`}>[{news.date}]</span>
-                    {news.title}
-                  </a>
-                ))}
-                {LATEST_NEWS.map((news, idx) => (
-                  <a 
-                    key={`dup-${idx}`} 
-                    href="https://www.tjes.jus.br/canais/noticias/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="mr-12 text-lg text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center focus:outline-none focus:ring-1 focus:ring-legal-gold rounded px-1"
-                    aria-hidden="true"
-                  >
-                    <span className="font-semibold text-legal-gold mr-2">[{news.date}]</span>
-                    {news.title}
-                  </a>
-                ))}
+        {/* NEWS SECTION - DESTAQUE */}
+        <section className="py-16 bg-gradient-to-b from-gray-50 to-white" aria-label="Notícias em Destaque">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Icons.Newspaper className="text-legal-gold" size={28} />
+                  <h2 className="text-3xl font-serif font-bold text-legal-blue">Notícias em Destaque</h2>
+                </div>
+                <p className="text-gray-600">Fique por dentro das últimas novidades do TJES</p>
+              </div>
+              <a 
+                href="https://www.tjes.jus.br/canais/noticias/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="mt-4 md:mt-0 inline-flex items-center gap-2 text-legal-gold hover:text-legal-gold-hover font-semibold transition-colors focus:outline-none focus:underline"
+              >
+                Ver todas as notícias <Icons.ExternalLink size={18} />
+              </a>
+            </div>
+
+            {(() => {
+              const displayNews = newsItems.length > 0 ? newsItems : LATEST_NEWS;
+              const featuredNews = displayNews[0];
+              const secondaryNews = displayNews.slice(1, 7);
+              
+              return (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Featured News Card */}
+                  {featuredNews && (
+                    <a 
+                      href={featuredNews.link || "https://www.tjes.jus.br/canais/noticias/"} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="lg:col-span-2 group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-legal-gold/50"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-legal-blue via-legal-blue to-legal-blue-light"></div>
+                      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23b8860b%22 fill-opacity=%220.05%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+                      <div className="relative p-8 md:p-10 min-h-[320px] flex flex-col justify-end">
+                        <div className="absolute top-6 left-6 flex gap-2">
+                          <span className="px-3 py-1 bg-legal-gold text-white text-xs font-bold uppercase rounded-full">
+                            Destaque
+                          </span>
+                          <span className="px-3 py-1 bg-white/20 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
+                            {featuredNews.date}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4 group-hover:text-legal-gold transition-colors leading-tight">
+                            {featuredNews.title}
+                          </h3>
+                          {featuredNews.description && (
+                            <p className="text-gray-200 text-lg line-clamp-2 mb-4">
+                              {featuredNews.description}
+                            </p>
+                          )}
+                          <span className="inline-flex items-center gap-2 text-legal-gold font-semibold group-hover:gap-3 transition-all">
+                            Ler notícia completa <Icons.ArrowRight size={18} />
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  )}
+
+                  {/* Secondary News List */}
+                  <div className="space-y-4">
+                    {secondaryNews.map((news, idx) => (
+                      <a 
+                        key={news.id || idx}
+                        href={news.link || "https://www.tjes.jus.br/canais/noticias/"} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group block p-4 bg-white rounded-lg border-l-4 border-legal-gold shadow-sm hover:shadow-md hover:border-legal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-legal-gold"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-legal-blue/10 flex items-center justify-center">
+                            <Icons.FileText className="text-legal-blue" size={18} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-xs text-legal-gold font-semibold">{news.date}</span>
+                            <h4 className="text-sm font-semibold text-gray-800 group-hover:text-legal-blue transition-colors line-clamp-2 mt-1">
+                              {news.title}
+                            </h4>
+                          </div>
+                          <Icons.ChevronRight className="flex-shrink-0 text-gray-400 group-hover:text-legal-gold group-hover:translate-x-1 transition-all" size={18} />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* News Ticker - Compact Version */}
+            <div className="mt-10 bg-legal-blue/5 rounded-lg p-4 border border-legal-blue/10">
+              <div className="flex items-center gap-4">
+                <span className="flex-shrink-0 px-3 py-1 bg-legal-blue text-white text-xs font-bold uppercase rounded">
+                  Últimas
+                </span>
+                <div className="overflow-hidden relative flex-1" aria-label="Ticker de notícias">
+                  <div className="animate-marquee motion-reduce:animate-none whitespace-nowrap flex items-center">
+                    {(newsItems.length > 0 ? newsItems : LATEST_NEWS).map((news, idx) => (
+                      <a 
+                        key={news.id || idx} 
+                        href={news.link || "https://www.tjes.jus.br/canais/noticias/"} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="mr-10 text-sm text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center focus:outline-none focus:underline"
+                      >
+                        <span className="font-semibold text-legal-gold mr-2">[{news.date}]</span>
+                        {news.title}
+                      </a>
+                    ))}
+                    {(newsItems.length > 0 ? newsItems : LATEST_NEWS).map((news, idx) => (
+                      <a 
+                        key={`dup-${news.id || idx}`} 
+                        href={news.link || "https://www.tjes.jus.br/canais/noticias/"} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="mr-10 text-sm text-gray-700 hover:text-legal-blue transition-colors inline-flex items-center"
+                        aria-hidden="true"
+                      >
+                        <span className="font-semibold text-legal-gold mr-2">[{news.date}]</span>
+                        {news.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* INSTITUTIONAL / JUDGE SECTION */}
         <section id={NavigationSection.JUDGE} className="py-20 bg-white" aria-label="Informações do Magistrado">

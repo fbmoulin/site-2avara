@@ -11,7 +11,8 @@ import {
   Phone, 
   Mail, 
   Clock, 
-  ChevronDown, 
+  ChevronDown,
+  ChevronRight,
   Menu, 
   X, 
   Send,
@@ -27,7 +28,9 @@ import {
   Download,
   Smartphone,
   Info,
-  AlertCircle
+  AlertCircle,
+  Newspaper,
+  ArrowRight
 } from 'lucide-react';
 
 const AppleIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
@@ -56,6 +59,7 @@ export const Icons = {
   Mail,
   Clock,
   ChevronDown,
+  ChevronRight,
   Menu,
   X,
   Send,
@@ -72,6 +76,8 @@ export const Icons = {
   Smartphone,
   Info,
   AlertCircle,
+  Newspaper,
+  ArrowRight,
   Apple: AppleIcon,
   PlayStore: PlayStoreIcon
 };
