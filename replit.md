@@ -5,7 +5,7 @@ Full-stack web application for the 2nd Civil Court of Cariacica (TJES). This is 
 
 **Current State**: Imported from GitHub and configured for Replit environment (December 5, 2024)
 
-## Recent Changes (December 5, 2024)
+## Recent Changes (December 5, 2025)
 - ✅ Imported GitHub repository to Replit
 - ✅ Configured Vite frontend to run on port 5000 with Replit proxy support
 - ✅ Installed backend dependencies and setup SQLite database
@@ -13,7 +13,9 @@ Full-stack web application for the 2nd Civil Court of Cariacica (TJES). This is 
 - ✅ Updated backend CORS to allow Replit domains
 - ✅ Setup workflows for both frontend and backend
 - ✅ Configured deployment settings
-- ✅ Added Google Gemini AI integration for chatbot
+- ✅ Added Google Gemini AI integration for chatbot (backend service with session support)
+- ✅ Created LGPD-compliant Privacy Policy and Terms of Use modals
+- ✅ Configured GEMINI_API_KEY secret for chatbot AI functionality
 
 ## Project Architecture
 
@@ -43,8 +45,8 @@ Full-stack web application for the 2nd Civil Court of Cariacica (TJES). This is 
 
 ## Environment Variables
 
-### Secrets (Required from User)
-- `GEMINI_API_KEY` - Google Gemini API key for chatbot functionality
+### Secrets (Configured)
+- `GEMINI_API_KEY` - Google Gemini API key for chatbot functionality (✅ Configurado)
 
 ### Development Environment
 - `DATABASE_URL` - SQLite database path: `file:./backend/prisma/dev.db`
@@ -98,6 +100,8 @@ cd backend && npx prisma studio
 - `POST /api/contact` - Submit contact form
 - `POST /api/appointments` - Create appointment
 - `POST /api/demands` - Register demand
+- `POST /api/chat` - Chatbot message (uses Gemini AI)
+- `POST /api/chat/clear` - Clear chat session
 - `GET /health` - Health check
 
 ## Deployment Configuration
