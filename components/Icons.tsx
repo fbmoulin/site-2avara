@@ -30,7 +30,11 @@ import {
   Info,
   AlertCircle,
   Newspaper,
-  ArrowRight
+  ArrowRight,
+  Edit,
+  Trash2,
+  CheckCircle,
+  Settings
 } from 'lucide-react';
 
 const AppleIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
@@ -78,6 +82,10 @@ export const Icons = {
   AlertCircle,
   Newspaper,
   ArrowRight,
+  Edit,
+  Trash2,
+  CheckCircle,
+  Settings,
   Apple: AppleIcon,
   PlayStore: PlayStoreIcon
 };

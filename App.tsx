@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Icons } from './components/Icons';
 import { Chatbot } from './components/Chatbot';
 import { PrivacyPolicy, TermsOfUse } from './components/LegalDocuments';
+import { AdminArticles } from './components/AdminArticles';
 import { 
   SERVICES, 
   FAQS, 
@@ -35,6 +36,7 @@ const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
 
@@ -434,18 +436,37 @@ const App: React.FC = () => {
         </section>
 
         {/* BLOG / ARTIGOS JURÍDICOS */}
-        {articles.length > 0 && (
-          <section className="py-16 bg-white" aria-label="Artigos e Publicações">
-            <div className="container mx-auto px-4">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <Icons.FileText className="text-legal-gold" size={28} />
-                    <h2 className="text-3xl font-serif font-bold text-legal-blue">Artigos e Publicações</h2>
-                  </div>
-                  <p className="text-gray-600">Artigos jurídicos de colaboradores, notícias e orientações</p>
+        <section className="py-16 bg-white" aria-label="Artigos e Publicações">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Icons.FileText className="text-legal-gold" size={28} />
+                  <h2 className="text-3xl font-serif font-bold text-legal-blue">Artigos e Publicações</h2>
                 </div>
+                <p className="text-gray-600">Artigos jurídicos de colaboradores, notícias e orientações</p>
               </div>
+              <button
+                onClick={() => setIsAdminOpen(true)}
+                className="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-legal-blue text-white font-semibold rounded-lg hover:bg-legal-blue-light transition-colors focus:outline-none focus:ring-2 focus:ring-legal-gold"
+              >
+                <Icons.Settings size={18} />
+                Gerenciar Artigos
+              </button>
+            </div>
+
+            {articles.length === 0 ? (
+              <div className="text-center py-12 bg-gray-50 rounded-xl">
+                <Icons.FileText className="mx-auto text-gray-300 mb-4" size={48} />
+                <p className="text-gray-500 mb-4">Nenhum artigo publicado ainda.</p>
+                <button
+                  onClick={() => setIsAdminOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-legal-gold text-white font-semibold rounded-lg hover:bg-legal-gold-hover transition-colors"
+                >
+                  Publicar primeiro artigo
+                </button>
+              </div>
+            ) : (
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {articles.slice(0, 6).map((article) => (
@@ -490,9 +511,9 @@ const App: React.FC = () => {
                   </article>
                 ))}
               </div>
-            </div>
-          </section>
-        )}
+            )}
+          </div>
+        </section>
 
         {/* NEWS SECTION - DESTAQUE */}
         <section className="py-16 bg-gradient-to-b from-gray-50 to-white" aria-label="Notícias em Destaque">
@@ -817,6 +838,13 @@ const App: React.FC = () => {
       {/* Legal Documents Modals */}
       <PrivacyPolicy isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
       <TermsOfUse isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
+      <AdminArticles 
+        isOpen={isAdminOpen} 
+        onClose={() => {
+          setIsAdminOpen(false);
+          fetchArticles().then(setArticles);
+        }} 
+      />
     </div>
   );
 };
