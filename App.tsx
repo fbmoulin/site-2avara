@@ -382,7 +382,8 @@ const App: React.FC = () => {
                   <h3 className="text-xl font-serif font-bold text-legal-blue mb-3">{service.title}</h3>
                   <p className="text-gray-600 mb-6 flex-grow">{service.description}</p>
 
-                  {service.links ? (
+                  {/* Links de ação */}
+                  {service.links && (
                     <div className="flex flex-col gap-2 w-full">
                       {service.links.map((link, i) => (
                         <a 
@@ -409,35 +410,10 @@ const App: React.FC = () => {
                         </a>
                       ))}
                     </div>
-                  ) : service.tutorial ? (
-                    <div>
-                      <button 
-                        onClick={() => setExpandedService(expandedService === service.id ? null : service.id)}
-                        className="flex items-center gap-2 text-legal-blue font-semibold hover:text-legal-gold transition-colors"
-                      >
-                        {expandedService === service.id ? 'Ver menos' : 'Ver tutorial'}
-                        <Icons.ChevronDown className={`transform transition-transform ${expandedService === service.id ? 'rotate-180' : ''}`} size={16} />
-                      </button>
-                      
-                      {expandedService === service.id && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <ol className="list-decimal list-inside space-y-2 text-gray-600 text-sm">
-                            {service.tutorial.map((step, idx) => (
-                              <li key={idx}>{step}</li>
-                            ))}
-                          </ol>
-                          {service.tutorialTip && (
-                            <p className="mt-3 text-sm text-legal-gold font-semibold">{service.tutorialTip}</p>
-                          )}
-                          <img 
-                            src={zoomTutorialImage} 
-                            alt="Exemplo de reunião por videoconferência"
-                            className="mt-4 w-full h-auto rounded-lg shadow-sm"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ) : service.url ? (
+                  )}
+                  
+                  {/* URL simples (quando não há links) */}
+                  {!service.links && service.url && (
                     <a 
                       href={service.url}
                       target="_blank"
@@ -447,7 +423,45 @@ const App: React.FC = () => {
                       Acessar
                       <Icons.ExternalLink size={16} />
                     </a>
-                  ) : null}
+                  )}
+                  
+                  {/* Tutorial do Zoom (sempre exibe quando existe) */}
+                  {service.tutorial && (
+                    <div className={service.links ? 'mt-4' : ''}>
+                      <button 
+                        onClick={() => setExpandedService(expandedService === service.id ? null : service.id)}
+                        className="flex items-center gap-2 text-legal-blue font-semibold hover:text-legal-gold transition-colors"
+                      >
+                        <Icons.Info size={16} />
+                        {expandedService === service.id ? 'Ocultar tutorial' : 'Como participar da audiência?'}
+                        <Icons.ChevronDown className={`transform transition-transform ${expandedService === service.id ? 'rotate-180' : ''}`} size={16} />
+                      </button>
+                      
+                      {expandedService === service.id && (
+                        <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
+                          <p className="text-xs font-bold text-legal-blue uppercase mb-3 flex items-center gap-1">
+                            <Icons.Video size={14} /> Passo a passo para participar:
+                          </p>
+                          <ol className="text-sm text-gray-700 list-decimal list-inside space-y-2 mb-3">
+                            {service.tutorial.map((step, idx) => (
+                              <li key={idx} className="leading-relaxed">{step}</li>
+                            ))}
+                          </ol>
+                          {service.tutorialTip && (
+                            <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-2">
+                              <Icons.AlertCircle size={16} className="text-yellow-600 mt-0.5 flex-shrink-0" />
+                              <p className="text-sm text-yellow-800 font-medium">{service.tutorialTip}</p>
+                            </div>
+                          )}
+                          <img 
+                            src={zoomTutorialImage} 
+                            alt="Exemplo de reunião por videoconferência via Zoom"
+                            className="mt-4 w-full h-auto rounded-lg shadow-sm"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
