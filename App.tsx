@@ -469,23 +469,23 @@ const App: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355] via-[#9C8465] to-[#A69070]"></div>
                       <div className="relative p-6 md:p-8 min-h-[220px] flex flex-col justify-end">
                         <div className="absolute top-4 left-4 flex gap-2">
-                          <span className="px-3 py-1 bg-legal-gold text-white text-xs font-bold uppercase rounded-full">
+                          <span className="px-3 py-1 bg-legal-blue text-white text-xs font-bold uppercase rounded-full">
                             Destaque
                           </span>
-                          <span className="px-3 py-1 bg-white/20 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
+                          <span className="px-3 py-1 bg-legal-blue/60 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
                             {featuredNews.date}
                           </span>
                         </div>
                         <div>
-                          <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-3 group-hover:text-legal-gold transition-colors leading-tight">
+                          <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-3 group-hover:text-legal-blue transition-colors leading-tight">
                             {featuredNews.title}
                           </h3>
                           {featuredNews.description && (
-                            <p className="text-gray-100 text-base line-clamp-2 mb-3">
+                            <p className="text-white/90 text-base line-clamp-2 mb-3">
                               {featuredNews.description}
                             </p>
                           )}
-                          <span className="inline-flex items-center gap-2 text-legal-gold font-semibold group-hover:gap-3 transition-all">
+                          <span className="inline-flex items-center gap-2 text-white font-semibold group-hover:gap-3 transition-all underline underline-offset-2">
                             Ler notícia completa <Icons.ArrowRight size={18} />
                           </span>
                         </div>
