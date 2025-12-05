@@ -18,8 +18,13 @@ export const SERVICES: ServiceItem[] = [
       { label: 'Google Play (Android)', url: 'https://play.google.com/store/apps/details?id=us.zoom.videomeetings', icon: 'playstore' }
     ],
     tutorial: [
-      "Ao entrar na sala, clique em 'Ligar via Internet' ou 'Juntar-se ao áudio' para ouvir e falar."
-    ]
+      "Clique no link da audiência recebido por e-mail ou WhatsApp no dia e hora marcados.",
+      "Ao entrar, selecione 'Dados de rede WiFi ou móvel' (celular) ou 'Entrar com Áudio do Computador' (PC).",
+      "Permita o acesso à câmera e ao microfone quando solicitado.",
+      "Mantenha o microfone desligado e só ative quando for falar.",
+      "Aguarde na sala de espera até o servidor autorizar sua entrada."
+    ],
+    tutorialTip: "Dica: Entre na sala com pelo menos 10 minutos de antecedência e teste seu áudio antes da audiência."
   },
   {
     id: '4',

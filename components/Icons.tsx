@@ -25,7 +25,9 @@ import {
   Moon,
   Eye,
   Download,
-  Smartphone
+  Smartphone,
+  Info,
+  AlertCircle
 } from 'lucide-react';
 
 const AppleIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
@@ -68,6 +70,8 @@ export const Icons = {
   Eye,
   Download,
   Smartphone,
+  Info,
+  AlertCircle,
   Apple: AppleIcon,
   PlayStore: PlayStoreIcon
 };

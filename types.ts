@@ -11,6 +11,7 @@ export interface ServiceItem {
   icon: string;
   url?: string;
   tutorial?: string[]; // Passo a passo opcional
+  tutorialTip?: string; // Dica adicional do tutorial
   links?: ServiceLink[]; // Múltiplas opções de ação (ex: Agendamento)
 }
 

@@ -10,6 +10,7 @@ import {
 } from './constants';
 import { NavigationSection } from './types';
 import forumImage from '@assets/forum_1764897995940.jpg';
+import zoomTutorialImage from '@assets/stock_images/zoom_video_conferenc_61e7f082.jpg';
 
 // Helper component for Section Headers
 const SectionHeader: React.FC<{ title: string; subtitle?: string; light?: boolean }> = ({ title, subtitle, light }) => (
@@ -420,15 +421,26 @@ const App: React.FC = () => {
                     
                     {/* Tutorial Section if exists - appears below links */}
                     {service.tutorial ? (
-                      <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-100">
-                         <p className="text-xs font-bold text-legal-blue uppercase mb-2 flex items-center gap-1">
-                            <Icons.Video size={14} /> Como habilitar o áudio:
+                      <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
+                         <p className="text-xs font-bold text-legal-blue uppercase mb-3 flex items-center gap-1">
+                            <Icons.Info size={14} /> Passo a passo para participar:
                          </p>
-                         <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
+                         <ol className="text-sm text-gray-700 list-decimal list-inside space-y-2 mb-3">
                            {service.tutorial.map((step, idx) => (
-                             <li key={idx} className="leading-tight">{step}</li>
+                             <li key={idx} className="leading-relaxed">{step}</li>
                            ))}
-                         </ul>
+                         </ol>
+                         {service.tutorialTip && (
+                           <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-2">
+                             <Icons.AlertCircle size={16} className="text-yellow-600 mt-0.5 flex-shrink-0" />
+                             <p className="text-sm text-yellow-800 font-medium">{service.tutorialTip}</p>
+                           </div>
+                         )}
+                         <img 
+                           src={zoomTutorialImage} 
+                           alt="Exemplo de reunião por videoconferência"
+                           className="mt-4 w-full h-auto rounded-lg shadow-sm"
+                         />
                       </div>
                     ) : null}
                   </div>
