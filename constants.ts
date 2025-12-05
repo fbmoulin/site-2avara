@@ -9,6 +9,13 @@ export const SERVICES: ServiceItem[] = [
     url: 'https://sso.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/auth?client_id=portalexterno-frontend&redirect_uri=https%3A%2F%2Fportaldeservicos.pdpj.jus.br%2Fconsulta&state=843bfcd9-02b7-4103-8046-614b7d4f4258&response_mode=fragment&response_type=code&scope=openid&nonce=37a449bc-09a8-4d96-8b22-2ec1e7df8c34'
   },
   {
+    id: '3',
+    title: 'Balcão Virtual',
+    description: 'Atendimento online por videoconferência com a secretaria da vara. Tire dúvidas, solicite informações e obtenha orientações sem sair de casa.',
+    icon: 'video',
+    url: 'https://www.tjes.jus.br/balcao-virtual/'
+  },
+  {
     id: '2',
     title: 'Audiências Virtuais',
     description: 'As audiências virtuais são realizadas por meio do Aplicativo Zoom. Baixe e instale o aplicativo no seu celular com antecedência para evitar atrasos, por meio dos links abaixo:',
