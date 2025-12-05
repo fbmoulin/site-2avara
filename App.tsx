@@ -214,8 +214,9 @@ const App: React.FC = () => {
               </div>
             </a>
 
-            <nav className="hidden md:flex gap-8" aria-label="Navegação Principal">
+            <nav className="hidden md:flex gap-6" aria-label="Navegação Principal">
               <NavLink section="home" label="Início" />
+              <NavLink section="institutional" label="Institucional" />
               <NavLink section="judge" label="Magistrado" />
               <NavLink section="services" label="Serviços" />
               <NavLink section="faq" label="Dúvidas" />
@@ -237,6 +238,7 @@ const App: React.FC = () => {
         {isMobileMenuOpen && (
           <div id="mobile-menu" className="md:hidden bg-white border-t border-gray-200 absolute w-full shadow-xl">
             <NavLink mobile section="home" label="Início" />
+            <NavLink mobile section="institutional" label="Institucional" />
             <NavLink mobile section="judge" label="Magistrado" />
             <NavLink mobile section="services" label="Serviços" />
             <NavLink mobile section="faq" label="Dúvidas" />
