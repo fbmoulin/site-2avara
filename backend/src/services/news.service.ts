@@ -3,9 +3,10 @@ import axios from 'axios';
 
 const prisma = new PrismaClient();
 
-const RSS_FEED_URL = 'https://www.tjes.jus.br/feed/';
-const PROXY_RSS_URL = 'https://r.jina.ai/https://www.tjes.jus.br/feed/';
-const PROXY_NEWS_URL = 'https://r.jina.ai/https://www.tjes.jus.br/';
+const NEWS_CATEGORY_URL = 'https://www.tjes.jus.br/category/s1-front-page/ultimasnoticias/';
+const RSS_FEED_URL = 'https://www.tjes.jus.br/category/s1-front-page/ultimasnoticias/feed/';
+const PROXY_RSS_URL = 'https://r.jina.ai/https://www.tjes.jus.br/category/s1-front-page/ultimasnoticias/feed/';
+const PROXY_NEWS_URL = 'https://r.jina.ai/https://www.tjes.jus.br/category/s1-front-page/ultimasnoticias/';
 const MAX_NEWS_ITEMS = 10;
 
 let consecutiveFailures = 0;
@@ -22,10 +23,9 @@ interface RSSItem {
 }
 
 const FALLBACK_NEWS = [
-  { title: 'TJES disponibiliza novos serviços digitais', date: '04/12', link: 'https://www.tjes.jus.br/' },
-  { title: 'Balcão Virtual amplia atendimento ao cidadão', date: '03/12', link: 'https://www.tjes.jus.br/' },
-  { title: 'Justiça do ES promove semana de conciliação', date: '02/12', link: 'https://www.tjes.jus.br/' },
-  { title: 'TJES investe em modernização tecnológica', date: '01/12', link: 'https://www.tjes.jus.br/' },
+  { title: 'Confira as últimas notícias do TJES', date: '05/12', link: NEWS_CATEGORY_URL },
+  { title: 'Acompanhe as novidades da Justiça Estadual', date: '04/12', link: NEWS_CATEGORY_URL },
+  { title: 'Acesse o portal de notícias do Tribunal', date: '03/12', link: NEWS_CATEGORY_URL },
 ];
 
 function parseRSSDate(dateStr: string): Date {
@@ -69,18 +69,14 @@ function parseRSSFeed(xmlText: string): RSSItem[] {
     if (titleMatch && linkMatch && pubDateMatch && guidMatch) {
       const title = cleanDescription(titleMatch[1]);
       
-      if (!title.includes('RESOLUÇÃO') && 
-          !title.includes('Ato Normativo') && 
-          !title.includes('estágio de') &&
-          !title.includes('Des.') &&
-          !title.includes('Biênio')) {
+      if (title.length > 10) {
         items.push({
           title,
           link: linkMatch[1].trim(),
           description: descMatch ? cleanDescription(descMatch[1]) : '',
           pubDate: pubDateMatch[1].trim(),
           guid: extractGuid(guidMatch[1].trim()),
-          category: categoryMatch ? cleanDescription(categoryMatch[1]) : undefined
+          category: categoryMatch ? cleanDescription(categoryMatch[1]) : 'Notícia'
         });
       }
     }
@@ -91,28 +87,33 @@ function parseRSSFeed(xmlText: string): RSSItem[] {
 
 function parseHTMLNews(htmlText: string): RSSItem[] {
   const items: RSSItem[] = [];
-  const newsRegex = /\[([^\]]+)\]\((https:\/\/www\.tjes\.jus\.br\/[^)]+)\)/g;
+  const newsRegex = /\[([^\]]+?)\s*-{3,}\s*\]\((https:\/\/www\.tjes\.jus\.br\/[a-z0-9-]+\/)\)/gi;
   let match;
   
   while ((match = newsRegex.exec(htmlText)) !== null && items.length < MAX_NEWS_ITEMS) {
-    const title = match[1].replace(/\*\*/g, '').trim();
+    const title = match[1].replace(/\*\*/g, '').replace(/-+$/, '').trim();
     const link = match[2];
     
-    if (title.length > 20 && 
-        !title.includes('RESOLUÇÃO') && 
-        !title.includes('Ato Normativo') &&
-        !title.includes('estágio') &&
-        !title.includes('Pular para') &&
-        !link.includes('wp-content')) {
-      const guidMatch = link.match(/tjes\.jus\.br\/([^\/]+)/);
-      items.push({
-        title,
-        link,
-        description: '',
-        pubDate: new Date().toISOString(),
-        guid: guidMatch ? guidMatch[1] : link,
-        category: 'Notícia'
-      });
+    if (title.length > 15 && 
+        !link.includes('/category/') &&
+        !link.includes('/page/') &&
+        !link.includes('/institucional/') &&
+        !link.includes('/consultas/') &&
+        !link.includes('/servicos/') &&
+        !link.includes('/portal-transparencia/')) {
+      const guidMatch = link.match(/tjes\.jus\.br\/([a-z0-9-]+)\/?$/);
+      const slug = guidMatch ? guidMatch[1] : link;
+      
+      if (!items.some(item => item.guid === slug)) {
+        items.push({
+          title,
+          link,
+          description: '',
+          pubDate: new Date().toISOString(),
+          guid: slug,
+          category: 'Notícia'
+        });
+      }
     }
   }
   

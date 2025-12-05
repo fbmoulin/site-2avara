@@ -30,9 +30,11 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 - ✅ **PostgreSQL**: Migrado de SQLite para PostgreSQL Replit
 - ✅ **Email Gmail**: Sistema de notificações configurado com Nodemailer + Gmail App Password
 - ✅ **Notícias Automáticas**: Sistema de busca de notícias TJES com atualização diária às 9h (America/Sao_Paulo)
+  - Fonte: https://www.tjes.jus.br/category/s1-front-page/ultimasnoticias/
   - Pipeline multi-estratégia: RSS direto → Proxy RSS (r.jina.ai) → HTML scraping → Fallback estático
   - Mecanismo de backoff para evitar spam de erros 403
   - Frontend dinâmico com fallback para constantes
+  - Seção de notícias posicionada antes das Perguntas Frequentes
 
 ---
 
