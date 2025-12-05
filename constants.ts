@@ -65,7 +65,7 @@ export const FAQS: FaqItem[] = [
   {
     id: '4',
     category: 'Contato',
-    question: 'Como entro em contato com o Juiz?',
+    question: 'Como entro em contato com a Assessoria do Gabinete ou com o Juiz?',
     answer: 'O atendimento com o magistrado deve ser agendado previamente através do Balcão Virtual ou solicitação por e-mail, conforme disponibilidade.'
   }
 ];
