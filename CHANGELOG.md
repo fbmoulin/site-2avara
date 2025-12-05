@@ -5,6 +5,29 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.7.0] - 2024-12-05
+
+### Adicionado
+- **Formulário de contato aprimorado**:
+  - Campo "Você é" para identificar se é Parte (cidadão) ou Advogado(a)
+  - Campo CPF condicional (aparece apenas para Parte)
+  - Campo OAB condicional (aparece apenas para Advogado)
+  - Indicação de DDD obrigatório no campo telefone com placeholder
+  - Feedback visual de sucesso/erro no envio
+  - Estado de loading com spinner durante envio
+  - Validação Zod no backend para novos campos
+- **Email com identificação completa**: Tipo de usuário, CPF/OAB incluídos no email de notificação
+- **Link "Localização"** no menu do header (desktop e mobile) com link direto para Google Maps
+
+### Corrigido
+- Formulário de contato agora usa JavaScript (fetch) em vez de submit HTML tradicional
+- Formulário não redireciona mais para página em branco ao enviar
+
+### Melhorado
+- Labels mais claros nos formulários
+- Campos desabilitados durante envio para evitar duplo clique
+- Limpeza automática do formulário após envio bem-sucedido
+
 ## [2.6.0] - 2024-12-05
 
 ### Adicionado

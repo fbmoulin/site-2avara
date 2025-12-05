@@ -2,12 +2,14 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
 ![React](https://img.shields.io/badge/react-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/typescript-5.8.2-blue)
+![WCAG](https://img.shields.io/badge/WCAG-AA-green)
+![CNJ](https://img.shields.io/badge/CNJ-401%2F2021-blue)
 
 Portal de serviços digitais da 2ª Vara Cível de Cariacica - TJES
 
@@ -15,17 +17,19 @@ Portal de serviços digitais da 2ª Vara Cível de Cariacica - TJES
 
 ## Sobre
 
-Aplicação full-stack com assistente virtual (Google Gemini), formulários interativos, agendamento de atendimentos, painel administrativo protegido e conformidade LGPD.
+Aplicação full-stack com assistente virtual (Google Gemini), formulários interativos, agendamento de atendimentos, painel administrativo protegido, widget VLibras para acessibilidade em LIBRAS e conformidade LGPD.
 
 ### Funcionalidades
 
 - **Assistente Virtual (IA)** - Chatbot com Google Gemini + Google Maps
+- **VLibras** - Tradução para Língua Brasileira de Sinais (Resolução CNJ 401/2021)
 - **Agendamento** - Presencial e virtual (Zoom)
-- **Formulários** - Contato, demandas e reclamações
+- **Formulários** - Contato (com identificação Parte/Advogado), demandas e reclamações
 - **LGPD** - Política de Privacidade e Termos de Uso
-- **Acessibilidade** - Fonte, contraste e modo escuro (e-MAG 3.1)
+- **Acessibilidade** - Fonte, contraste, modo escuro, VLibras (e-MAG 3.1)
 - **Painel Admin** - Gerenciamento de artigos com autenticação Replit
 - **Notícias TJES** - Atualização automática diária
+- **Sistema de Email** - Notificações via Gmail (Nodemailer)
 
 ## Stack
 
