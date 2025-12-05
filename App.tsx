@@ -591,14 +591,14 @@ const App: React.FC = () => {
               const secondaryNews = displayNews.slice(1, 7);
               
               return (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="flex flex-col gap-6 max-w-3xl mx-auto">
                   {/* Featured News Card */}
                   {featuredNews && (
                     <a 
                       href={featuredNews.link || "https://www.tjes.jus.br/canais/noticias/"} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="lg:col-span-2 group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-legal-gold/50"
+                      className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-legal-gold/50"
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355] via-[#9C8465] to-[#A69070]"></div>
                       <div className="relative p-6 md:p-8 min-h-[220px] flex flex-col justify-end">
