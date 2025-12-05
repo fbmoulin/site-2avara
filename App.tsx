@@ -387,7 +387,7 @@ const App: React.FC = () => {
               subtitle="Acesse os principais serviços da vara sem sair de casa, garantindo agilidade e comodidade." 
             />
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="flex flex-col lg:flex-row gap-8 justify-center">
               {SERVICES.map((service) => {
                 const getIcon = (name: string, size: number = 32) => {
                   switch(name) {
@@ -405,7 +405,7 @@ const App: React.FC = () => {
                 }
 
                 return (
-                  <div key={service.id} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 group flex flex-col h-full">
+                  <div key={service.id} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 group flex flex-col lg:flex-1 lg:max-w-md">
                     <div className="w-16 h-16 bg-legal-blue/5 rounded-full flex items-center justify-center mb-6 text-legal-blue group-hover:bg-legal-gold group-hover:text-white transition-colors duration-300">
                       {getIcon(service.icon)}
                     </div>
