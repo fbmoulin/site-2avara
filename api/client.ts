@@ -1,6 +1,8 @@
 // Cliente API para comunicação com o backend
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Use relative path for API calls so it works in both development and production
+// In Replit, both frontend and backend are on the same host
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 interface ApiResponse<T = any> {
   success: boolean;

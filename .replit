@@ -1,0 +1,75 @@
+modules = ["nodejs-20", "web"]
+[agent]
+expertMode = true
+integrations = ["javascript_gemini:1.0.0"]
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.development]
+DATABASE_URL = "file:./backend/prisma/dev.db"
+PORT = "3001"
+NODE_ENV = "development"
+FRONTEND_URL = "https://17912c83-1ad1-4650-bcbb-56bb2afcbb4f-00-1ix7jut4d6n32.riker.replit.dev"
+ALLOWED_ORIGINS = "https://17912c83-1ad1-4650-bcbb-56bb2afcbb4f-00-1ix7jut4d6n32.riker.replit.dev,http://localhost:5000"
+VITE_API_URL = "/api"
+BACKEND_PORT = "3001"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend"
+
+[[workflows.workflow]]
+name = "Frontend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow]]
+name = "Backend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && npm run dev"
+waitForPort = 3001
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 37757
+externalPort = 3000
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "npm run start:backend & npm start"]
+build = ["npm", "run", "build"]

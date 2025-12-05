@@ -12,7 +12,8 @@ import { apiLimiter } from './middleware/rateLimiter.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+// Use BACKEND_PORT to avoid conflict with frontend PORT in deployment
+const PORT = parseInt(process.env.BACKEND_PORT || '3001', 10);
 
 // Middleware de segurança
 app.use(helmet({
@@ -21,6 +22,7 @@ app.use(helmet({
 
 // CORS configurado
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+  'http://localhost:5000',
   'http://localhost:3000',
   'http://localhost:5173',
 ];
@@ -29,6 +31,11 @@ app.use(cors({
   origin: (origin, callback) => {
     // Permite requests sem origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
+
+    // Permite qualquer subdomínio do Replit
+    if (origin && origin.includes('.replit.dev')) {
+      return callback(null, true);
+    }
 
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
