@@ -443,7 +443,7 @@ const App: React.FC = () => {
                     <Icons.FileText className="text-legal-gold" size={28} />
                     <h2 className="text-3xl font-serif font-bold text-legal-blue">Artigos e Publicações</h2>
                   </div>
-                  <p className="text-gray-600">Artigos jurídicos, opiniões e orientações da 2ª Vara Cível</p>
+                  <p className="text-gray-600">Artigos jurídicos de colaboradores, notícias e orientações</p>
                 </div>
               </div>
 
