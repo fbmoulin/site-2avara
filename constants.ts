@@ -33,7 +33,7 @@ export const SERVICES: ServiceItem[] = [
     icon: 'calendar',
     links: [
       { label: 'Preencher Formulário', url: '#contact', icon: 'file-text' },
-      { label: 'Enviar E-mail', url: 'mailto:2varacivel@tjes.jus.br', icon: 'mail' },
+      { label: 'Enviar E-mail', url: 'mailto:2acivelcariacica@gmail.com', icon: 'mail' },
       { label: 'Agendar via Chat', url: '#chatbot', icon: 'message-square' }
     ]
   }
@@ -112,6 +112,6 @@ export const JUDGE_INFO = {
 
 export const CONTACT_INFO = {
   address: 'R. Meridional, 1000 - Alto Lage, Cariacica - ES, 29151-230',
-  email: '2varacivel@tjes.jus.br',
+  email: '2acivelcariacica@gmail.com',
   phone: '(27) 3246-5641'
 };

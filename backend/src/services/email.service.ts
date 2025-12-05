@@ -4,7 +4,7 @@ export class EmailService {
   private secretaryEmail: string;
 
   constructor() {
-    this.secretaryEmail = process.env.EMAIL_TO || '2varacivel@tjes.jus.br';
+    this.secretaryEmail = process.env.EMAIL_TO || '2acivelcariacica@gmail.com';
   }
 
   // Email de novo contato

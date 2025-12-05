@@ -80,12 +80,17 @@ Portal oficial de serviços digitais da 2ª Vara Cível de Cariacica (TJES). Apl
 | `NODE_ENV` | `development` | Ambiente |
 | `VITE_API_URL` | `/api` | URL da API (proxy) |
 
-### Opcionais (Email)
-| Variável | Descrição |
-|----------|-----------|
-| `SENDGRID_API_KEY` | Chave SendGrid |
-| `EMAIL_FROM` | Email remetente |
-| `EMAIL_TO` | Email destinatário |
+### Email (Gmail)
+| Variável | Valor | Descrição |
+|----------|-------|-----------|
+| `EMAIL_FROM` | `2acivelcariacica@gmail.com` | Email remetente |
+| `EMAIL_TO` | `2acivelcariacica@gmail.com` | Email destinatário |
+| `GMAIL_APP_PASSWORD` | (secret) | Senha de app do Gmail (16 caracteres) |
+
+**Como configurar o Gmail App Password:**
+1. Ative a verificação em duas etapas em https://myaccount.google.com/security
+2. Gere uma senha de app em https://myaccount.google.com/apppasswords
+3. Adicione como secret `GMAIL_APP_PASSWORD`
 
 ---
 
@@ -340,6 +345,6 @@ O `prod-server.js` serve:
 Fórum Des. Américo Ribeiro Coelho  
 R. Meridional, 1000 - Alto Lage, Cariacica - ES
 
-- **Email**: 2varacivel@tjes.jus.br
+- **Email**: 2acivelcariacica@gmail.com
 - **Telefone**: (27) 3246-5641
 - **Horário**: Segunda a sexta, 12h às 18h

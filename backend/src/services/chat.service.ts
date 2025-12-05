@@ -71,7 +71,7 @@ export const getChatResponse = async (sessionId: string, userMessage: string): P
 
   if (!isInitialized || !genAI) {
     return {
-      text: "O sistema de chat não está disponível no momento. A chave de API do Gemini não está configurada. Por favor, entre em contato com a secretaria pelo telefone (27) 3246-5641 ou e-mail 2varacivel@tjes.jus.br."
+      text: "O sistema de chat não está disponível no momento. A chave de API do Gemini não está configurada. Por favor, entre em contato com a secretaria pelo telefone (27) 3246-5641 ou e-mail 2acivelcariacica@gmail.com."
     };
   }
 

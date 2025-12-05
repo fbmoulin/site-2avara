@@ -1,13 +1,20 @@
-import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Configurar SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+let transporter: nodemailer.Transporter | null = null;
+
+if (process.env.GMAIL_APP_PASSWORD) {
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_FROM || '2acivelcariacica@gmail.com',
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
 } else {
-  console.warn('⚠️  SENDGRID_API_KEY não configurada. Emails não serão enviados.');
+  console.warn('⚠️  GMAIL_APP_PASSWORD não configurada. Emails não serão enviados.');
 }
 
 export interface EmailOptions {
@@ -18,15 +25,18 @@ export interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.log('📧 [MODO DEMO] Email que seria enviado:', options);
-    return true; // Simula sucesso em modo demo
+  if (!transporter) {
+    console.log('📧 [MODO DEMO] Email que seria enviado:', {
+      to: options.to,
+      subject: options.subject,
+    });
+    return true;
   }
 
   try {
-    await sgMail.send({
+    await transporter.sendMail({
+      from: `"2ª Vara Cível de Cariacica" <${process.env.EMAIL_FROM || '2acivelcariacica@gmail.com'}>`,
       to: options.to,
-      from: process.env.EMAIL_FROM || 'noreply@2varacivel.jus.br',
       subject: options.subject,
       text: options.text,
       html: options.html || options.text.replace(/\n/g, '<br>'),

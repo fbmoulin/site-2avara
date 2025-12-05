@@ -64,7 +64,7 @@ export const PrivacyPolicy: React.FC<{ isOpen: boolean; onClose: () => void }> =
           Tribunal de Justiça do Estado do Espírito Santo - TJES<br />
           2ª Vara Cível da Comarca de Cariacica<br />
           Endereço: R. Meridional, 1000 - Alto Lage, Cariacica - ES, 29151-230<br />
-          E-mail: 2varacivel@tjes.jus.br
+          E-mail: 2acivelcariacica@gmail.com
         </p>
       </section>
 
@@ -156,7 +156,7 @@ export const PrivacyPolicy: React.FC<{ isOpen: boolean; onClose: () => void }> =
           <li>Revogação do consentimento (quando aplicável)</li>
         </ul>
         <p className="mt-2">
-          Para exercer seus direitos, entre em contato pelo e-mail: <strong>2varacivel@tjes.jus.br</strong>
+          Para exercer seus direitos, entre em contato pelo e-mail: <strong>2acivelcariacica@gmail.com</strong>
         </p>
       </section>
 
@@ -193,7 +193,7 @@ export const PrivacyPolicy: React.FC<{ isOpen: boolean; onClose: () => void }> =
           tratamento de seus dados pessoais:
         </p>
         <p className="mt-2">
-          <strong>E-mail:</strong> 2varacivel@tjes.jus.br<br />
+          <strong>E-mail:</strong> 2acivelcariacica@gmail.com<br />
           <strong>Telefone:</strong> (27) 3246-5641
         </p>
         <p className="mt-2">
@@ -364,7 +364,7 @@ export const TermsOfUse: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         <p className="mt-2">
           <strong>2ª Vara Cível de Cariacica</strong><br />
           Endereço: R. Meridional, 1000 - Alto Lage, Cariacica - ES, 29151-230<br />
-          E-mail: 2varacivel@tjes.jus.br<br />
+          E-mail: 2acivelcariacica@gmail.com<br />
           Telefone: (27) 3246-5641
         </p>
       </section>
