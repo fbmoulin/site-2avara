@@ -353,16 +353,18 @@ const App: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {SERVICES.map((service) => {
-                const getIcon = (name: string) => {
+                const getIcon = (name: string, size: number = 32) => {
                   switch(name) {
-                    case 'search': return <Icons.Search size={32} aria-hidden="true" />;
-                    case 'video': return <Icons.Video size={32} aria-hidden="true" />;
-                    case 'calendar': return <Icons.Calendar size={32} aria-hidden="true" />;
-                    case 'download': return <Icons.Download size={32} aria-hidden="true" />;
+                    case 'search': return <Icons.Search size={size} aria-hidden="true" />;
+                    case 'video': return <Icons.Video size={size} aria-hidden="true" />;
+                    case 'calendar': return <Icons.Calendar size={size} aria-hidden="true" />;
+                    case 'download': return <Icons.Download size={size} aria-hidden="true" />;
                     case 'file-text': return <Icons.FileText size={16} aria-hidden="true" />;
                     case 'mail': return <Icons.Mail size={16} aria-hidden="true" />;
                     case 'message-square': return <Icons.MessageSquare size={16} aria-hidden="true" />;
-                    default: return <Icons.FileText size={32} aria-hidden="true" />;
+                    case 'apple': return <Icons.Apple size={18} aria-hidden="true" />;
+                    case 'playstore': return <Icons.PlayStore size={18} aria-hidden="true" />;
+                    default: return <Icons.FileText size={size} aria-hidden="true" />;
                   }
                 }
 

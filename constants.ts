@@ -19,12 +19,15 @@ export const SERVICES: ServiceItem[] = [
     id: '5',
     title: 'Zoom (Audiências)',
     description: 'Baixe o aplicativo e prepare-se para sua audiência virtual.',
-    icon: 'download',
-    url: 'https://zoom.us/download',
+    icon: 'video',
     tutorial: [
       "Instale o aplicativo Zoom no seu celular ou computador.",
-      "Clique no link da audiência enviado por e-mail/WhatsApp.",
+      "Clique no link da audiência enviado por e-mail.",
       "Ao entrar na sala, clique em 'Ligar via Internet' ou 'Juntar-se ao áudio' para ouvir e falar."
+    ],
+    links: [
+      { label: 'App Store (iOS)', url: 'https://apps.apple.com/br/app/zoom-one-platform-to-connect/id546505307', icon: 'apple' },
+      { label: 'Google Play (Android)', url: 'https://play.google.com/store/apps/details?id=us.zoom.videomeetings', icon: 'playstore' }
     ]
   },
   {
