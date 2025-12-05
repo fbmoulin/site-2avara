@@ -134,10 +134,18 @@ const App: React.FC = () => {
             <a href="#footer" className="hover:text-legal-gold transition-colors" accessKey="3">Ir para o rodapé [3]</a>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-gray-800/50 px-2 py-1 rounded high-contrast-ignore">
+            <button
+              onClick={() => {
+                const section = document.querySelector('[aria-label="Recursos de Acessibilidade"]');
+                if (section) section.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 bg-gray-800/50 px-2 py-1 rounded high-contrast-ignore hover:bg-gray-700 hover:text-white transition-colors cursor-pointer"
+              title="Ver recursos e tutorial de acessibilidade"
+              aria-label="Ir para seção de recursos de acessibilidade"
+            >
               <Icons.Accessibility size={14} className="text-legal-gold" aria-hidden="true" />
               <span className="font-bold uppercase tracking-wider text-[10px]">Acessibilidade</span>
-            </div>
+            </button>
             <div className="flex gap-1 items-center border-l border-gray-700 pl-4">
               <button 
                 onClick={() => setFontSize(0)} 
