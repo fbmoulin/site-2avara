@@ -387,7 +387,7 @@ const App: React.FC = () => {
               subtitle="Acesse os principais serviços da vara sem sair de casa, garantindo agilidade e comodidade." 
             />
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-6 max-w-3xl mx-auto">
               {SERVICES.map((service) => {
                 const getIcon = (name: string, size: number = 32) => {
                   switch(name) {
