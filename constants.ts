@@ -60,7 +60,7 @@ export const FAQS: FaqItem[] = [
     id: '3',
     category: 'Audiências',
     question: 'As audiências são presenciais ou virtuais?',
-    answer: 'Atualmente, as audiências ocorrem em formato híbrido. Verifique a intimação para confirmar a modalidade específica do seu caso.'
+    answer: 'Atualmente, as audiências ocorrem geralmente em formato híbrido, ou seja, de forma presencial e virtual ao mesmo tempo. Verifique a sua intimação para confirmar a modalidade específica do seu caso. Se houver dúvidas, entre em contato através de um dos canais de contato desta página.'
   },
   {
     id: '4',
