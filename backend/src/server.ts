@@ -7,6 +7,7 @@ import appointmentRoutes from './routes/appointment.routes.js';
 import demandRoutes from './routes/demand.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import newsRoutes from './routes/news.routes.js';
+import articleRoutes from './routes/article.routes.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 import { initScheduler, runInitialFetch } from './scheduler.js';
 
@@ -64,6 +65,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/demands', demandRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/articles', articleRoutes);
 
 // Painel AdminJS (temporariamente desabilitado)
 // app.use(adminJs.options.rootPath, adminRouter);

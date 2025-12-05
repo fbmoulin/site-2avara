@@ -11,6 +11,7 @@ import {
 } from './constants';
 import { NavigationSection } from './types';
 import { fetchNews, NewsItem } from './services/newsService';
+import { fetchArticles, Article } from './services/articleService';
 import forumImage from '@assets/forum_1764897995940.jpg';
 import zoomTutorialImage from '@assets/stock_images/zoom_video_conferenc_61e7f082.jpg';
 
@@ -35,9 +36,11 @@ const App: React.FC = () => {
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     fetchNews(10).then(setNewsItems);
+    fetchArticles().then(setArticles);
   }, []);
 
   // Handle scroll spy to update active nav link
@@ -429,6 +432,67 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* BLOG / ARTIGOS JURÍDICOS */}
+        {articles.length > 0 && (
+          <section className="py-16 bg-white" aria-label="Artigos e Publicações">
+            <div className="container mx-auto px-4">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <Icons.FileText className="text-legal-gold" size={28} />
+                    <h2 className="text-3xl font-serif font-bold text-legal-blue">Artigos e Publicações</h2>
+                  </div>
+                  <p className="text-gray-600">Artigos jurídicos, opiniões e orientações da 2ª Vara Cível</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {articles.slice(0, 6).map((article) => (
+                  <article 
+                    key={article.id}
+                    className={`group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 ${
+                      article.isFeatured ? 'md:col-span-2 lg:col-span-2' : ''
+                    }`}
+                  >
+                    <div className={`p-6 ${article.isFeatured ? 'lg:p-8' : ''}`}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="px-3 py-1 bg-legal-blue/10 text-legal-blue text-xs font-semibold rounded-full">
+                          {article.category}
+                        </span>
+                        {article.isFeatured && (
+                          <span className="px-3 py-1 bg-legal-gold/10 text-legal-gold text-xs font-bold uppercase rounded-full">
+                            Destaque
+                          </span>
+                        )}
+                      </div>
+                      
+                      <h3 className={`font-serif font-bold text-legal-blue mb-3 group-hover:text-legal-gold transition-colors ${
+                        article.isFeatured ? 'text-2xl' : 'text-lg'
+                      }`}>
+                        {article.title}
+                      </h3>
+                      
+                      <p className={`text-gray-600 mb-4 ${article.isFeatured ? 'text-base line-clamp-3' : 'text-sm line-clamp-2'}`}>
+                        {article.excerpt}
+                      </p>
+                      
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <Icons.User size={14} />
+                          <span className="truncate max-w-[150px]">{article.author}</span>
+                        </div>
+                        <span className="text-xs text-gray-400">
+                          {new Date(article.publishedAt).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* NEWS SECTION - DESTAQUE */}
         <section className="py-16 bg-gradient-to-b from-gray-50 to-white" aria-label="Notícias em Destaque">
