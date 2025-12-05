@@ -258,9 +258,9 @@ const App: React.FC = () => {
           </div>
           
           <div className="relative z-10 container mx-auto px-4 text-center">
-            <div className="mb-6 inline-block px-8 py-4 border-2 border-legal-gold text-legal-gold tracking-widest font-bold rounded-lg bg-legal-blue/50 backdrop-blur-sm">
-              <div className="text-5xl md:text-6xl uppercase">2ª VARA CÍVEL</div>
-              <div className="text-2xl md:text-3xl uppercase mt-2">COMARCA DE CARIACICA - ES</div>
+            <div className="mb-6 inline-block px-4 py-3 sm:px-6 sm:py-4 md:px-8 border-2 border-legal-gold text-legal-gold tracking-widest font-bold rounded-lg bg-legal-blue/50 backdrop-blur-sm">
+              <div className="text-xl sm:text-3xl md:text-5xl lg:text-6xl uppercase">2ª VARA CÍVEL</div>
+              <div className="text-sm sm:text-lg md:text-2xl lg:text-3xl uppercase mt-1 sm:mt-2">COMARCA DE CARIACICA - ES</div>
             </div>
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
               Excelência e Celeridade <br /> na Prestação Jurisdicional
