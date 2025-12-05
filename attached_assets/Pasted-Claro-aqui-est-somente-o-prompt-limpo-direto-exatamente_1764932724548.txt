@@ -1,0 +1,55 @@
+Claro — aqui está somente o prompt, limpo, direto, exatamente como você pediu para usar no Replit:
+
+⸻
+
+PROMPT PARA O REPLIT (GHOSTWRITER / ASSISTENTE DE IA)
+
+Você está atuando em um projeto React + Vite + TypeScript que implementa o site institucional da 2ª Vara Cível de Cariacica/ES.
+
+Objetivo: aplicar uma refatoração de front-end para:
+	•	organizar o código em rotas (páginas) usando react-router-dom;
+	•	criar um layout padrão com Navbar e Footer persistentes;
+	•	adicionar transições suaves (fade-in/fade-out) entre páginas usando framer-motion;
+	•	preparar o projeto para futuras integrações (chatbot, agendamento, notícias dinâmicas).
+
+Tarefas que você deve executar neste projeto:
+	1.	Instale as dependências de roteamento e animação:
+
+npm install react-router-dom framer-motion
+
+
+	2.	Garanta que o arquivo src/main.tsx envolva o componente <App /> em <BrowserRouter>, usando como referência o arquivo src/main.tsx fornecido no pacote de refatoração.
+	3.	Substitua integralmente o conteúdo dos arquivos:
+	•	src/App.tsx
+	•	src/routes/Router.tsx
+	•	src/components/layout/Layout.tsx
+	•	src/components/layout/Navbar.tsx
+	•	src/components/layout/Footer.tsx
+	•	src/pages/Home/HomePage.tsx
+	•	src/pages/Agendamento/AgendamentoPage.tsx
+	•	src/pages/Noticias/NoticiasPage.tsx
+	•	src/pages/Contato/ContatoPage.tsx
+	•	src/pages/Admin/AdminPage.tsx
+pelos arquivos correspondentes fornecidos no pacote de refatoração.
+	4.	Ajuste as importações e caminhos relativos conforme a estrutura atual do repositório, sem remover ou alterar arquivos do backend.
+	5.	Compile o projeto:
+
+npm run dev
+
+Corrija qualquer erro de TypeScript, importação ou estrutura, mantendo a lógica fornecida.
+
+	6.	Certifique-se de que:
+	•	as rotas /, /agendamento, /noticias, /contato e /admin estão funcionando;
+	•	as transições animadas entre páginas ocorrem sem erros;
+	•	a Navbar e o Footer aparecem em todas as páginas;
+	•	não há erros no console ou no terminal.
+
+Seu foco é garantir que o projeto passe a ter:
+	•	estrutura organizada de páginas,
+	•	layout consistente e reutilizável,
+	•	transições modernas e suaves,
+	•	compatibilidade com o restante do código existente.
+
+⸻
+
+Se quiser, eu também posso escrever o prompt para o GitHub Copilot ou para o Cursor, caso você queira automatizar a refatoração pelo laptop depois.
