@@ -2,6 +2,7 @@
 
 <div align="center">
 
+![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
@@ -14,7 +15,7 @@ Portal de serviços digitais da 2ª Vara Cível de Cariacica - TJES
 
 ## Sobre
 
-Aplicação full-stack com assistente virtual (Google Gemini), formulários interativos, agendamento de atendimentos e conformidade LGPD.
+Aplicação full-stack com assistente virtual (Google Gemini), formulários interativos, agendamento de atendimentos, painel administrativo protegido e conformidade LGPD.
 
 ### Funcionalidades
 
@@ -22,7 +23,9 @@ Aplicação full-stack com assistente virtual (Google Gemini), formulários inte
 - **Agendamento** - Presencial e virtual (Zoom)
 - **Formulários** - Contato, demandas e reclamações
 - **LGPD** - Política de Privacidade e Termos de Uso
-- **Acessibilidade** - Fonte, contraste e modo escuro
+- **Acessibilidade** - Fonte, contraste e modo escuro (e-MAG 3.1)
+- **Painel Admin** - Gerenciamento de artigos com autenticação Replit
+- **Notícias TJES** - Atualização automática diária
 
 ## Stack
 
@@ -77,26 +80,46 @@ npm run start:backend & npm start
 
 ## API
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/api/chat` | Chatbot |
-| POST | `/api/contact` | Contato |
-| POST | `/api/appointments` | Agendamento |
-| POST | `/api/demands` | Demandas |
-| GET | `/health` | Health check |
+| Método | Endpoint | Descrição | Auth |
+|--------|----------|-----------|------|
+| POST | `/api/chat` | Chatbot | - |
+| POST | `/api/contact` | Contato | - |
+| POST | `/api/appointments` | Agendamento | - |
+| POST | `/api/demands` | Demandas | - |
+| GET | `/api/articles` | Listar artigos | - |
+| POST | `/api/articles` | Criar artigo | Replit Auth |
+| PUT | `/api/articles/:id` | Editar artigo | Replit Auth |
+| DELETE | `/api/articles/:id` | Excluir artigo | Replit Auth |
+| GET | `/api/news` | Notícias TJES | - |
+| GET | `/api/auth/user` | Usuário logado | - |
+| GET | `/health` | Health check | - |
 
 ## Estrutura
 
 ```
 ├── components/          # React components
+│   ├── AdminArticles.tsx   # Painel admin de artigos
+│   ├── Chatbot.tsx         # Assistente virtual
+│   └── LegalDocuments.tsx  # Políticas LGPD
+├── hooks/
+│   └── useAuth.ts       # Hook de autenticação
 ├── services/            # Frontend services
 ├── backend/
 │   ├── src/routes/      # API routes
-│   ├── src/services/    # Gemini integration
-│   └── prisma/          # Database
+│   ├── src/services/    # Gemini, email, news
+│   ├── src/middleware/  # Auth, rate limit
+│   └── prisma/          # Database schema
 ├── App.tsx              # Main component
 └── prod-server.js       # Production server
 ```
+
+## Segurança
+
+- **Autenticação**: Replit Auth para painel administrativo
+- **Proteção XSS**: Helmet.js
+- **Rate Limiting**: 100 req/min geral, 3-10 req/15min por formulário
+- **CORS**: Configurado para domínios Replit
+- **Sessões**: Armazenadas em PostgreSQL
 
 ## Deploy
 

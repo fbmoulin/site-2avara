@@ -2,9 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Version:** 2.5.0 | **Last Updated:** 2024-12-05
+
 ## Project Overview
 
-Full-stack web application for the 2ª Vara Cível de Cariacica (2nd Civil Court of Cariacica), a Brazilian civil court. The site provides public services, court information, LGPD-compliant legal documents, and an **AI-powered chatbot** using Google Gemini with Google Maps integration.
+Full-stack web application for the 2ª Vara Cível de Cariacica (2nd Civil Court of Cariacica), a Brazilian civil court. The site provides public services, court information, LGPD-compliant legal documents, an **AI-powered chatbot** using Google Gemini, **protected admin panel** with Replit Auth, and automated TJES news updates.
 
 ## Critical Architecture Note
 
@@ -80,16 +82,31 @@ backend/
 │   │   ├── chat.routes.ts      # POST /api/chat, /api/chat/clear
 │   │   ├── contact.routes.ts
 │   │   ├── appointment.routes.ts
-│   │   └── demand.routes.ts
+│   │   ├── demand.routes.ts
+│   │   ├── article.routes.ts   # CRUD artigos (auth required for mutations)
+│   │   └── news.routes.ts      # GET /api/news (TJES automated)
 │   ├── services/
 │   │   ├── chat.service.ts     # GEMINI INTEGRATION HERE
-│   │   └── email.service.ts
+│   │   ├── email.service.ts
+│   │   └── news.service.ts     # TJES news scraper
 │   └── middleware/
 │       ├── rateLimiter.ts
-│       └── validator.ts
+│       ├── validator.ts
+│       └── replitAuth.ts       # Replit Auth middleware
 └── prisma/
-    └── schema.prisma
+    └── schema.prisma           # User, Session, Article models
 ```
+
+### Authentication (Replit Auth)
+
+```
+User clicks Login → Replit OAuth → Session stored in PostgreSQL → Cookie set
+```
+
+- **Protected routes**: POST/PUT/DELETE on `/api/articles`
+- **Middleware**: `backend/src/middleware/replitAuth.ts`
+- **Frontend hook**: `hooks/useAuth.ts`
+- **Session storage**: PostgreSQL `sessions` table
 
 ### Data Flow
 
@@ -209,9 +226,26 @@ let chatSessions: Map<string, Chat> = new Map();
 
 ## Security Checklist
 
-- [ ] GEMINI_API_KEY only in backend environment
-- [ ] No API keys in vite.config.ts
-- [ ] No secrets in git history
-- [ ] Rate limiting enabled
-- [ ] CORS properly configured
-- [ ] Input validation on all endpoints
+- [x] GEMINI_API_KEY only in backend environment
+- [x] No API keys in vite.config.ts
+- [x] No secrets in git history
+- [x] Rate limiting enabled (100 req/min general, 3-10 req/15min forms)
+- [x] CORS properly configured for Replit domains
+- [x] Input validation on all endpoints (Zod)
+- [x] Helmet.js for XSS/clickjacking protection
+- [x] Replit Auth for admin routes (POST/PUT/DELETE articles)
+- [x] Sessions stored securely in PostgreSQL
+
+## Admin Panel
+
+The article management panel is protected by Replit Auth:
+
+1. User must be logged in via Replit OAuth
+2. GET requests (listing) are public
+3. POST/PUT/DELETE require authentication
+4. Unauthenticated requests return 401
+
+## Automated Features
+
+- **TJES News**: Daily fetch at 9 AM (America/Sao_Paulo timezone)
+- **News Sources**: RSS feed with HTML fallback via proxy

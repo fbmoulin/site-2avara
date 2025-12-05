@@ -1,5 +1,7 @@
 # Repository Guidelines
 
+**Version:** 2.5.0 | **Last Updated:** 2024-12-05
+
 ## Project Structure & Module Organization
 
 ### Frontend (Root Directory)
@@ -13,6 +15,10 @@
 - `components/Chatbot.tsx` - Chat UI widget with message history and maps rendering
 - `components/Icons.tsx` - Centralized SVG icon components (lucide-react)
 - `components/LegalDocuments.tsx` - LGPD-compliant Privacy Policy and Terms of Use modals
+- `components/AdminArticles.tsx` - Article management panel (protected by auth)
+
+### Frontend Hooks
+- `hooks/useAuth.ts` - Authentication state hook (Replit Auth)
 
 ### Frontend Services
 - `services/geminiService.ts` - HTTP client for backend chat API (NOT direct Gemini calls)
@@ -23,9 +29,14 @@
 - `backend/src/routes/contact.routes.ts` - Contact form API
 - `backend/src/routes/appointment.routes.ts` - Appointment scheduling API
 - `backend/src/routes/demand.routes.ts` - Demand registration API
+- `backend/src/routes/article.routes.ts` - Article CRUD (auth protected mutations)
+- `backend/src/routes/news.routes.ts` - TJES news endpoints
 - `backend/src/services/chat.service.ts` - **Gemini AI integration (API key here)**
 - `backend/src/services/email.service.ts` - Gmail/Nodemailer email service
-- `backend/prisma/schema.prisma` - Database schema
+- `backend/src/services/news.service.ts` - TJES news scraper with RSS/HTML fallback
+- `backend/src/middleware/replitAuth.ts` - Replit Auth middleware
+- `backend/src/middleware/rateLimiter.ts` - Rate limiting configuration
+- `backend/prisma/schema.prisma` - Database schema (User, Session, Article, News)
 
 ### Assets
 - `attached_assets/` - Images and static assets
@@ -130,3 +141,23 @@ The chatbot follows a structured protocol defined in `backend/src/services/chat.
 - Limit logging of chat content (PII concerns)
 - Use rate limiting for all API endpoints
 - Validate all user input with Zod schemas
+
+## Authentication (Replit Auth)
+
+Admin routes are protected by Replit Auth:
+
+```typescript
+// Protected routes require authentication
+app.post('/api/articles', requireAuth, createArticle);
+app.put('/api/articles/:id', requireAuth, updateArticle);
+app.delete('/api/articles/:id', requireAuth, deleteArticle);
+```
+
+- Sessions stored in PostgreSQL (`sessions` table)
+- User data synced to `users` table on login
+- Frontend uses `useAuth` hook for auth state
+
+## Automated Tasks
+
+- **TJES News Fetch**: Daily at 9:00 AM (America/Sao_Paulo)
+- **Strategy**: Direct RSS → Proxy RSS → HTML scraping fallback
