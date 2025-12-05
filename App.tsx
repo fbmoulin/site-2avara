@@ -522,7 +522,7 @@ const App: React.FC = () => {
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <Icons.Newspaper className="text-legal-gold" size={28} />
-                  <h2 className="text-3xl font-serif font-bold text-legal-blue">Notícias em Destaque</h2>
+                  <h2 className="text-3xl font-serif font-bold text-legal-blue">Notícias em Destaque do TJES</h2>
                 </div>
                 <p className="text-gray-600">Fique por dentro das últimas novidades do TJES</p>
               </div>
