@@ -33,7 +33,6 @@ export const SERVICES: ServiceItem[] = [
     icon: 'calendar',
     links: [
       { label: 'Preencher Formulário', url: '#contact', icon: 'file-text' },
-      { label: 'Enviar E-mail', url: 'mailto:2acivelcariacica@gmail.com', icon: 'mail' },
       { label: 'Agendar via Chat', url: '#chatbot', icon: 'message-square' }
     ]
   }
