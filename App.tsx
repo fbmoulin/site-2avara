@@ -642,7 +642,7 @@ const App: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Icons.Scale size={20} className="text-gray-600" aria-hidden="true" />
-              <span className="font-serif text-sm">© 2023 - 2ª Vara Cível de Cariacica. Todos os direitos reservados.</span>
+              <span className="font-serif text-sm">© 2024 - 2ª Vara Cível de Cariacica. Todos os direitos reservados.</span>
             </div>
             <div className="flex gap-6 text-sm">
               <a href="#" className="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline">Política de Privacidade</a>
