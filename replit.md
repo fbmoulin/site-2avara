@@ -119,7 +119,9 @@ cd backend && npx prisma studio
 
 ### Vite Configuration
 - Port 5000 for Replit webview compatibility
+- `allowedHosts: true` to allow Replit proxy requests
 - HMR configured for Replit proxy
+- Proxy configured to forward /api requests to backend
 - Environment variables loaded from `.env` files
 
 ### Known Issues
