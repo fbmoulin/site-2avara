@@ -37,7 +37,10 @@ import {
   Settings,
   Keyboard,
   SkipForward,
-  Volume2
+  Volume2,
+  Lock,
+  LogIn,
+  LogOut
 } from 'lucide-react';
 
 const AppleIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
@@ -92,6 +95,9 @@ export const Icons = {
   Keyboard,
   SkipForward,
   Volume2,
+  Lock,
+  LogIn,
+  LogOut,
   Apple: AppleIcon,
   PlayStore: PlayStoreIcon
 };

@@ -1,8 +1,31 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { isAuthenticated } from '../middleware/replitAuth.js';
 
 const router = Router();
 const prisma = new PrismaClient();
+
+router.get('/admin', isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const articles = await prisma.article.findMany({
+      orderBy: [
+        { isFeatured: 'desc' },
+        { publishedAt: 'desc' }
+      ]
+    });
+
+    res.json({
+      success: true,
+      data: articles
+    });
+  } catch (error) {
+    console.error('Error fetching articles for admin:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao buscar artigos'
+    });
+  }
+});
 
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -55,7 +78,7 @@ router.get('/:slug', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const { title, excerpt, content, author, category, imageUrl, isFeatured } = req.body;
 
@@ -99,7 +122,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, excerpt, content, author, category, imageUrl, isPublished, isFeatured } = req.body;
@@ -131,7 +154,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 

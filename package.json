@@ -11,9 +11,12 @@
     "start:backend": "cd backend && npm start"
   },
   "dependencies": {
+    "@types/memoizee": "^0.4.12",
     "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.5",
     "lucide-react": "^0.554.0",
+    "memoizee": "^0.4.17",
+    "openid-client": "^6.8.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

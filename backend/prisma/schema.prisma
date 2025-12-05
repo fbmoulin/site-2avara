@@ -91,3 +91,24 @@ model Article {
 
   @@map("articles")
 }
+
+model User {
+  id              String   @id
+  email           String?  @unique
+  firstName       String?  @map("first_name")
+  lastName        String?  @map("last_name")
+  profileImageUrl String?  @map("profile_image_url")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Session {
+  sid    String   @id
+  sess   Json
+  expire DateTime
+
+  @@index([expire])
+  @@map("sessions")
+}

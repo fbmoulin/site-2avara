@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Icons } from './Icons';
-import { Article, fetchArticles } from '../services/articleService';
+import { Article } from '../services/articleService';
+import { useAuth } from '../hooks/useAuth';
 
 interface AdminArticlesProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AdminArticlesProps {
 const API_URL = '/api/articles';
 
 export const AdminArticles: React.FC<AdminArticlesProps> = ({ isOpen, onClose }) => {
+  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -35,15 +37,26 @@ export const AdminArticles: React.FC<AdminArticlesProps> = ({ isOpen, onClose })
   ];
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && isAuthenticated) {
       loadArticles();
     }
-  }, [isOpen]);
+  }, [isOpen, isAuthenticated]);
 
   const loadArticles = async () => {
     setIsLoading(true);
-    const data = await fetchArticles();
-    setArticles(data);
+    try {
+      const response = await fetch(`${API_URL}/admin`, {
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setArticles(data.data || []);
+      } else if (response.status === 401) {
+        window.location.href = '/api/login';
+      }
+    } catch (error) {
+      console.error('Error loading articles:', error);
+    }
     setIsLoading(false);
   };
 
@@ -72,6 +85,7 @@ export const AdminArticles: React.FC<AdminArticlesProps> = ({ isOpen, onClose })
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
@@ -112,7 +126,10 @@ export const AdminArticles: React.FC<AdminArticlesProps> = ({ isOpen, onClose })
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_URL}/${id}`, { 
+        method: 'DELETE',
+        credentials: 'include'
+      });
       const data = await response.json();
 
       if (data.success) {
@@ -129,6 +146,54 @@ export const AdminArticles: React.FC<AdminArticlesProps> = ({ isOpen, onClose })
 
   if (!isOpen) return null;
 
+  if (authLoading) {
+    return (
+      <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div className="relative min-h-screen flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-8 text-center">
+            <div className="w-12 h-12 border-4 border-legal-gold/30 border-t-legal-gold rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Verificando autenticação...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose}></div>
+        <div className="relative min-h-screen flex items-center justify-center p-4">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center">
+            <div className="bg-legal-blue/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Icons.Lock className="text-legal-blue" size={40} />
+            </div>
+            <h2 className="text-2xl font-bold text-legal-blue mb-2">Área Restrita</h2>
+            <p className="text-gray-600 mb-6">
+              Esta área é exclusiva para administradores. Por favor, faça login para continuar.
+            </p>
+            <div className="flex flex-col gap-3">
+              <a
+                href="/api/login"
+                className="px-6 py-3 bg-legal-gold text-white font-semibold rounded-lg hover:bg-legal-gold-hover transition-colors flex items-center justify-center gap-2"
+              >
+                <Icons.LogIn size={20} />
+                Entrar com Replit
+              </a>
+              <button
+                onClick={onClose}
+                className="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose}></div>
@@ -140,16 +205,27 @@ export const AdminArticles: React.FC<AdminArticlesProps> = ({ isOpen, onClose })
               <Icons.FileText size={28} />
               <div>
                 <h2 className="text-2xl font-bold">Gerenciar Artigos</h2>
-                <p className="text-white/70 text-sm">Crie, edite e gerencie suas publicações</p>
+                <p className="text-white/70 text-sm">
+                  Olá, {user?.firstName || user?.email || 'Administrador'}!
+                </p>
               </div>
             </div>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
-              aria-label="Fechar"
-            >
-              <Icons.X size={24} />
-            </button>
+            <div className="flex items-center gap-2">
+              <a
+                href="/api/logout"
+                className="p-2 hover:bg-white/20 rounded-full transition-colors text-white/70 hover:text-white"
+                title="Sair"
+              >
+                <Icons.LogOut size={20} />
+              </a>
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                aria-label="Fechar"
+              >
+                <Icons.X size={24} />
+              </button>
+            </div>
           </div>
 
           <div className="overflow-y-auto max-h-[calc(90vh-100px)]">
