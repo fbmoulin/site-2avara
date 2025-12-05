@@ -34,7 +34,10 @@ import {
   Edit,
   Trash2,
   CheckCircle,
-  Settings
+  Settings,
+  Keyboard,
+  SkipForward,
+  Volume2
 } from 'lucide-react';
 
 const AppleIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
@@ -86,6 +89,9 @@ export const Icons = {
   Trash2,
   CheckCircle,
   Settings,
+  Keyboard,
+  SkipForward,
+  Volume2,
   Apple: AppleIcon,
   PlayStore: PlayStoreIcon
 };
