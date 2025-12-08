@@ -81,10 +81,6 @@ localPort = 34565
 externalPort = 3002
 
 [[ports]]
-localPort = 34709
-externalPort = 6800
-
-[[ports]]
 localPort = 35815
 externalPort = 5173
 
@@ -103,4 +99,4 @@ externalPort = 6000
 [deployment]
 deploymentTarget = "autoscale"
 run = ["bash", "-c", "cd backend && npm start & node prod-server.js"]
-build = ["bash", "-c", "npm run build"]
+build = ["npm", "run", "build"]
