@@ -407,7 +407,7 @@ const App: React.FC = () => {
                 <ul className="space-y-3">
                   <li className="flex items-center gap-3 text-gray-700">
                     <Icons.User className="text-legal-blue" size={18} />
-                    <span>Andreza</span>
+                    <span>Assessora e Chefe de Gabinete: Andreza Raimundo Lage - Mestre em Processo Civil pela UFES</span>
                   </li>
                   <li className="flex items-center gap-3 text-gray-700">
                     <Icons.User className="text-legal-blue" size={18} />
