@@ -428,7 +428,7 @@ const App: React.FC = () => {
                   </li>
                   <li className="flex items-center gap-3 text-gray-700">
                     <Icons.User className="text-legal-blue" size={18} />
-                    <span>Juliana</span>
+                    <span>Estagiária de Graduação: Juliana Ramalho Santos</span>
                   </li>
                 </ul>
               </div>
