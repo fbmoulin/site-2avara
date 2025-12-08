@@ -5,6 +5,25 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.7.1] - 2024-12-08
+
+### Atualizado
+- **Equipe de Gabinete** com informações completas:
+  - Assessora de Juiz e Chefe de Gabinete: Andreza Raimundo Lage - Mestre em Processo Civil pela UFES
+  - Assessora de Juiz: Scarllety Viana Scardua - Graduada em Direito
+  - Estagiária de Pós-Graduação: Mariana Vieira Fernandes
+  - Estagiária de Graduação: Juliana Ramalho Santos
+
+### Auditoria Pré-Deploy
+- ✅ Backend operacional (porta 3001)
+- ✅ Frontend operacional (porta 5000)
+- ✅ API de notícias funcionando (10 itens TJES)
+- ✅ Secrets configurados (GMAIL_APP_PASSWORD, GEMINI_API_KEY)
+- ✅ VLibras integrado
+- ✅ Acessibilidade CNJ 401/2021 completa
+- ✅ LGPD implementado
+- ✅ Sistema de email configurado
+
 ## [2.7.0] - 2024-12-05
 
 ### Adicionado
