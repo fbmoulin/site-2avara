@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getActiveNews, fetchAndSaveNews, getLastFetchTime, getFetchStatus } from '../services/news.service';
+import { getActiveNews, fetchAndSaveNews, getLastFetchTime, getFetchStatus } from '../services/news.service.js';
 
 const router = Router();
 

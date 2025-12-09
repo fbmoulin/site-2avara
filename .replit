@@ -20,6 +20,11 @@ BACKEND_PORT = "3001"
 EMAIL_FROM = "2acivelcariacica@gmail.com"
 EMAIL_TO = "2acivelcariacica@gmail.com"
 
+[userenv.production]
+BACKEND_PORT = "3001"
+NODE_ENV = "production"
+VITE_API_URL = "/api"
+
 [workflows]
 runButton = "Project"
 
