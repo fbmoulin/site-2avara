@@ -26,7 +26,8 @@ backend.on('exit', (code) => {
 });
 
 setTimeout(async () => {
-  const { default: startFrontend } = await import('./prod-server.js');
+  console.log('Starting frontend server...');
+  await import('./prod-server.js');
 }, 2000);
 
 process.on('SIGTERM', () => {
