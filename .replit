@@ -98,5 +98,5 @@ externalPort = 6000
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "cd backend && node dist/server.js & node prod-server.js"]
-build = ["bash", "-c", "npm run build"]
+run = ["node", "prod-start.js"]
+build = ["npm", "run", "build"]
