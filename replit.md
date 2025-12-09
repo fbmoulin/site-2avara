@@ -47,6 +47,23 @@ The application is a full-stack project utilizing React 19.2.0 with TypeScript 5
 -   **Appointment Scheduling:** Supports both in-person and virtual (Zoom) appointments.
 -   **Security and Compliance:** Robust security measures and full adherence to LGPD.
 
+## Deployment Configuration
+
+**Production Setup:**
+-   **Deployment Target:** Autoscale
+-   **Build Command:** `["npm", "run", "build"]` - Builds frontend (Vite) and backend (TypeScript)
+-   **Run Command:** `["node", "prod-start.js"]` - Unified entry point that spawns backend and serves frontend
+
+**Production Architecture:**
+-   `prod-start.js` - Unified entry point that spawns backend as child process, then starts frontend server
+-   `prod-server.js` - Express server serving static frontend files and proxying `/api` requests to backend
+-   Backend listens on `127.0.0.1:3001` in production (internal only)
+-   Frontend server listens on `0.0.0.0:PORT` (Replit sets PORT for external access)
+
+**ESM Configuration:**
+-   Backend uses `module: "NodeNext"` and `moduleResolution: "NodeNext"` in tsconfig.json
+-   All relative imports must include `.js` extension for Node.js ESM compatibility
+
 ## External Dependencies
 
 -   **Google Gemini API:** For the intelligent virtual assistant chatbot.
@@ -58,3 +75,11 @@ The application is a full-stack project utilizing React 19.2.0 with TypeScript 5
 -   **React:** Frontend framework.
 -   **Express:** Backend web framework.
 -   **Prisma ORM:** Database toolkit for data access.
+
+## Recent Changes
+
+-   **December 2024:** Fixed deployment configuration for Replit autoscale
+    -   Updated tsconfig.json to use NodeNext module resolution
+    -   Fixed missing `.js` extensions in ESM imports
+    -   Created unified production entry point (prod-start.js)
+    -   Set production environment variables
