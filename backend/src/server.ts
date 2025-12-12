@@ -9,6 +9,8 @@ import chatRoutes from './routes/chat.routes.js';
 import newsRoutes from './routes/news.routes.js';
 import articleRoutes from './routes/article.routes.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
+import { apiTimeout, chatTimeout } from './middleware/timeout.js';
+import { requestLogger } from './middleware/logger.js';
 import { initScheduler, runInitialFetch } from './scheduler.js';
 import { setupAuth } from './middleware/replitAuth.js';
 
@@ -54,8 +56,14 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Request logger
+app.use(requestLogger);
+
 // Rate limiting geral
 app.use('/api', apiLimiter);
+
+// Request timeout
+app.use('/api', apiTimeout);
 
 async function startServer() {
   await setupAuth(app);
@@ -63,7 +71,7 @@ async function startServer() {
   app.use('/api/contact', contactRoutes);
   app.use('/api/appointments', appointmentRoutes);
   app.use('/api/demands', demandRoutes);
-  app.use('/api/chat', chatRoutes);
+  app.use('/api/chat', chatTimeout, chatRoutes);
   app.use('/api/news', newsRoutes);
   app.use('/api/articles', articleRoutes);
 
