@@ -3,14 +3,16 @@ import { Icons } from './components/Icons';
 import { Chatbot } from './components/Chatbot';
 import { PrivacyPolicy, TermsOfUse } from './components/LegalDocuments';
 import { 
-  SERVICES, 
-  FAQS, 
-  JUDGE_INFO, 
-  CONTACT_INFO 
-} from './constants';
+  HeroSection,
+  JudgeSection,
+  TeamSection,
+  FAQSection,
+  NewsSection,
+  ContactForm,
+} from './components/features';
+import { SERVICES, CONTACT_INFO } from './constants';
 import { NavigationSection } from './types';
 import { fetchNews, NewsItem } from './services/newsService';
-import forumImage from '@assets/forum_1764897995940.jpg';
 import zoomTutorialImage from '@assets/stock_images/zoom_video_conferenc_61e7f082.jpg';
 
 const SectionHeader: React.FC<{ title: string; subtitle?: string; light?: boolean }> = ({ title, subtitle, light }) => (
@@ -33,20 +35,7 @@ const App: React.FC = () => {
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedService, setExpandedService] = useState<string | null>(null);
-  const [contactForm, setContactForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    userType: '' as '' | 'parte' | 'advogado',
-    cpf: '',
-    oab: '',
-    subject: '',
-    message: ''
-  });
-  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [contactMessage, setContactMessage] = useState('');
 
   useEffect(() => {
     fetchNews(10).then(setNewsItems);
@@ -97,36 +86,6 @@ const App: React.FC = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       element.focus({ preventScroll: true });
-    }
-  };
-
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setContactStatus('loading');
-    setContactMessage('');
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactForm),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setContactStatus('success');
-        setContactMessage(data.message || 'Mensagem enviada com sucesso!');
-        setContactForm({ name: '', phone: '', email: '', userType: '', cpf: '', oab: '', subject: '', message: '' });
-      } else {
-        setContactStatus('error');
-        setContactMessage(data.message || 'Erro ao enviar mensagem. Tente novamente.');
-      }
-    } catch (error) {
-      setContactStatus('error');
-      setContactMessage('Erro de conexão. Verifique sua internet e tente novamente.');
     }
   };
 
@@ -308,133 +267,14 @@ const App: React.FC = () => {
       </header>
 
       <main id="main-content" className="flex-1 outline-none" tabIndex={-1}>
-        <section id={NavigationSection.HOME} className="relative h-[600px] flex items-center justify-center bg-gray-900" aria-label="Introdução">
-          <div className="absolute inset-0 overflow-hidden">
-            <img 
-              src={forumImage} 
-              alt="Fórum Des. Américo Ribeiro Coelho - Cariacica" 
-              className="w-full h-full object-cover"
-              aria-hidden="true"
-            />
-            <div className="absolute inset-0 bg-legal-blue/80"></div>
-          </div>
-          
-          <div className="relative z-10 container mx-auto px-4 text-center">
-            <div className="mb-6 inline-block px-4 py-3 sm:px-6 sm:py-4 md:px-8 border-2 border-legal-gold text-legal-gold tracking-widest font-bold rounded-lg bg-legal-blue/50 backdrop-blur-sm">
-              <div className="text-xl sm:text-3xl md:text-5xl lg:text-6xl uppercase">2ª VARA CÍVEL</div>
-              <div className="text-sm sm:text-lg md:text-2xl lg:text-3xl uppercase mt-1 sm:mt-2">COMARCA DE CARIACICA - ES</div>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
-              Excelência e Celeridade <br /> na Prestação Jurisdicional
-            </h1>
-            <p className="text-gray-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light drop-shadow-md">
-              Portal oficial de serviços digitais, consultas processuais e atendimento ao cidadão.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => scrollToSection(NavigationSection.SERVICES)}
-                className="px-8 py-3 bg-legal-gold hover:bg-legal-gold-hover text-white font-bold rounded-sm shadow-lg transition-transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-legal-blue"
-              >
-                Nossos Serviços
-              </button>
-              <button 
-                onClick={() => setIsChatOpen(true)}
-                className="px-8 py-3 bg-transparent border-2 border-legal-gold text-legal-gold hover:bg-legal-gold hover:text-white font-bold rounded-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-legal-gold flex items-center gap-2 mx-auto sm:mx-0"
-              >
-                <Icons.MessageSquare size={20} />
-                Fale Conosco
-              </button>
-            </div>
-          </div>
-        </section>
+        <HeroSection
+          onNavigateToServices={() => scrollToSection(NavigationSection.SERVICES)}
+          onOpenChat={() => setIsChatOpen(true)}
+        />
 
-        <section id={NavigationSection.JUDGE} className="py-20 bg-white" aria-label="Informações do Magistrado">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row gap-12 items-center">
-              <div className="md:w-1/3 relative">
-                <div className="absolute top-4 left-4 w-full h-full border-2 border-legal-gold rounded-lg -z-0" aria-hidden="true"></div>
-                <img 
-                  src={forumImage} 
-                  alt="Fórum Des. Américo Ribeiro Coelho - Cariacica"
-                  className="w-full h-auto rounded-lg shadow-xl relative z-10 bg-gray-200"
-                />
-              </div>
-              <div className="md:w-2/3">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-0.5 w-10 bg-legal-gold" aria-hidden="true"></div>
-                  <span className="text-legal-gold font-bold uppercase tracking-wider text-sm">O Magistrado</span>
-                </div>
-                <h2 className="text-4xl font-serif font-bold text-legal-blue mb-2">{JUDGE_INFO.name}</h2>
-                <h3 className="text-xl text-gray-500 mb-6 italic">{JUDGE_INFO.role}</h3>
-                
-                <p className="text-gray-600 leading-relaxed mb-6 text-lg">
-                  {JUDGE_INFO.bio}
-                </p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-                  <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-legal-blue">
-                    <Icons.Scale className="text-legal-blue mb-3" size={24} aria-hidden="true" />
-                    <h4 className="font-bold text-legal-blue mb-2">Missão</h4>
-                    <p className="text-sm text-gray-600">Garantir a resolução de conflitos com ética, imparcialidade e agilidade.</p>
-                  </div>
-                  <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-legal-gold">
-                    <Icons.Users className="text-legal-gold mb-3" size={24} aria-hidden="true" />
-                    <h4 className="font-bold text-legal-blue mb-2">Visão</h4>
-                    <p className="text-sm text-gray-600">Ser referência em atendimento humanizado e eficiência processual.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <JudgeSection />
 
-        <section className="py-16 bg-white" aria-label="Equipe do Gabinete">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <div className="flex items-center justify-center gap-3 mb-3">
-                <Icons.Users className="text-legal-gold" size={28} />
-                <h2 className="text-3xl font-serif font-bold text-legal-blue">Equipe de Gabinete da 2ª Vara Cível</h2>
-              </div>
-              <div className="h-1 w-24 mx-auto bg-legal-gold"></div>
-            </div>
-
-            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-                <h3 className="text-lg font-bold text-legal-blue mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-legal-gold rounded-full"></span>
-                  Assessores
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <Icons.User className="text-legal-blue" size={18} />
-                    <span>Assessora de Juiz e Chefe de Gabinete: Andreza Raimundo Lage - Mestre em Processo Civil pela UFES</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <Icons.User className="text-legal-blue" size={18} />
-                    <span>Assessora de Juiz: Scarllety Viana Scardua - Graduada em Direito</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-                <h3 className="text-lg font-bold text-legal-blue mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-legal-gold rounded-full"></span>
-                  Estagiárias
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <Icons.User className="text-legal-blue" size={18} />
-                    <span>Estagiária de Pós-Graduação: Mariana Vieira Fernandes</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <Icons.User className="text-legal-blue" size={18} />
-                    <span>Estagiária de Graduação: Juliana Ramalho Santos</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+        <TeamSection />
 
         <section id={NavigationSection.SERVICES} className="py-20 bg-light-bg" aria-label="Serviços Online">
           <div className="container mx-auto px-4">
@@ -564,77 +404,9 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-gradient-to-b from-gray-50 to-white" aria-label="Notícias TJES">
-          <div className="container mx-auto px-4">
-            <SectionHeader 
-              title="Notícias do TJES" 
-              subtitle="Últimas notícias do Tribunal de Justiça do Espírito Santo" 
-            />
-            
-            {newsItems.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">Carregando notícias...</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {newsItems.slice(0, 6).map((news) => (
-                  <a
-                    key={news.id}
-                    href={news.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow p-6 border border-gray-100"
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <Icons.Newspaper className="text-legal-gold" size={16} />
-                      <span className="text-xs text-gray-500">
-                        {new Date(news.publishedAt).toLocaleDateString('pt-BR')}
-                      </span>
-                    </div>
-                    <h4 className="text-gray-800 font-semibold line-clamp-3 hover:text-legal-blue transition-colors">
-                      {news.title}
-                    </h4>
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
+        <NewsSection newsItems={newsItems} />
 
-        <section id={NavigationSection.FAQ} className="py-20 bg-white" aria-label="Perguntas Frequentes">
-          <div className="container mx-auto px-4">
-            <SectionHeader 
-              title="Perguntas Frequentes" 
-              subtitle="Encontre respostas para as dúvidas mais comuns." 
-            />
-            
-            <div className="max-w-3xl mx-auto space-y-4">
-              {FAQS.map((faq, index) => (
-                <div 
-                  key={index}
-                  className="border border-gray-200 rounded-lg overflow-hidden"
-                >
-                  <button
-                    onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                    className="w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
-                    aria-expanded={expandedFaq === index}
-                  >
-                    <span className="font-semibold text-legal-blue">{faq.question}</span>
-                    <Icons.ChevronDown 
-                      className={`text-legal-gold transform transition-transform ${expandedFaq === index ? 'rotate-180' : ''}`} 
-                      size={20}
-                    />
-                  </button>
-                  {expandedFaq === index && (
-                    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                      <p className="text-gray-600">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <FAQSection />
 
         {/* ACCESSIBILITY RESOURCES SECTION */}
         <section className="bg-slate-900 py-16 border-t border-gray-800" aria-label="Recursos de Acessibilidade">
@@ -895,177 +667,7 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Contact Form */}
-              <div className="bg-white rounded-lg p-8 text-gray-800 shadow-2xl h-fit">
-                <h3 className="text-2xl font-serif font-bold text-legal-blue mb-6">Envie sua Mensagem</h3>
-                
-                {contactStatus === 'success' && (
-                  <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 flex items-center gap-2">
-                    <Icons.CheckCircle size={20} className="text-green-600" />
-                    {contactMessage}
-                  </div>
-                )}
-                
-                {contactStatus === 'error' && (
-                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 flex items-center gap-2">
-                    <Icons.AlertCircle size={20} className="text-red-600" />
-                    {contactMessage}
-                  </div>
-                )}
-
-                <form className="space-y-4" onSubmit={handleContactSubmit}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="contact-name" className="block text-sm font-semibold mb-1">Nome Completo <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="contact-name"
-                        name="name"
-                        type="text" 
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        autoComplete="name"
-                        disabled={contactStatus === 'loading'}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="contact-phone" className="block text-sm font-semibold mb-1">Telefone (com DDD) <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="contact-phone"
-                        name="phone"
-                        type="tel" 
-                        placeholder="(27) 99999-9999"
-                        value={contactForm.phone}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        autoComplete="tel"
-                        disabled={contactStatus === 'loading'}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="contact-email" className="block text-sm font-semibold mb-1">E-mail <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="contact-email"
-                        name="email"
-                        type="email" 
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        autoComplete="email"
-                        disabled={contactStatus === 'loading'}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="contact-usertype" className="block text-sm font-semibold mb-1">Você é <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <select 
-                        id="contact-usertype"
-                        name="userType"
-                        value={contactForm.userType}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, userType: e.target.value as 'parte' | 'advogado', cpf: '', oab: '' }))}
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
-                        required
-                        aria-required="true"
-                        disabled={contactStatus === 'loading'}
-                      >
-                        <option value="">Selecione...</option>
-                        <option value="parte">Parte (cidadão)</option>
-                        <option value="advogado">Advogado(a)</option>
-                      </select>
-                    </div>
-                  </div>
-                  {contactForm.userType === 'parte' && (
-                    <div>
-                      <label htmlFor="contact-cpf" className="block text-sm font-semibold mb-1">CPF <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="contact-cpf"
-                        name="cpf"
-                        type="text" 
-                        placeholder="000.000.000-00"
-                        value={contactForm.cpf}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, cpf: e.target.value }))}
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        disabled={contactStatus === 'loading'}
-                      />
-                    </div>
-                  )}
-                  {contactForm.userType === 'advogado' && (
-                    <div>
-                      <label htmlFor="contact-oab" className="block text-sm font-semibold mb-1">Número da OAB <span className="text-red-600" aria-hidden="true">*</span></label>
-                      <input 
-                        id="contact-oab"
-                        name="oab"
-                        type="text" 
-                        placeholder="ES 12345"
-                        value={contactForm.oab}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, oab: e.target.value }))}
-                        className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors" 
-                        required
-                        aria-required="true"
-                        disabled={contactStatus === 'loading'}
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <label htmlFor="contact-subject" className="block text-sm font-semibold mb-1">Assunto <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <select 
-                      id="contact-subject"
-                      name="subject"
-                      value={contactForm.subject}
-                      onChange={(e) => setContactForm(prev => ({ ...prev, subject: e.target.value }))}
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors"
-                      required
-                      aria-required="true"
-                      disabled={contactStatus === 'loading'}
-                    >
-                      <option value="">Selecione...</option>
-                      <option value="informacao">Informação Processual</option>
-                      <option value="agendamento">Agendamento</option>
-                      <option value="sugestao">Sugestão</option>
-                      <option value="reclamacao">Reclamação</option>
-                      <option value="outro">Outro</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="contact-message" className="block text-sm font-semibold mb-1">Mensagem <span className="text-red-600" aria-hidden="true">*</span></label>
-                    <textarea 
-                      id="contact-message"
-                      name="message"
-                      rows={4} 
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                      className="w-full bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:border-legal-gold focus:ring-1 focus:ring-legal-gold outline-none transition-colors resize-none"
-                      required
-                      aria-required="true"
-                      disabled={contactStatus === 'loading'}
-                    ></textarea>
-                  </div>
-                  <button 
-                    type="submit" 
-                    disabled={contactStatus === 'loading'}
-                    className="w-full bg-legal-blue hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {contactStatus === 'loading' ? (
-                      <>
-                        <Icons.Loader2 size={18} className="animate-spin" /> Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <Icons.Send size={18} /> Enviar Mensagem
-                      </>
-                    )}
-                  </button>
-                </form>
-              </div>
+              <ContactForm />
             </div>
           </div>
         </section>

@@ -24,16 +24,7 @@ const initialFormData: ContactFormData = {
   message: '',
 };
 
-interface UseContactFormResult {
-  formData: ContactFormData;
-  status: ContactStatus;
-  message: string;
-  updateField: <K extends keyof ContactFormData>(field: K, value: ContactFormData[K]) => void;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
-  reset: () => void;
-}
-
-export function useContactForm(): UseContactFormResult {
+export function useContactForm() {
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
   const [status, setStatus] = useState<ContactStatus>('idle');
   const [message, setMessage] = useState('');
@@ -42,17 +33,21 @@ export function useContactForm(): UseContactFormResult {
     field: K,
     value: ContactFormData[K]
   ) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      if (field === 'userType') {
+        return { ...prev, [field]: value, cpf: '', oab: '' };
+      }
+      return { ...prev, [field]: value };
+    });
   }, []);
 
-  const reset = useCallback(() => {
+  const resetForm = useCallback(() => {
     setFormData(initialFormData);
     setStatus('idle');
     setMessage('');
   }, []);
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitForm = useCallback(async () => {
     setStatus('loading');
     setMessage('');
 
@@ -71,23 +66,34 @@ export function useContactForm(): UseContactFormResult {
         setStatus('success');
         setMessage(data.message || 'Mensagem enviada com sucesso!');
         setFormData(initialFormData);
+        return true;
       } else {
         setStatus('error');
         setMessage(data.message || 'Erro ao enviar mensagem. Tente novamente.');
+        return false;
       }
     } catch (error) {
       setStatus('error');
       setMessage('Erro de conexão. Verifique sua internet e tente novamente.');
+      return false;
     }
   }, [formData]);
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    return submitForm();
+  }, [submitForm]);
 
   return {
     formData,
     status,
     message,
     updateField,
+    resetForm,
     handleSubmit,
-    reset,
+    isLoading: status === 'loading',
+    isSuccess: status === 'success',
+    isError: status === 'error',
   };
 }
 
