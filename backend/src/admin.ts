@@ -80,17 +80,17 @@ export const adminJs = new AdminJS({
   },
 });
 
-// Autenticação do AdminJS
 const authenticate = async (email: string, password: string) => {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@tjes.jus.br';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
-  if (email === adminEmail) {
-    // Em produção, use hash bcrypt armazenado no banco
-    const matched = await bcrypt.compare(password, await bcrypt.hash(adminPassword, 10));
-    if (matched || password === adminPassword) {
-      return { email: adminEmail, role: 'admin' };
-    }
+  if (!adminEmail || !adminPassword) {
+    console.warn('[Admin] ADMIN_EMAIL and ADMIN_PASSWORD not configured');
+    return null;
+  }
+
+  if (email === adminEmail && password === adminPassword) {
+    return { email: adminEmail, role: 'admin' };
   }
   return null;
 };
