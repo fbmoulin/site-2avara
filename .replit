@@ -73,34 +73,6 @@ externalPort = 3001
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 32819
-externalPort = 5000
-
-[[ports]]
-localPort = 33407
-externalPort = 4200
-
-[[ports]]
-localPort = 34565
-externalPort = 3002
-
-[[ports]]
-localPort = 35815
-externalPort = 5173
-
-[[ports]]
-localPort = 37757
-externalPort = 3000
-
-[[ports]]
-localPort = 40719
-externalPort = 3003
-
-[[ports]]
-localPort = 43581
-externalPort = 6000
-
 [deployment]
 deploymentTarget = "autoscale"
 run = ["node", "prod-start.js"]
