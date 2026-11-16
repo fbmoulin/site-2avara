@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { fetchAndSaveNews } from './services/news.service';
+import { fetchAndSaveNews } from './services/news.service.js';
 
 export function initScheduler(): void {
   cron.schedule('0 9 * * *', async () => {
