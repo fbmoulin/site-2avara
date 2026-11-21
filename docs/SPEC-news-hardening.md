@@ -28,6 +28,7 @@
 | 10 | `tsc` aceita import sem `.js` | Reproduzido | Baixa |
 | A | Entidades HTML do WordPress não decodificadas | Reproduzido (feed sintético) | Baixa |
 | B | CORS aceita origem que apenas *contém* `.replit.dev` | Confirmado por leitura | Média |
+| C | Qualquer conta Replit logada passa por `isAuthenticated` | Confirmado por leitura | Alta |
 
 ## 3. Análise e requisitos por item
 
@@ -44,7 +45,7 @@
 
 **Requisitos.**
 
-- R1.1 `POST /refresh` exige `isAuthenticated` (mesmo middleware de `article.routes.ts`). Sem sessão: `401`.
+- R1.1 `POST /refresh` exige sessão **de administrador** (ver achado C): `isAuthenticated` seguido de um novo middleware `isAdmin`. Sem sessão: `401`; sessão de não-admin: `403`.
 - R1.2 Limiter próprio na rota: 3 requisições / 15 min.
 - R1.3 *Single-flight* no serviço: se já há uma busca em andamento, chamadas novas (rota, cron ou boot) aguardam a mesma promise em vez de iniciar outra.
 - R1.4 O cookie de sessão passa a declarar `sameSite: 'lax'` em `replitAuth.ts` (hoje o atributo é omitido e a proteção contra CSRF depende do padrão de cada navegador).
@@ -163,9 +164,21 @@
 
 **Requisito.** RB.1 Comparar o *hostname* da origem com `endsWith('.replit.dev')`.
 
+### C. "Autenticado" não significa "administrador" — `replitAuth.ts:156`
+
+**Evidência (leitura).** `isAuthenticated` só verifica se existe uma sessão válida. O fluxo de login (`verify` + `upsertUser`) aceita qualquer conta que conclua o OAuth do Replit e a grava na tabela `users`; não há lista de e-mails permitidos, papel (`role`) nem checagem em `article.routes.ts`. Se o login do Replit não estiver restrito por fora do código, qualquer pessoa com conta Replit pode criar, editar e apagar artigos — e poderia chamar `/refresh` mesmo depois de R1.1 na forma original.
+
+**Requisitos.**
+
+- RC.1 Novo middleware `isAdmin`: compara `req.user.claims.email` (minúsculas) com a lista da variável de ambiente `ADMIN_EMAILS` (separada por vírgulas). Lista vazia ou ausente → ninguém é admin.
+- RC.2 Aplicar `isAuthenticated, isAdmin` em `POST /api/news/refresh` e em `GET /admin`, `POST`, `PUT` e `DELETE` de `/api/articles`.
+- RC.3 `GET /api/auth/user` passa a incluir `isAdmin`, e o painel mostra "sem permissão" para contas fora da lista.
+
+**Aceite.** Conta fora de `ADMIN_EMAILS` → `403` em todas as rotas acima.
+
 ## 4. Ordem de implementação sugerida
 
-1. **Segurança:** itens 1, 2 e B.
+1. **Segurança:** itens 1, 2, B e C.
 2. **Correção de dados:** itens 5 (com migration), 4 e A.
 3. **Observabilidade:** itens 3, 6, 7 e 8.
 4. **Higiene:** itens 9 e 10.
